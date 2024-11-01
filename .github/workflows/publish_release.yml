@@ -17,7 +17,7 @@ on:
 jobs:
   build:
 
-    runs-on: [redhat8-builds-build]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -78,7 +78,7 @@ jobs:
         working-directory: ui
 
       - name: release
-        uses: Kitchen/RE-thirdparty-actions/actions/action-gh-release@main
+        uses: softprops/action-gh-release@v2
         id: create_release
         with:
           draft: false

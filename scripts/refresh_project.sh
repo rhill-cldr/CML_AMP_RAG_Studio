@@ -39,8 +39,8 @@
 
 set -e
 
-git stash
-git pull --rebase
+## set the RELEASE_TAG env var from the file, if it exists
+source scripts/release_version.txt || true
 
 cd ui/express
 npm install
@@ -51,9 +51,9 @@ pip install -r app/requirements.txt
 cd ..
 mkdir -p artifacts
 
-RELEASE_URL=https://github.infra.cloudera.com/CAI/AmpRagStudio/releases/latest/download
+RELEASE_URL=https://github.com/cloudera/CML_AMP_RAG_Studio/releases/latest/download
 if  [ -n "${RELEASE_TAG}" ] && [ "${RELEASE_TAG}" != "latest" ]; then
-    RELEASE_URL=https://github.infra.cloudera.com/CAI/AmpRagStudio/releases/download/${RELEASE_TAG}
+    RELEASE_URL=https://github.com/cloudera/CML_AMP_RAG_Studio/releases/download/${RELEASE_TAG}
 fi
 
 echo "Downloading release artifacts from ${RELEASE_URL}"

@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: [redhat8-builds-build]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
