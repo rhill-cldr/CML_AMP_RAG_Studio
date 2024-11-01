@@ -1,0 +1,20 @@
+name: RAG Studio DEV
+
+entries:
+  - title: RAG Studio DEV branch
+    label: rag-studio-dev-mode
+    short_description: |
+      RAG Studio DEV branch
+    long_description: |
+      Build a RAG application to ask questions about your documents
+#    image_path: "https://raw.githubusercontent.com/kevinbtalbert/CML_AMP_Solr_9/main/assets/amp-cover.png"
+    tags:
+      - JDK 21
+      - Spring
+      - RAG
+      - AI
+      - LLM
+      - QuadDrant
+    git_url: "https://github.infra.cloudera.com/CAI/AmpRagStudio"
+    git_ref: "mob/main"
+    is_prototype: true

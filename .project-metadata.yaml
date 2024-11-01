@@ -1,0 +1,87 @@
+name: RAG Studio
+description: "Build a RAG application to ask questions about your documents"
+author: "Cloudera"
+date: "2024-09-10"
+specification_version: 1.0
+prototype_version: 1.0
+
+environment_variables:
+    AWS_DEFAULT_REGION:
+        default: "us-west-2"
+        description: "AWS Region where Bedrock is configured and the S3 bucket is located"
+        required: true
+    S3_RAG_DOCUMENT_BUCKET:
+        default: ""
+        description: "The S3 bucket where uploaded documents are stored"
+        required: true
+    S3_RAG_BUCKET_PREFIX:
+        default: "rag-studio"
+        description: "A prefix added to all S3 paths used by Rag Studio"
+        required: true
+    AWS_ACCESS_KEY_ID:
+        default: ""
+        description: "AWS Access Key ID"
+        required: true
+    AWS_SECRET_ACCESS_KEY:
+        default: ""
+        description: "AWS Secret Access Key"
+        required: true
+    DB_URL:
+        default: "jdbc:h2:file:~/databases/rag"
+        description: "Internal DB URL. Do not change."
+        required: true
+    LLM_SERVICE_URL:
+        default: "http://localhost:8081"
+        description: "Internal API URL. Do not change."
+        required: true
+    API_URL:
+        default: "http://localhost:8080"
+        description: "Internal API URL. Do not change."
+        required: true
+
+runtimes:
+  - editor: JupyterLab
+    kernel: Python 3.10
+    edition: Standard
+
+tasks:
+  - type: run_session
+    name: Download/Install Project Dependencies
+    script: scripts/01_install_base.py
+    short_summary: Install Project Dependencies
+    kernel: python3
+    cpu: 2
+    memory: 4
+
+  - type: create_job
+    name: Update/build RAG Studio
+    entity_label: refresh_project
+    script: scripts/refresh_project.py
+    arguments: None
+    cpu: 2
+    memory: 4
+    short_summary: Create job to allow refreshing the project from source and rebuilding.
+    environment:
+      TASK_TYPE: CREATE/RUN_JOB
+
+  - type: run_job
+    entity_label: refresh_project
+    short_summary: Run job to refresh the project from source and rebuilding.
+    environment:
+      RELEASE_TAG: "latest"
+
+  - type: start_application
+    name: RagStudio
+    subdomain: ragstudio
+    bypass_authentication: false
+    static_subdomain: false
+    script: scripts/startup_app.py
+    short_summary: Create and start RagStudio.
+    long_summary: Create and start RagStudio.
+    cpu: 2
+    memory: 4
+    environment_variables:
+      TASK_TYPE: START_APPLICATION
+      DB_URL: "jdbc:h2:file:~/databases/rag"
+      LLM_SERVICE_URL: "http://localhost:8081"
+      API_URL: "http://localhost:8080"
