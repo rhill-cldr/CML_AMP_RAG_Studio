@@ -5,7 +5,7 @@ description = "Default template for PDM package"
 authors = [
     {name = "Conrado", email = "csilvamiranda@cloudera.com"},
 ]
-dependencies = []
+dependencies = ["pydantic>=2.9.2", "fastapi>=0.115.4"]
 requires-python = "==3.10.*"
 readme = "README.md"
 license = {text = "TBD"}
@@ -13,3 +13,15 @@ license = {text = "TBD"}
 
 [tool.pdm]
 distribution = false
+
+[dependency-groups]
+dev = ["pytest>=8.3.3"]
+
+[tool.pytest.ini_options]
+pythonpath = [
+    "."
+]
+log_cli = true
+log_cli_level = "DEBUG"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
