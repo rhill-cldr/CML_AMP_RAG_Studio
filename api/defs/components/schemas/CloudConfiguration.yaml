@@ -1,0 +1,17 @@
+CloudConfiguration:
+  type: object
+  required:
+    - id
+    - name
+    - configuration
+  properties:
+    id:
+      type: string
+      description: Cloud configuration ID
+    name:
+      type: string
+      description: Cloud configuration name
+    configuration:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/CloudConfigurationAws'

@@ -1,0 +1,17 @@
+CloudConfigurationAws:
+  type: object
+  required:
+    - aws
+  properties:
+    aws:
+      type: object
+      required:
+        - region
+        - type
+      properties:
+        region:
+          type: string
+        type:
+          oneOf:
+            - $ref: '#/components/schemas/CloudConfigurationAwsInstanceProfile'
+            - $ref: '#/components/schemas/CloudConfigurationAwsKey'
