@@ -70,5 +70,5 @@ pip install -r app/requirements.txt
 fastapi dev &
 
 # start up the jarva
-cd ../api
+cd ../backend
 ./gradlew --console=plain bootRun

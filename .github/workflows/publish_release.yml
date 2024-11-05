@@ -37,17 +37,16 @@ jobs:
 
       - name: Run Java backend tests
         run: ./gradlew test
-        working-directory: api
+        working-directory: backend
 
       - name: Build with Gradle
         run: ./gradlew build
-        working-directory: api
+        working-directory: backend
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
           version: 9
-
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -82,7 +81,7 @@ jobs:
           name: ${{ github.event.inputs.VERSION }}
           tag_name: ${{ github.event.inputs.VERSION }}
           files: |
-            api/build/libs/rag-api.jar
+            backend/build/libs/rag-api.jar
             ui/fe-dist.tar.gz
         env:
           GITHUB_TOKEN: ${{ github.token }}
