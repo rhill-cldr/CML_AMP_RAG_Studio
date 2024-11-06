@@ -43,6 +43,7 @@ import com.cloudera.cai.rag.Types.RagDocumentMetadata;
 import com.cloudera.cai.rag.datasources.RagDataSourceRepository;
 import com.cloudera.cai.util.IdGenerator;
 import com.cloudera.cai.util.exceptions.BadRequest;
+import com.cloudera.cai.util.exceptions.NotFound;
 import java.time.Instant;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -131,6 +132,14 @@ public class RagFileService {
     } else {
       return originalFilename;
     }
+  }
+
+  public void deleteRagFile(Long id, Long dataSourceId) {
+    var document = ragFileRepository.getRagDocumentById(id);
+    if (!document.dataSourceId().equals(dataSourceId)) {
+      throw new NotFound("Document with id " + id + " not found for dataSourceId: " + dataSourceId);
+    }
+    ragFileRepository.deleteById(id);
   }
 
   // Nullables stuff down here

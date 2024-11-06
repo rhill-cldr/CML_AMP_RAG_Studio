@@ -20,7 +20,7 @@
  * with an authorized and properly licensed third party, you do not
  * have any rights to access nor to use this code.
  *
- * Absent a written agreement with Cloudera, Inc. (“Cloudera”) to the
+ * Absent a written agreement with Cloudera, Inc. ("Cloudera") to the
  * contrary, A) CLOUDERA PROVIDES THIS CODE TO YOU WITHOUT WARRANTIES OF ANY
  * KIND; (B) CLOUDERA DISCLAIMS ANY AND ALL EXPRESS AND IMPLIED
  * WARRANTIES WITH RESPECT TO THIS CODE, INCLUDING BUT NOT LIMITED TO
@@ -36,21 +36,66 @@
  * DATA.
  ******************************************************************************/
 
-package com.cloudera.cai.util.reconcilers;
+import { describe, it, expect } from "vitest";
+import { replacePlaceholderInChatHistory } from "src/api/chatApi.ts";
 
-import lombok.Builder;
-import lombok.Builder.Default;
-import lombok.Value;
+describe("replacePlaceholderInChatHistory", () => {
+  it("replaces placeholder with actual data when cachedData contains placeholder", () => {
+    const placeholder = {
+      id: "placeholder",
+      source_nodes: [],
+      rag_message: { user: "query", assistant: "" },
+      evaluations: [],
+      timestamp: Date.now(),
+    };
+    const actualData = {
+      id: "actual",
+      source_nodes: [],
+      rag_message: { user: "query", assistant: "response" },
+      evaluations: [],
+      timestamp: Date.now(),
+    };
+    const cachedData = [placeholder];
 
-@Value
-@Builder
-public class ReconcilerConfig {
-  @Default boolean isTestReconciler = false;
-  @Default long resyncPeriodSeconds = 60;
-  @Default int batchSize = 10;
-  @Default int workerCount = 10;
+    const result = replacePlaceholderInChatHistory(actualData, cachedData);
 
-  public static ReconcilerConfig createTestConfig() {
-    return ReconcilerConfig.builder().isTestReconciler(true).workerCount(1).build();
-  }
-}
+    expect(result).toEqual([actualData]);
+  });
+
+  it("returns actual data when cachedData is undefined", () => {
+    const actualData = {
+      id: "actual",
+      source_nodes: [],
+      rag_message: { user: "query", assistant: "response" },
+      evaluations: [],
+      timestamp: Date.now(),
+    };
+
+    const result = replacePlaceholderInChatHistory(actualData, undefined);
+
+    expect(result).toEqual([actualData]);
+  });
+
+  it("does not replace any data when cachedData does not contain placeholder", () => {
+    const actualData = {
+      id: "actual",
+      source_nodes: [],
+      rag_message: { user: "query", assistant: "response" },
+      evaluations: [],
+      timestamp: Date.now(),
+    };
+    const cachedData = [
+      {
+        id: "other",
+        source_nodes: [],
+        rag_message: { user: "query", assistant: "response" },
+        evaluations: [],
+        timestamp: Date.now(),
+      },
+    ];
+
+    const result = replacePlaceholderInChatHistory(actualData, cachedData);
+
+    expect(result).toEqual(cachedData);
+  });
+});

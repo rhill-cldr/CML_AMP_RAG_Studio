@@ -54,6 +54,7 @@ export interface UseMutationType<T> {
 
 export enum MutationKeys {
   "createRagDocuments" = "createRagDocuments",
+  "deleteRagDocument" = "deleteRagDocument",
   "chatMutation" = "chatMutation",
   "createDataSource" = "createDataSource",
   "updateDataSource" = "updateDataSource",

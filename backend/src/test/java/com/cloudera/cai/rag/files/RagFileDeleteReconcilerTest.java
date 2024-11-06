@@ -36,68 +36,59 @@
  * DATA.
  */
 
-package com.cloudera.cai.rag.sessions;
+package com.cloudera.cai.rag.files;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.awaitility.Awaitility.await;
+
+import com.cloudera.cai.rag.TestData;
 import com.cloudera.cai.rag.configuration.JdbiConfiguration;
+import com.cloudera.cai.rag.datasources.RagDataSourceRepository;
 import com.cloudera.cai.rag.external.RagBackendClient;
+import com.cloudera.cai.rag.external.RagBackendClient.TrackedDeleteDocumentRequest;
+import com.cloudera.cai.rag.external.RagBackendClient.TrackedRequest;
 import com.cloudera.cai.util.Tracker;
-import com.cloudera.cai.util.reconcilers.*;
+import com.cloudera.cai.util.exceptions.NotFound;
+import com.cloudera.cai.util.reconcilers.ReconcilerConfig;
 import io.opentelemetry.api.OpenTelemetry;
-import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
-import org.jdbi.v3.core.Jdbi;
-import org.springframework.stereotype.Component;
+import java.util.UUID;
+import org.junit.jupiter.api.Test;
 
-@Component
-@Slf4j
-public class DeleteSessionReconciler extends BaseReconciler<Long> {
-  private final Jdbi jdbi;
-  private final RagBackendClient ragBackendClient;
+class RagFileDeleteReconcilerTest {
+  @Test
+  void reconciler() throws Exception {
+    Tracker<TrackedRequest<?>> tracker = new Tracker<>();
+    RagFileDeleteReconciler reconciler = createTestReconciler(tracker);
 
-  public DeleteSessionReconciler(
-      Jdbi jdbi,
-      RagBackendClient ragBackendClient,
-      ReconcilerConfig reconcilerConfig,
-      OpenTelemetry openTelemetry) {
-    super(reconcilerConfig, openTelemetry);
-    this.jdbi = jdbi;
-    this.ragBackendClient = ragBackendClient;
+    RagFileRepository ragFileRepository = RagFileRepository.createNull();
+    var dataSourceId = TestData.createTestDataSource(RagDataSourceRepository.createNull());
+    String documentId = UUID.randomUUID().toString();
+    var id = TestData.createTestDocument(dataSourceId, documentId, ragFileRepository);
+
+    ragFileRepository.deleteById(id);
+    reconciler.resync();
+
+    await()
+        .untilAsserted(
+            () -> {
+              assertThat(tracker.getValues())
+                  .contains(
+                      new TrackedRequest<>(
+                          new TrackedDeleteDocumentRequest(dataSourceId, documentId)));
+              assertThatThrownBy(() -> ragFileRepository.getRagDocumentById(id))
+                  .isInstanceOf(NotFound.class);
+            });
   }
 
-  @Override
-  public void resync() {
-    log.info("Checking for sessions to delete");
-    jdbi.useHandle(
-        handle ->
-            handle
-                .createQuery("SELECT id FROM CHAT_SESSION WHERE deleted IS NOT NULL")
-                .mapTo(Long.class)
-                .forEach(this::submit));
-  }
-
-  @Override
-  public ReconcileResult reconcile(Set<Long> sessionIds) {
-    for (Long sessionId : sessionIds) {
-      log.info("telling the rag backend to delete session with id: {}", sessionId);
-      ragBackendClient.deleteSession(sessionId);
-      log.info("deleting session from the database: {}", sessionId);
-      jdbi.useTransaction(
-          handle -> {
-            handle.execute("DELETE FROM CHAT_SESSION WHERE ID = ?", sessionId);
-            handle.execute(
-                "DELETE FROM CHAT_SESSION_DATA_SOURCE WHERE CHAT_SESSION_ID = ?", sessionId);
-          });
-    }
-    return new ReconcileResult();
-  }
-
-  // nullables stuff below here
-  public static DeleteSessionReconciler createNull(
-      Tracker<RagBackendClient.TrackedRequest<?>> tracker) {
-    return new DeleteSessionReconciler(
-        JdbiConfiguration.createNull(),
-        RagBackendClient.createNull(tracker),
-        ReconcilerConfig.builder().isTestReconciler(true).build(),
-        OpenTelemetry.noop());
+  private static RagFileDeleteReconciler createTestReconciler(Tracker<TrackedRequest<?>> tracker) {
+    RagFileDeleteReconciler reconciler =
+        new RagFileDeleteReconciler(
+            ReconcilerConfig.createTestConfig(),
+            OpenTelemetry.noop(),
+            JdbiConfiguration.createNull(),
+            RagBackendClient.createNull(tracker));
+    reconciler.init();
+    return reconciler;
   }
 }

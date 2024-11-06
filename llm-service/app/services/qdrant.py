@@ -58,11 +58,10 @@ from llama_index.vector_stores.qdrant import QdrantVectorStore
 from pydantic import BaseModel
 from qdrant_client.http.models import CountResult
 
+from ..types import RagPredictConfiguration
 from .chat_store import RagContext
 from .llama_utils import completion_to_prompt, messages_to_prompt
 from .utils import get_last_segment
-
-from ..types import RagPredictConfiguration
 
 logger = logging.getLogger(__name__)
 
@@ -81,6 +80,7 @@ class RagIndexDocumentConfiguration(BaseModel):
     # TODO: Add more params
     chunk_size: int = 512  # this is llama-index's default
     chunk_overlap: int = 10  # percentage of tokens in a chunk (chunk_size)
+
 
 def upload(
     tmpdirname: str,
@@ -137,7 +137,7 @@ def check_data_source_exists(data_source_size: int) -> None:
 
 def size_of(data_source_id: int) -> int:
     """
-        If the collection does not exist, return -1
+    If the collection does not exist, return -1
     """
     client, _ = create_qdrant_clients()
     table_name = table_name_from(data_source_id)
@@ -160,6 +160,15 @@ def delete(data_source_id: int) -> None:
     table_name = table_name_from(data_source_id)
     if client.collection_exists(table_name):
         client.delete_collection(table_name)
+
+
+def delete_document(data_source_id: int, document_id: str) -> None:
+    vector_store = create_qdrant_vector_store(data_source_id)
+    index = VectorStoreIndex.from_vector_store(
+        vector_store=vector_store,
+        embed_model=embed_model,
+    )
+    index.delete_ref_doc(document_id)
 
 
 def create_qdrant_clients() -> tuple[

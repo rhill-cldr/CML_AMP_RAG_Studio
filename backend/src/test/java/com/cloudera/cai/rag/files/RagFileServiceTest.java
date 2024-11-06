@@ -88,6 +88,30 @@ class RagFileServiceTest {
   }
 
   @Test
+  void deleteRagFile() {
+    RagFileRepository ragFileRepository = RagFileRepository.createNull();
+    var dataSourceId = TestData.createTestDataSource(RagDataSourceRepository.createNull());
+    String documentId = UUID.randomUUID().toString();
+    var id = TestData.createTestDocument(dataSourceId, documentId, ragFileRepository);
+    RagFileService ragFileService = createRagFileService();
+    ragFileService.deleteRagFile(id, dataSourceId);
+    assertThat(ragFileService.getRagDocuments(dataSourceId)).extracting("id").doesNotContain(id);
+  }
+
+  @Test
+  void deleteRagFile_wrongDataSourceId() {
+    RagFileRepository ragFileRepository = RagFileRepository.createNull();
+    var dataSourceId = TestData.createTestDataSource(RagDataSourceRepository.createNull());
+    String documentId = UUID.randomUUID().toString();
+    var id = TestData.createTestDocument(dataSourceId, documentId, ragFileRepository);
+    RagFileService ragFileService = createRagFileService();
+    Long nonExistentDataSourceId = Long.MAX_VALUE;
+
+    assertThatThrownBy(() -> ragFileService.deleteRagFile(id, nonExistentDataSourceId))
+        .isInstanceOf(NotFound.class);
+  }
+
+  @Test
   void saveRagFile_trailingPeriod() {
     String originalFilename = "real-filename.";
     String name = "test-file";
@@ -155,11 +179,18 @@ class RagFileServiceTest {
     assertThat(ragDocuments).isNotNull();
   }
 
-  private RagFileService createRagFileService(String documentId, Tracker<UploadRequest> tracker) {
+  private RagFileService createRagFileService() {
+    return createRagFileService(null, null);
+  }
+
+  private RagFileService createRagFileService(
+      String staticDocumentId, Tracker<UploadRequest> tracker) {
     return new RagFileService(
-        IdGenerator.createNull(documentId),
+        staticDocumentId == null
+            ? IdGenerator.createNull()
+            : IdGenerator.createNull(staticDocumentId),
         RagFileRepository.createNull(),
-        RagFileUploader.createNull(tracker),
+        tracker == null ? RagFileUploader.createNull() : RagFileUploader.createNull(tracker),
         RagFileIndexReconciler.createNull(),
         "prefix",
         dataSourceRepository);

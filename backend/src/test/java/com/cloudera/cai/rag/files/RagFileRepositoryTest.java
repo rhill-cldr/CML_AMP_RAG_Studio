@@ -36,57 +36,45 @@
  * DATA.
  */
 
-package com.cloudera.cai.rag;
+package com.cloudera.cai.rag.files;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.cloudera.cai.rag.TestData;
+import com.cloudera.cai.rag.configuration.JdbiConfiguration;
 import com.cloudera.cai.rag.datasources.RagDataSourceRepository;
-import com.cloudera.cai.rag.files.RagFileRepository;
-import java.time.Instant;
-import java.util.List;
+import com.cloudera.cai.util.exceptions.NotFound;
+import java.util.UUID;
+import org.junit.jupiter.api.Test;
 
-public class TestData {
-  public static Types.Session createTestSessionInstance(String sessionName) {
-    return new Types.Session(null, sessionName, List.of(1L, 2L, 3L), null, null, null, null, null);
+class RagFileRepositoryTest {
+  @Test
+  void delete() {
+    RagFileRepository ragFileRepository = new RagFileRepository(JdbiConfiguration.createNull());
+    var dataSourceId = TestData.createTestDataSource(RagDataSourceRepository.createNull());
+    String documentId = UUID.randomUUID().toString();
+    var id = TestData.createTestDocument(dataSourceId, documentId, ragFileRepository);
+
+    ragFileRepository.deleteById(id);
+    assertThat(ragFileRepository.getRagDocuments(dataSourceId)).extracting("id").doesNotContain(id);
+    assertThatThrownBy(() -> ragFileRepository.findDocumentByDocumentId(documentId))
+        .isInstanceOf(NotFound.class);
   }
 
-  public static Types.RagDataSource createTestDataSourceInstance(
-      String name,
-      Integer chunkSize,
-      int chunkOverlapPercent,
-      Types.ConnectionType connectionType) {
-    return new Types.RagDataSource(
-        null,
-        name,
-        chunkSize,
-        chunkOverlapPercent,
-        null,
-        null,
-        null,
-        null,
-        connectionType,
-        null,
-        null);
+  @Test
+  void getById() {
+    RagFileRepository ragFileRepository = new RagFileRepository(JdbiConfiguration.createNull());
+    var dataSourceId = TestData.createTestDataSource(RagDataSourceRepository.createNull());
+    String documentId = UUID.randomUUID().toString();
+    var id = TestData.createTestDocument(dataSourceId, documentId, ragFileRepository);
+    assertThat(ragFileRepository.getRagDocumentById(id)).isNotNull().extracting("id").isEqualTo(id);
   }
 
-  public static long createTestDataSource(RagDataSourceRepository dataSourceRepository) {
-    return dataSourceRepository.createRagDataSource(
-        TestData.createTestDataSourceInstance("test", 3, 0, Types.ConnectionType.API)
-            .withCreatedById("test")
-            .withUpdatedById("test"));
-  }
-
-  public static Long createTestDocument(
-      long dataSourceId, String documentId, RagFileRepository ragFileRepository) {
-    Types.RagDocument ragDocument =
-        Types.RagDocument.builder()
-            .dataSourceId(dataSourceId)
-            .documentId(documentId)
-            .filename("doesn't matter")
-            .s3Path("doesn't matter")
-            .timeCreated(Instant.now())
-            .timeUpdated(Instant.now())
-            .createdById("doesn't matter")
-            .updatedById("doesn't matter")
-            .build();
-    return ragFileRepository.saveDocumentMetadata(ragDocument);
+  @Test
+  void getById_notFound() {
+    RagFileRepository ragFileRepository = new RagFileRepository(JdbiConfiguration.createNull());
+    assertThatThrownBy(() -> ragFileRepository.getRagDocumentById(-1L))
+        .isInstanceOf(NotFound.class);
   }
 }

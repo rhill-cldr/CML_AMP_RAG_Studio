@@ -71,6 +71,8 @@ dependencies {
     implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    // swagger UI available at http://localhost:8080/swagger-ui/index.html
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 
     implementation("software.amazon.awssdk:s3")
     implementation("software.amazon.awssdk:sts")

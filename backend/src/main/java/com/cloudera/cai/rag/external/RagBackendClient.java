@@ -86,6 +86,10 @@ public class RagBackendClient {
     client.delete(indexUrl + "/data_sources/" + dataSourceId);
   }
 
+  public void deleteDocument(long dataSourceId, String documentId) {
+    client.delete(indexUrl + "/data_sources/" + dataSourceId + "/documents/" + documentId);
+  }
+
   public void deleteSession(Long sessionId) {
     client.delete(indexUrl + "/sessions/" + sessionId);
   }
@@ -140,6 +144,13 @@ public class RagBackendClient {
         super.deleteSession(sessionId);
         tracker.track(new TrackedRequest<>(new TrackedDeleteSessionRequest(sessionId)));
       }
+
+      @Override
+      public void deleteDocument(long dataSourceId, String documentId) {
+        super.deleteDocument(dataSourceId, documentId);
+        tracker.track(
+            new TrackedRequest<>(new TrackedDeleteDocumentRequest(dataSourceId, documentId)));
+      }
     };
   }
 
@@ -151,4 +162,6 @@ public class RagBackendClient {
   public record TrackedDeleteDataSourceRequest(long dataSourceId) {}
 
   public record TrackedRequest<T>(T detail) {}
+
+  public record TrackedDeleteDocumentRequest(long dataSourceId, String documentId) {}
 }

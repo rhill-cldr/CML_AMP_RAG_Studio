@@ -46,6 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.reflect.ConstructorMapper;
 import org.jdbi.v3.core.statement.Query;
+import org.jdbi.v3.core.statement.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -81,10 +82,11 @@ public class RagFileRepository {
               """
                   SELECT * FROM rag_data_source_document
                   WHERE document_id = :documentId
+                  AND deleted is null OR deleted = :deleted
                   """;
           handle.registerRowMapper(ConstructorMapper.factory(RagDocument.class));
           try (Query query = handle.createQuery(sql)) {
-            query.bind("documentId", documentId);
+            query.bind("documentId", documentId).bind("deleted", false);
             return query
                 .mapTo(RagDocument.class)
                 .findOne()
@@ -100,10 +102,15 @@ public class RagFileRepository {
               """
               SELECT * FROM rag_data_source_document
                WHERE data_source_id = :dataSourceId
+                AND deleted is null OR deleted = :deleted
               """;
           handle.registerRowMapper(ConstructorMapper.factory(RagDocument.class));
           try (Query query = handle.createQuery(sql)) {
-            return query.bind("dataSourceId", dataSourceId).mapTo(RagDocument.class).list();
+            return query
+                .bind("dataSourceId", dataSourceId)
+                .bind("deleted", false)
+                .mapTo(RagDocument.class)
+                .list();
           }
         });
   }
@@ -113,5 +120,30 @@ public class RagFileRepository {
   public static RagFileRepository createNull() {
     // the db configuration will use in-memory db based on env vars.
     return new RagFileRepository(new JdbiConfiguration().jdbi());
+  }
+
+  public void deleteById(Long id) {
+    jdbi.useTransaction(
+        handle -> {
+          String sql = "UPDATE rag_data_source_document SET deleted = :deleted WHERE id = :id";
+          try (Update update = handle.createUpdate(sql)) {
+            update.bind("deleted", true).bind("id", id).execute();
+          }
+        });
+  }
+
+  public RagDocument getRagDocumentById(Long id) {
+    return jdbi.withHandle(
+        handle -> {
+          handle.registerRowMapper(ConstructorMapper.factory(RagDocument.class));
+          String sql = "SELECT * FROM rag_data_source_document WHERE id = :id";
+          try (Query query = handle.createQuery(sql)) {
+            return query
+                .bind("id", id)
+                .mapTo(RagDocument.class)
+                .findFirst()
+                .orElseThrow(() -> new NotFound("no document found with id: " + id));
+          }
+        });
   }
 }

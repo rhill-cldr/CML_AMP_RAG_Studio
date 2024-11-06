@@ -43,6 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.cloudera.cai.rag.Types.RagDocument;
 import com.cloudera.cai.rag.external.RagBackendClient.IndexConfiguration;
 import com.cloudera.cai.util.SimpleHttpClient;
+import com.cloudera.cai.util.SimpleHttpClient.TrackedHttpRequest;
 import com.cloudera.cai.util.Tracker;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -51,18 +52,18 @@ import org.springframework.http.HttpMethod;
 class RagBackendClientTest {
   @Test
   void indexFile() {
-    Tracker<SimpleHttpClient.TrackedHttpRequest<?>> tracker = new Tracker<>();
+    Tracker<TrackedHttpRequest<?>> tracker = new Tracker<>();
     RagBackendClient client = new RagBackendClient(SimpleHttpClient.createNull(tracker));
     IndexConfiguration indexConfiguration = new IndexConfiguration(123, 2);
     RagDocument document = indexRequest("s3Path", 1234L);
 
     client.indexFile(document, "bucketName", indexConfiguration);
 
-    List<SimpleHttpClient.TrackedHttpRequest<?>> values = tracker.getValues();
+    List<TrackedHttpRequest<?>> values = tracker.getValues();
     assertThat(values)
         .hasSize(1)
         .contains(
-            new SimpleHttpClient.TrackedHttpRequest<>(
+            new TrackedHttpRequest<>(
                 HttpMethod.POST,
                 "http://rag-backend:8000/index/download-and-index",
                 new RagBackendClient.IndexRequest(
@@ -71,17 +72,17 @@ class RagBackendClientTest {
 
   @Test
   void createSummary() {
-    Tracker<SimpleHttpClient.TrackedHttpRequest<?>> tracker = new Tracker<>();
+    Tracker<TrackedHttpRequest<?>> tracker = new Tracker<>();
     RagBackendClient client = new RagBackendClient(SimpleHttpClient.createNull(tracker));
     RagDocument document = indexRequest("s3Path", 1234L);
 
     client.createSummary(document, "bucketName");
 
-    List<SimpleHttpClient.TrackedHttpRequest<?>> values = tracker.getValues();
+    List<TrackedHttpRequest<?>> values = tracker.getValues();
     assertThat(values)
         .hasSize(1)
         .contains(
-            new SimpleHttpClient.TrackedHttpRequest<>(
+            new TrackedHttpRequest<>(
                 HttpMethod.POST,
                 "http://rag-backend:8000/index/data_sources/1234/summarize-document",
                 new RagBackendClient.SummaryRequest("bucketName", "s3Path")));
@@ -89,27 +90,42 @@ class RagBackendClientTest {
 
   @Test
   void deleteDataSource() {
-    Tracker<SimpleHttpClient.TrackedHttpRequest<?>> tracker = new Tracker<>();
+    Tracker<TrackedHttpRequest<?>> tracker = new Tracker<>();
     RagBackendClient client = new RagBackendClient(SimpleHttpClient.createNull(tracker));
     client.deleteDataSource(1234L);
-    List<SimpleHttpClient.TrackedHttpRequest<?>> values = tracker.getValues();
+    List<TrackedHttpRequest<?>> values = tracker.getValues();
     assertThat(values)
         .hasSize(1)
         .contains(
-            new SimpleHttpClient.TrackedHttpRequest<>(
+            new TrackedHttpRequest<>(
                 HttpMethod.DELETE, "http://rag-backend:8000/index/data_sources/1234", null));
   }
 
   @Test
-  void deleteSession() {
-    Tracker<SimpleHttpClient.TrackedHttpRequest<?>> tracker = new Tracker<>();
+  void deleteDocument() {
+    Tracker<TrackedHttpRequest<?>> tracker = new Tracker<>();
     RagBackendClient client = new RagBackendClient(SimpleHttpClient.createNull(tracker));
-    client.deleteSession(1234L);
-    List<SimpleHttpClient.TrackedHttpRequest<?>> values = tracker.getValues();
+    client.deleteDocument(1234L, "documentId");
+    List<TrackedHttpRequest<?>> values = tracker.getValues();
     assertThat(values)
         .hasSize(1)
         .contains(
-            new SimpleHttpClient.TrackedHttpRequest<>(
+            new TrackedHttpRequest<>(
+                HttpMethod.DELETE,
+                "http://rag-backend:8000/index/data_sources/1234/documents/documentId",
+                null));
+  }
+
+  @Test
+  void deleteSession() {
+    Tracker<TrackedHttpRequest<?>> tracker = new Tracker<>();
+    RagBackendClient client = new RagBackendClient(SimpleHttpClient.createNull(tracker));
+    client.deleteSession(1234L);
+    List<TrackedHttpRequest<?>> values = tracker.getValues();
+    assertThat(values)
+        .hasSize(1)
+        .contains(
+            new TrackedHttpRequest<>(
                 HttpMethod.DELETE, "http://rag-backend:8000/index/sessions/1234", null));
   }
 

@@ -20,7 +20,7 @@
  * with an authorized and properly licensed third party, you do not
  * have any rights to access nor to use this code.
  *
- * Absent a written agreement with Cloudera, Inc. ("Cloudera") to the
+ * Absent a written agreement with Cloudera, Inc. (“Cloudera”) to the
  * contrary, A) CLOUDERA PROVIDES THIS CODE TO YOU WITHOUT WARRANTIES OF ANY
  * KIND; (B) CLOUDERA DISCLAIMS ANY AND ALL EXPRESS AND IMPLIED
  * WARRANTIES WITH RESPECT TO THIS CODE, INCLUDING BUT NOT LIMITED TO
@@ -36,57 +36,10 @@
  * DATA.
  */
 
-package com.cloudera.cai.rag;
+SET MODE MYSQL;
 
-import com.cloudera.cai.rag.datasources.RagDataSourceRepository;
-import com.cloudera.cai.rag.files.RagFileRepository;
-import java.time.Instant;
-import java.util.List;
+BEGIN;
 
-public class TestData {
-  public static Types.Session createTestSessionInstance(String sessionName) {
-    return new Types.Session(null, sessionName, List.of(1L, 2L, 3L), null, null, null, null, null);
-  }
+ALTER TABLE RAG_DATA_SOURCE_DOCUMENT DROP COLUMN deleted;
 
-  public static Types.RagDataSource createTestDataSourceInstance(
-      String name,
-      Integer chunkSize,
-      int chunkOverlapPercent,
-      Types.ConnectionType connectionType) {
-    return new Types.RagDataSource(
-        null,
-        name,
-        chunkSize,
-        chunkOverlapPercent,
-        null,
-        null,
-        null,
-        null,
-        connectionType,
-        null,
-        null);
-  }
-
-  public static long createTestDataSource(RagDataSourceRepository dataSourceRepository) {
-    return dataSourceRepository.createRagDataSource(
-        TestData.createTestDataSourceInstance("test", 3, 0, Types.ConnectionType.API)
-            .withCreatedById("test")
-            .withUpdatedById("test"));
-  }
-
-  public static Long createTestDocument(
-      long dataSourceId, String documentId, RagFileRepository ragFileRepository) {
-    Types.RagDocument ragDocument =
-        Types.RagDocument.builder()
-            .dataSourceId(dataSourceId)
-            .documentId(documentId)
-            .filename("doesn't matter")
-            .s3Path("doesn't matter")
-            .timeCreated(Instant.now())
-            .timeUpdated(Instant.now())
-            .createdById("doesn't matter")
-            .updatedById("doesn't matter")
-            .build();
-    return ragFileRepository.saveDocumentMetadata(ragDocument);
-  }
-}
+COMMIT;

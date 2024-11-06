@@ -35,9 +35,9 @@
 #  BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
 #  DATA.
 #
+import os
 import shutil
 import tempfile
-import os
 from typing import cast
 
 from llama_index.core import (
@@ -51,9 +51,9 @@ from llama_index.core.readers import SimpleDirectoryReader
 from llama_index.embeddings.bedrock import BedrockEmbedding
 from llama_index.llms.bedrock import Bedrock
 from llama_index.vector_stores.qdrant import QdrantVectorStore
-from .qdrant import create_qdrant_clients
 
 from .llama_utils import completion_to_prompt, messages_to_prompt
+from .qdrant import create_qdrant_clients
 from .s3 import download
 from .utils import get_last_segment
 
@@ -147,7 +147,7 @@ def summarize_data_source(data_source_id: int) -> str:
     doc_ids = doc_summary_index.index_struct.doc_id_to_summary_id.keys()
     summaries = map(doc_summary_index.get_document_summary, doc_ids)
 
-    prompt = "I have summarized a list of documents that may or may not be related to each other. Please provide an overview of the document corpus as an executive summary.  Do not start with \"Here is...\".  The summary should be concise and not be frivolous"
+    prompt = 'I have summarized a list of documents that may or may not be related to each other. Please provide an overview of the document corpus as an executive summary.  Do not start with "Here is...".  The summary should be concise and not be frivolous'
     response = Settings.llm.complete(prompt + "\n".join(summaries))
     return response.text
 
@@ -159,11 +159,13 @@ def make_storage_context(data_source_id):
     )
     return storage_context
 
+
 def create_qdrant_vector_store(data_source_id: int) -> QdrantVectorStore:
     vector_store = QdrantVectorStore(
         table_name_from(data_source_id), *create_qdrant_clients()
     )
     return vector_store
+
 
 def table_name_from(data_source_id: int):
     return f"summary_index_{data_source_id}"
@@ -174,5 +176,14 @@ def delete_data_source(data_source_id):
     index = index_dir(data_source_id)
     if os.path.exists(index):
         shutil.rmtree(index)
-    [qdrant_client, _]  = create_qdrant_clients()
+    [qdrant_client, _] = create_qdrant_clients()
     qdrant_client.delete_collection(table_name_from(data_source_id))
+
+
+def delete_document(data_source_id, doc_id):
+    storage_context = make_storage_context(data_source_id)
+    doc_summary_index = load_document_summary_index(storage_context)
+    if doc_id not in doc_summary_index.index_struct.doc_id_to_summary_id:
+        return
+    doc_summary_index.delete(doc_id)
+    doc_summary_index.storage_context.persist(persist_dir=index_dir(data_source_id))

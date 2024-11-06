@@ -81,4 +81,9 @@ public class RagFileController {
     log.debug("retrieving document metadata for dataSource id: {}", dataSourceId);
     return ragFileService.getRagDocuments(dataSourceId);
   }
+
+  @DeleteMapping(value = "/dataSources/{dataSourceId}/files/{id}")
+  public void deleteRagFile(@PathVariable Long id, @PathVariable Long dataSourceId) {
+    ragFileService.deleteRagFile(id, dataSourceId);
+  }
 }

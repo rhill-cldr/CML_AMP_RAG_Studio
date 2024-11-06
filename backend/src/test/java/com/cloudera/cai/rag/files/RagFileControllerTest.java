@@ -43,6 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.awaitility.Awaitility.await;
 
+import com.cloudera.cai.rag.TestData;
 import com.cloudera.cai.rag.Types;
 import com.cloudera.cai.rag.Types.RagDocument;
 import com.cloudera.cai.rag.datasources.RagDataSourceRepository;
@@ -51,6 +52,7 @@ import com.cloudera.cai.rag.util.UserTokenCookieDecoderTest;
 import com.cloudera.cai.util.exceptions.BadRequest;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockCookie;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -151,5 +153,17 @@ class RagFileControllerTest {
     List<RagDocument> ragDocuments =
         ragFileController.getRagDocuments(dataSourceId).stream().toList();
     assertThat(ragDocuments).isEmpty();
+  }
+
+  @Test
+  void delete() {
+    RagFileRepository ragFileRepository = RagFileRepository.createNull();
+    var dataSourceId = TestData.createTestDataSource(RagDataSourceRepository.createNull());
+    String documentId = UUID.randomUUID().toString();
+    var id = TestData.createTestDocument(dataSourceId, documentId, ragFileRepository);
+
+    RagFileController ragFileController = new RagFileController(RagFileService.createNull());
+    ragFileController.deleteRagFile(id, dataSourceId);
+    assertThat(ragFileController.getRagDocuments(dataSourceId)).extracting("id").doesNotContain(id);
   }
 }
