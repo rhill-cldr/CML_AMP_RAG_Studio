@@ -78,6 +78,8 @@ export enum QueryKeys {
   "getAmpUpdateStatus" = "getAmpUpdateStatus",
   "getDataSourceSummary" = "getDataSourceSummary",
   "getAmpUpdateJobStatus" = "getAmpUpdateJobStatus",
+  "getLlmModels" = "getLlmModels",
+  "getEmbeddingModels" = "getEmbeddingModels",
 }
 
 export const commonHeaders = {

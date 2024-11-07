@@ -50,6 +50,7 @@ from ...services.chat_store import RagContext, RagStudioChatMessage
 from . import data_source
 from . import sessions
 from . import amp_update
+from . import models
 
 logger = logging.getLogger(__name__)
 
@@ -61,6 +62,7 @@ router = APIRouter(
 router.include_router(data_source.router)
 router.include_router(sessions.router)
 router.include_router(amp_update.router)
+router.include_router(models.router)
 
 
 class RagIndexDocumentRequest(BaseModel):
@@ -84,7 +86,7 @@ def download_and_index(
     with tempfile.TemporaryDirectory() as tmpdirname:
         logger.debug("created temporary directory %s", tmpdirname)
         s3.download(tmpdirname, request.s3_bucket_name, request.s3_document_key)
-        qdrant.upload(
+        qdrant.download_and_index(
             tmpdirname,
             request.data_source_id,
             request.configuration,

@@ -46,12 +46,13 @@ from llama_index.core.vector_stores import VectorStoreQuery
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 from qdrant_client import qdrant_client
 
+from app.services.models import get_embedding_model
 from app.services.qdrant import table_name_from, create_qdrant_clients
 
 
 @pytest.fixture
 def data_source_id() -> int:
-    return 1
+    return -1
 
 
 @pytest.fixture
@@ -73,7 +74,7 @@ def get_vector_store_index(data_source_id):
     vector_store = QdrantVectorStore(
         table_name_from(data_source_id), *create_qdrant_clients()
     )
-    index = VectorStoreIndex.from_vector_store(vector_store)
+    index = VectorStoreIndex.from_vector_store(vector_store, embed_model=get_embedding_model())
     return index
 
 class TestCreateDocument:
@@ -90,6 +91,7 @@ class TestCreateDocument:
             "/index/download-and-index",
             json=index_document_request_body,
         )
+        print(response.json())
         assert response.status_code == 200
         assert document_id is not None
         index = get_vector_store_index(data_source_id)

@@ -20,7 +20,7 @@
  * with an authorized and properly licensed third party, you do not
  * have any rights to access nor to use this code.
  *
- * Absent a written agreement with Cloudera, Inc. (“Cloudera”) to the
+ * Absent a written agreement with Cloudera, Inc. ("Cloudera") to the
  * contrary, A) CLOUDERA PROVIDES THIS CODE TO YOU WITHOUT WARRANTIES OF ANY
  * KIND; (B) CLOUDERA DISCLAIMS ANY AND ALL EXPRESS AND IMPLIED
  * WARRANTIES WITH RESPECT TO THIS CODE, INCLUDING BUT NOT LIMITED TO
@@ -35,23 +35,36 @@
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
  ******************************************************************************/
-export enum ResponseSynthesizerOptions {
-  "Llama31-8bInstructV1" = "meta.llama3-1-8b-instruct-v1:0",
-  "Llama31-70bInstructV1" = "meta.llama3-1-70b-instruct-v1:0",
-  "Llama31-405bInstructV1" = "meta.llama3-1-405b-instruct-v1:0",
+import { useQuery } from "@tanstack/react-query";
+import { getRequest, llmServicePath, QueryKeys } from "src/api/utils.ts";
+
+export interface Model {
+  name: string;
+  model_id: string;
 }
 
-export const responseSynthesizerModelOptions = [
-  {
-    value: ResponseSynthesizerOptions["Llama31-8bInstructV1"],
-    label: "Llama3.1 8B Instruct v1",
-  },
-  {
-    value: ResponseSynthesizerOptions["Llama31-70bInstructV1"],
-    label: "Llama3.1 70B Instruct v1",
-  },
-  {
-    value: ResponseSynthesizerOptions["Llama31-405bInstructV1"],
-    label: "Llama3.1 405B Instruct v1",
-  },
-];
+export const useGetLlmModels = () => {
+  return useQuery({
+    queryKey: [QueryKeys.getLlmModels],
+    queryFn: async () => {
+      return await getLlmModels();
+    },
+  });
+};
+
+const getLlmModels = async (): Promise<Model[]> => {
+  return await getRequest(`${llmServicePath}/index/models/llm`);
+};
+
+export const useGetEmbeddingModels = () => {
+  return useQuery({
+    queryKey: [QueryKeys.getEmbeddingModels],
+    queryFn: async () => {
+      return await getEmbeddingModels();
+    },
+  });
+};
+
+const getEmbeddingModels = async (): Promise<Model[]> => {
+  return await getRequest(`${llmServicePath}/index/models/embeddings`);
+};

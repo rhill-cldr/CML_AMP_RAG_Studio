@@ -39,6 +39,7 @@ import os
 import shutil
 import tempfile
 from typing import cast
+from .models import get_embedding_model, get_llm
 
 from llama_index.core import (
     DocumentSummaryIndex,
@@ -48,8 +49,6 @@ from llama_index.core import (
 )
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.readers import SimpleDirectoryReader
-from llama_index.embeddings.bedrock import BedrockEmbedding
-from llama_index.llms.bedrock import Bedrock
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 
 from .llama_utils import completion_to_prompt, messages_to_prompt
@@ -57,17 +56,6 @@ from .qdrant import create_qdrant_clients
 from .s3 import download
 from .utils import get_last_segment
 from ..config import settings
-
-## todo: move to somewhere better; these are defaults to use when none are explicitly provided
-Settings.llm = Bedrock(
-    model="meta.llama3-8b-instruct-v1:0",
-    context_size=128000,
-    messages_to_prompt=messages_to_prompt,
-    completion_to_prompt=completion_to_prompt,
-)
-
-Settings.embed_model = BedrockEmbedding(model_name="cohere.embed-english-v3")
-Settings.splitter = SentenceSplitter(chunk_size=1024)
 
 
 SUMMARY_PROMPT = 'Summarize the document into a single sentence. If an adequate summary is not possible, please return "No summary available.".'
@@ -102,6 +90,11 @@ def generate_summary(
     s3_bucket_name: str,
     s3_document_key: str,
 ) -> str:
+    ## todo: move to somewhere better; these are defaults to use when none are explicitly provided
+    Settings.llm = get_llm(messages_to_prompt, completion_to_prompt, "meta.llama3-8b-instruct-v1:0")
+    Settings.embed_model = get_embedding_model()
+    Settings.splitter = SentenceSplitter(chunk_size=1024)
+
     """Generate, persist, and return a summary for `s3_document_key`."""
     with tempfile.TemporaryDirectory() as tmpdirname:
         # load document(s)

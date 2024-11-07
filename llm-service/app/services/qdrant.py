@@ -35,7 +35,6 @@
 #  BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
 #  DATA.
 # ##############################################################################
-
 import logging
 import os
 
@@ -47,13 +46,12 @@ from llama_index.core.chat_engine import CondenseQuestionChatEngine
 from llama_index.core.chat_engine.types import AgentChatResponse
 from llama_index.core.indices import VectorStoreIndex
 from llama_index.core.indices.vector_store import VectorIndexRetriever
+from llama_index.core.llms.chatml_utils import completion_to_prompt
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.readers import SimpleDirectoryReader
 from llama_index.core.response_synthesizers import get_response_synthesizer
 from llama_index.core.storage import StorageContext
-from llama_index.embeddings.bedrock import BedrockEmbedding
-from llama_index.llms.bedrock import Bedrock
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 from pydantic import BaseModel
 from qdrant_client.http.models import CountResult
@@ -61,13 +59,9 @@ from qdrant_client.http.models import CountResult
 from ..rag_types import RagPredictConfiguration
 from .chat_store import RagContext
 from .llama_utils import completion_to_prompt, messages_to_prompt
+from .models import get_llm, get_embedding_model
 from .utils import get_last_segment
-
 logger = logging.getLogger(__name__)
-
-# TODO: Embed Model Options - Refactor to config
-embed_model = BedrockEmbedding(model_name="cohere.embed-english-v3")
-EMBED_DIM = 1024
 
 qdrant_host = os.environ.get("QDRANT_HOST", "localhost")
 
@@ -82,11 +76,11 @@ class RagIndexDocumentConfiguration(BaseModel):
     chunk_overlap: int = 10  # percentage of tokens in a chunk (chunk_size)
 
 
-def upload(
-    tmpdirname: str,
-    data_source_id: int,
-    configuration: RagIndexDocumentConfiguration,
-    s3_document_key: str,
+def download_and_index(
+        tmpdirname: str,
+        data_source_id: int,
+        configuration: RagIndexDocumentConfiguration,
+        s3_document_key: str,
 ):
     try:
         documents = SimpleDirectoryReader(tmpdirname).load_data()
@@ -118,7 +112,7 @@ def upload(
     VectorStoreIndex.from_documents(
         documents,
         storage_context=storage_context,
-        embed_model=embed_model,
+        embed_model=get_embedding_model(),
         show_progress=False,
         transformations=[
             SentenceSplitter(
@@ -166,7 +160,7 @@ def delete_document(data_source_id: int, document_id: str) -> None:
     vector_store = create_qdrant_vector_store(data_source_id)
     index = VectorStoreIndex.from_vector_store(
         vector_store=vector_store,
-        embed_model=embed_model,
+        embed_model=get_embedding_model(),
     )
     index.delete_ref_doc(document_id)
 
@@ -181,30 +175,27 @@ def create_qdrant_clients() -> tuple[
 
 
 def query(
-    data_source_id: int,
-    query_str: str,
-    configuration: RagPredictConfiguration,
-    chat_history: list[RagContext],
+        data_source_id: int,
+        query_str: str,
+        configuration: RagPredictConfiguration,
+        chat_history: list[RagContext],
 ) -> AgentChatResponse:
     vector_store = create_qdrant_vector_store(data_source_id)
+    embedding_model = get_embedding_model()
     index = VectorStoreIndex.from_vector_store(
         vector_store=vector_store,
-        embed_model=embed_model,
+        embed_model=embedding_model,
     )
     logger.info("fetched Qdrant index")
 
     retriever = VectorIndexRetriever(
         index=index,
         similarity_top_k=configuration.top_k,
-        embed_model=embed_model,
+        embed_model=embedding_model, # is this needed, really, if it's in the index?
     )
-    # TODO: factor out LLM and chat engine into a separate function and create span
-    llm = Bedrock(
-        model=configuration.model_name,
-        context_size=128000,
-        messages_to_prompt=messages_to_prompt,
-        completion_to_prompt=completion_to_prompt,
-    )
+    # TODO: factor out LLM and chat engine into a separate function
+    llm = get_llm(messages_to_prompt=messages_to_prompt, completion_to_prompt=completion_to_prompt,
+                  model_name=configuration.model_name)
 
     response_synthesizer = get_response_synthesizer(llm=llm)
     query_engine = RetrieverQueryEngine(
