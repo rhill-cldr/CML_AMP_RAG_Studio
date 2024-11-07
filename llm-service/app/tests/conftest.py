@@ -36,19 +36,90 @@
 #  DATA.
 # ##############################################################################
 
+import os
+import pathlib
+import uuid
 from collections.abc import Iterator
 
+import boto3
 import pytest
-from app.main import app  # pylint: disable=import-error,no-name-in-module
 from fastapi.testclient import TestClient
+from moto import mock_aws
+
+from app.main import app
 
 
 @pytest.fixture
-def client() -> Iterator[TestClient]:
+def aws_region() -> str:
+    return os.environ.get("AWS_DEFAULT_REGION", "us-west-2")
+
+
+@pytest.fixture
+def s3(
+    monkeypatch: pytest.MonkeyPatch,
+    aws_region: str,
+) -> Iterator["s3.ServiceResource"]:
+    """Mock all S3 interactions."""
+    monkeypatch.setenv("AWS_DEFAULT_REGION", aws_region)
+
+    config = {
+        "core": {
+            "mock_credentials": False,
+            "passthrough": {
+                "urls": [
+                    rf"https://bedrock-runtime\.{aws_region}\.amazonaws\.com/model/.*/invoke",
+                ],
+            },
+        }
+    }
+
+    with mock_aws(config=config):
+        yield boto3.resource("s3")
+
+
+@pytest.fixture
+def document_id() -> str:
+    return str(uuid.uuid4())
+
+
+@pytest.fixture
+def s3_object(
+    s3: "s3.ServiceResource", aws_region: str, document_id: str
+) -> "s3.Object":
+    """Put and return a mocked S3 object"""
+    bucket_name = "test_bucket"
+    key = "test/" + document_id
+
+    bucket = s3.Bucket(bucket_name)
+    bucket.create(CreateBucketConfiguration={"LocationConstraint": aws_region})
+    return bucket.put_object(
+        Key=key,
+        # TODO: fixturize file
+        Body=b"test",
+        Metadata={"originalfilename": "test.txt"},
+    )
+
+
+@pytest.fixture
+def client(
+    monkeypatch: pytest.MonkeyPatch,
+    s3: "s3.ServiceResource",
+    tmp_path: pathlib.Path,
+) -> Iterator[TestClient]:
     """Return a test client for making calls to the service.
 
     https://www.starlette.io/testclient/
 
     """
-    with TestClient(app) as client:
-        yield client
+    databases_dir = str(tmp_path / "databases")
+    monkeypatch.setenv("RAG_DATABASES_DIR", databases_dir)
+
+    # with monkeypatch.context() as m:
+    #     # service isn't pip-installable, so we have to import it
+    #     m.syspath_prepend(
+    #         os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."),
+    #     )
+    #     from app.main import app
+
+    with TestClient(app) as test_client:
+        yield test_client

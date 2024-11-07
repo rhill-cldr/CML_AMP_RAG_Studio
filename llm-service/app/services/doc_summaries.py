@@ -56,6 +56,7 @@ from .llama_utils import completion_to_prompt, messages_to_prompt
 from .qdrant import create_qdrant_clients
 from .s3 import download
 from .utils import get_last_segment
+from ..config import settings
 
 ## todo: move to somewhere better; these are defaults to use when none are explicitly provided
 Settings.llm = Bedrock(
@@ -74,7 +75,7 @@ SUMMARY_PROMPT = 'Summarize the document into a single sentence. If an adequate 
 
 def index_dir(data_source_id: int) -> str:
     """Return the directory name to be used for a data source's summary index."""
-    return f"../databases/doc_summary_index_{data_source_id}"
+    return os.path.join(settings.rag_databases_dir, f"doc_summary_index_{data_source_id}")
 
 
 def read_summary(data_source_id: int, document_id: str) -> str:
@@ -181,6 +182,9 @@ def delete_data_source(data_source_id):
 
 
 def delete_document(data_source_id, doc_id):
+    index = index_dir(data_source_id)
+    if not os.path.exists(index):
+        return
     storage_context = make_storage_context(data_source_id)
     doc_summary_index = load_document_summary_index(storage_context)
     if doc_id not in doc_summary_index.index_struct.doc_id_to_summary_id:

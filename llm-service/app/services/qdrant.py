@@ -58,7 +58,7 @@ from llama_index.vector_stores.qdrant import QdrantVectorStore
 from pydantic import BaseModel
 from qdrant_client.http.models import CountResult
 
-from ..types import RagPredictConfiguration
+from ..rag_types import RagPredictConfiguration
 from .chat_store import RagContext
 from .llama_utils import completion_to_prompt, messages_to_prompt
 from .utils import get_last_segment

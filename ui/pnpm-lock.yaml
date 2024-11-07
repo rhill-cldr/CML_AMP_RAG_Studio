@@ -23,6 +23,9 @@ importers:
       antd:
         specifier: ^5.19.4
         version: 5.21.6(date-fns@4.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      axios:
+        specifier: ^1.7.7
+        version: 1.7.7
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -1300,6 +1303,9 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
+  axios@1.7.7:
+    resolution: {integrity: sha1-L1VClvmJKnKsjY5MW3nBSpHQpH8=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/axios/-/axios-1.7.7.tgz?dl=https://registry.npmjs.org/axios/-/axios-1.7.7.tgz}
+
   babel-dead-code-elimination@1.0.6:
     resolution: {integrity: sha512-JxFi9qyRJpN0LjEbbjbN8g0ux71Qppn9R8Qe3k6QzHg2CaKsbUQtbn307LQGiDLGjV6JCtEFqfxzVig9MyDCHQ==}
 
@@ -1723,6 +1729,15 @@ packages:
 
   flatted@3.3.1:
     resolution: {integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==}
+
+  follow-redirects@1.15.9:
+    resolution: {integrity: sha1-pgT6EORDv5jKlCKNnuvMLoosjuE=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/follow-redirects/-/follow-redirects-1.15.9.tgz?dl=https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.9.tgz}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
 
   for-each@0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -2402,6 +2417,9 @@ packages:
 
   prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
+
+  proxy-from-env@1.1.0:
+    resolution: {integrity: sha1-4QLxbKNVQkhldV0sno6k8k1Yw+I=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/proxy-from-env/-/proxy-from-env-1.1.0.tgz?dl=https://registry.npmjs.org/proxy-from-env/-/proxy-from-env-1.1.0.tgz}
 
   psl@1.10.0:
     resolution: {integrity: sha512-KSKHEbjAnpUuAUserOq0FxGXCUrzC3WniuSJhvdbs102rL55266ZcHBqLWOsG30spQMlPdpy7icATiAQehg/iA==}
@@ -4415,6 +4433,14 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.0.0
 
+  axios@1.7.7:
+    dependencies:
+      follow-redirects: 1.15.9
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
   babel-dead-code-elimination@1.0.6:
     dependencies:
       '@babel/core': 7.26.0
@@ -4980,6 +5006,8 @@ snapshots:
       rimraf: 3.0.2
 
   flatted@3.3.1: {}
+
+  follow-redirects@1.15.9: {}
 
   for-each@0.3.3:
     dependencies:
@@ -5656,6 +5684,8 @@ snapshots:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
+
+  proxy-from-env@1.1.0: {}
 
   psl@1.10.0:
     dependencies:

@@ -37,39 +37,8 @@
 #
 
 set -exo pipefail
-set -a && source .env && set +a
+set -a && source ../.env && set +a
 
-cleanup() {
-    # kill all processes whose parent is this process
-    pkill -P $$
-    docker stop qdrant_dev
-}
-
-for sig in INT QUIT HUP TERM; do
-  trap "
-    cleanup
-    trap - $sig EXIT
-    kill -s $sig "'"$$"' "$sig"
-done
-trap cleanup EXIT
-
-# start frontend development server
-cd ui
-pnpm install
-pnpm dev &
-
-cd ..
-mkdir -p databases
-docker run --name qdrant_dev --rm -d -p 6333:6333 -p 6334:6334 -v $(pwd)/databases/qdrant_storage:/qdrant/storage:z qdrant/qdrant
-
-cd llm-service
 python3.10 -m venv venv
 source venv/bin/activate
-python -m pip install -r app/requirements.txt
 python -m pytest -sxvvra
-
-fastapi dev &
-
-# start up the jarva
-cd ../backend
-./gradlew --console=plain bootRun
