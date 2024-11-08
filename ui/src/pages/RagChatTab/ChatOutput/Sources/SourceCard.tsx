@@ -42,7 +42,7 @@ import { RagChatContext } from "pages/RagChatTab/State/RagChatContext.tsx";
 import { Alert, Card, Flex, Popover, Spin, Tag, Typography } from "antd";
 import { SourceNode } from "src/api/chatApi.ts";
 import { useGetDocumentSummary } from "src/api/summaryApi.ts";
-import DocumentationIcon from "@cloudera-internal/cuix-core/icons/react/DocumentationIcon";
+import DocumentationIcon from "src/cuix/icons/DocumentationIcon";
 import Icon from "@ant-design/icons";
 
 export const SourceCard = ({ source }: { source: SourceNode }) => {

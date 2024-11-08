@@ -39,7 +39,7 @@
 import { Flex, Table, TableProps, Tooltip } from "antd";
 import { Link } from "@tanstack/react-router";
 import { ConnectionType, DataSourceType } from "src/api/dataSourceApi.ts";
-import ProductDataFlowLg from "@cloudera-internal/cuix-core/icons/react/ProductDataFlowLgIcon";
+import ProductDataFlowLg from "src/cuix/icons/ProductDataFlowLgIcon";
 
 const columns: TableProps<DataSourceType>["columns"] = [
   {

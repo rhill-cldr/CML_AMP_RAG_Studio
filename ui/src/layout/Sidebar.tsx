@@ -41,12 +41,9 @@ import { DatabaseFilled, DesktopOutlined } from "@ant-design/icons";
 import { Flex, Image, Layout, Menu, MenuProps, Tag, Typography } from "antd";
 import { useMatchRoute, useNavigate } from "@tanstack/react-router";
 import Images from "src/components/images/Images.ts";
-import LightbulbIcon from "@cloudera-internal/cuix-core/icons/react/LightbulbIcon";
-import {
-  cdlAmber200,
-  cdlAmber900,
-} from "@cloudera-internal/cuix-core/variables";
-import ThumbUpIcon from "@cloudera-internal/cuix-core/icons/react/ThumbUpIcon";
+import LightbulbIcon from "src/cuix/icons/LightbulbIcon";
+import { cdlAmber200, cdlAmber900 } from "src/cuix/variables.ts";
+import ThumbUpIcon from "src/cuix/icons/ThumbUpIcon";
 import useModal from "src/utils/useModal.ts";
 import FeedbackModal from "src/components/Feedback/FeedbackModal.tsx";
 

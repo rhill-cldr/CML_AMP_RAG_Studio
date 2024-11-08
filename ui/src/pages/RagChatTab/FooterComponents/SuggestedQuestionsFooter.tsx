@@ -39,7 +39,7 @@
 import { Collapse, Flex, Skeleton, Tag, Typography } from "antd";
 import { useState } from "react";
 import { SendOutlined } from "@ant-design/icons";
-import { cdlBlue600 } from "@cloudera-internal/cuix-core/variables";
+import { cdlBlue600 } from "src/cuix/variables.ts";
 
 const SuggestedQuestionsFooter = ({
   isLoading,

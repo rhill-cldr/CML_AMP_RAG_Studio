@@ -35,24 +35,26 @@
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
  ******************************************************************************/
+import React from "react";
 
-import { Flex, Typography } from "antd";
-import { cdlAmber500 } from "src/cuix/variables.ts";
-import Images from "src/components/images/Images.ts";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ThumbUpIcon = (props: any) =>
+  /*#__PURE__*/ React.createElement(
+    "svg",
+    {
+      viewBox: "0 0 24 24",
+      fill: "none",
+      width: "1em",
+      height: "1em",
+      className: "cdp-icon-thumb-up",
+      ...props,
+    },
+    /*#__PURE__*/ React.createElement("path", {
+      fillRule: "evenodd",
+      clipRule: "evenodd",
+      d: "M5.803 11l4-7L11 3h3l1 1v4h5.5l1 1-2 11H2v-9h3.803zM18 18l1.5-8H13V5h-1.465l-3.732 6.531V18H18zM5.803 13v5H4v-5h1.803z",
+      fill: "currentColor",
+    }),
+  );
 
-const UserQuestion = (props: { question: string }) => (
-  <Flex justify="end" gap={8}>
-    <Typography.Text style={{ fontSize: 16 }}>{props.question}</Typography.Text>
-    <Images.User
-      style={{
-        padding: 4,
-        backgroundColor: cdlAmber500,
-        borderRadius: 20,
-        width: 24,
-        height: 24,
-      }}
-    />
-  </Flex>
-);
-
-export default UserQuestion;
+export default ThumbUpIcon;

@@ -45,7 +45,7 @@ import messageQueue from "src/utils/messageQueue.ts";
 import { ChatMessageType, useChatMutation } from "src/api/chatApi.ts";
 import { RagMessage, useSuggestQuestions } from "src/api/ragQueryApi.ts";
 import { useParams } from "@tanstack/react-router";
-import { cdlBlue600 } from "@cloudera-internal/cuix-core/variables";
+import { cdlBlue600 } from "src/cuix/variables.ts";
 
 const convertedChatHistory = (chatHistory: ChatMessageType[]): RagMessage[] => {
   return chatHistory.flatMap((message) => {

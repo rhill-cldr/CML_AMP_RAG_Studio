@@ -42,7 +42,7 @@ import { Card, Flex, Image, Typography } from "antd";
 import { Link } from "@tanstack/react-router";
 import SuggestedQuestionsCards from "pages/RagChatTab/ChatOutput/Placeholders/SuggestedQuestionsCards.tsx";
 import { useGetDataSourceSummary } from "src/api/summaryApi.ts";
-import { cdlGray700 } from "@cloudera-internal/cuix-core/variables";
+import { cdlGray700 } from "src/cuix/variables.ts";
 import Images from "src/components/images/Images.ts";
 
 const DataSourceSummaryCard = () => {

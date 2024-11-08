@@ -35,24 +35,24 @@
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
  ******************************************************************************/
+import React from "react";
 
-import { Flex, Typography } from "antd";
-import { cdlAmber500 } from "src/cuix/variables.ts";
-import Images from "src/components/images/Images.ts";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const AiAssistantIcon = (props: any) =>
+  /*#__PURE__*/ React.createElement(
+    "svg",
+    {
+      viewBox: "0 0 24 24",
+      fill: "none",
+      width: "1em",
+      height: "1em",
+      className: "cdp-icon-ai-assistant",
+      ...props,
+    },
+    /*#__PURE__*/ React.createElement("path", {
+      d: "M2 7.207l3.838-1.383L7.207 2 8.58 5.824l3.833 1.383-3.833 1.378-1.374 3.83-1.396-3.83-3.812-1.378zM3.5 18.174l2.82-1.016 1.006-2.81 1.01 2.81 2.816 1.016-2.817 1.012L7.325 22 6.3 19.186l-2.8-1.012zM8.865 13.06l4.842-1.745 1.726-4.823 1.732 4.823L22 13.059l-4.835 1.737-1.732 4.83-1.76-4.83-4.808-1.737z",
+      fill: "currentColor",
+    }),
+  );
 
-const UserQuestion = (props: { question: string }) => (
-  <Flex justify="end" gap={8}>
-    <Typography.Text style={{ fontSize: 16 }}>{props.question}</Typography.Text>
-    <Images.User
-      style={{
-        padding: 4,
-        backgroundColor: cdlAmber500,
-        borderRadius: 20,
-        width: 24,
-        height: 24,
-      }}
-    />
-  </Flex>
-);
-
-export default UserQuestion;
+export default AiAssistantIcon;

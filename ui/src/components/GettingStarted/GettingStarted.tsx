@@ -37,7 +37,7 @@
  ******************************************************************************/
 
 import { Button, Flex, Image, Typography } from "antd";
-import { cdlGray050 } from "@cloudera-internal/cuix-core/variables";
+import { cdlGray050 } from "src/cuix/variables.ts";
 import { useNavigate } from "@tanstack/react-router";
 import GettingStartedSellingPoints from "src/components/SellingPoints/GettingStartedSellingPoints.tsx";
 import Images from "src/components/images/Images.ts";

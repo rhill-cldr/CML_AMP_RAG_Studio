@@ -35,24 +35,26 @@
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
  ******************************************************************************/
+import React from "react";
 
-import { Flex, Typography } from "antd";
-import { cdlAmber500 } from "src/cuix/variables.ts";
-import Images from "src/components/images/Images.ts";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const DocumentationIcon = (props: any) =>
+  /*#__PURE__*/ React.createElement(
+    "svg",
+    {
+      viewBox: "0 0 24 24",
+      fill: "none",
+      width: "1em",
+      height: "1em",
+      className: "cdp-icon-documentation",
+      ...props,
+    },
+    /*#__PURE__*/ React.createElement("path", {
+      fillRule: "evenodd",
+      clipRule: "evenodd",
+      d: "M14.413 2L20 7.585V22H4V2h10.413zm-2.414 2H6v16h12V9.999L12 10l-.001-6zM16 16v2H8v-2h8zm0-4v2H8v-2h8zm-6-4v2H8V8h2zm3.999-3.586L14 7.999h3.585l-3.586-3.585z",
+      fill: "currentColor",
+    }),
+  );
 
-const UserQuestion = (props: { question: string }) => (
-  <Flex justify="end" gap={8}>
-    <Typography.Text style={{ fontSize: 16 }}>{props.question}</Typography.Text>
-    <Images.User
-      style={{
-        padding: 4,
-        backgroundColor: cdlAmber500,
-        borderRadius: 20,
-        width: 24,
-        height: 24,
-      }}
-    />
-  </Flex>
-);
-
-export default UserQuestion;
+export default DocumentationIcon;

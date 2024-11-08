@@ -2,7 +2,7 @@
 
 ### What is Rag Studio?
 
-TBD - An AMP that provides a no-code tool to build RAG applications
+An AMP that provides a no-code tool to build RAG applications
 
 ### Pre-requisites
 
