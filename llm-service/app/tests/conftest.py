@@ -40,13 +40,20 @@ import os
 import pathlib
 import uuid
 from collections.abc import Iterator
+from typing import Any, Sequence
 
 import boto3
 import pytest
 from fastapi.testclient import TestClient
+from llama_index.core.base.embeddings.base import BaseEmbedding, Embedding
+from llama_index.core.base.llms.types import CompletionResponseAsyncGen, ChatMessage, ChatResponseAsyncGen, \
+    CompletionResponse, ChatResponse, CompletionResponseGen, ChatResponseGen, LLMMetadata
+from llama_index.core.llms import LLM
 from moto import mock_aws
+from pydantic import Field
 
 from app.main import app
+from app.services import models
 
 
 @pytest.fixture
@@ -56,24 +63,11 @@ def aws_region() -> str:
 
 @pytest.fixture
 def s3(
-    monkeypatch: pytest.MonkeyPatch,
-    aws_region: str,
+        monkeypatch: pytest.MonkeyPatch,
 ) -> Iterator["s3.ServiceResource"]:
     """Mock all S3 interactions."""
-    monkeypatch.setenv("AWS_DEFAULT_REGION", aws_region)
 
-    config = {
-        "core": {
-            "mock_credentials": False,
-            "passthrough": {
-                "urls": [
-                    rf"https://bedrock-runtime\.{aws_region}\.amazonaws\.com/model/.*/invoke",
-                ],
-            },
-        }
-    }
-
-    with mock_aws(config=config):
+    with mock_aws():
         yield boto3.resource("s3")
 
 
@@ -83,8 +77,93 @@ def document_id() -> str:
 
 
 @pytest.fixture
+def data_source_id() -> int:
+    return -1
+
+
+@pytest.fixture
+def index_document_request_body(data_source_id, s3_object) -> dict[str, Any]:
+    return {
+        "data_source_id": data_source_id,
+        "s3_bucket_name": s3_object.bucket_name,
+        "s3_document_key": s3_object.key,
+        "configuration": {
+            "chunk_size": 512,
+            "chunk_overlap": 10,
+        },
+    }
+
+
+class DummyLlm(LLM):
+    completion_response = Field("this is a completion response")
+    chat_response = Field("this is a chat response")
+
+    def __init__(self, completion_response: str = "this is a completion response", chat_response: str = "hello"):
+        super().__init__()
+        self.completion_response = completion_response
+        self.chat_response = chat_response
+
+    @property
+    def metadata(self) -> LLMMetadata:
+        return LLMMetadata()
+
+    def chat(self, messages: Sequence[ChatMessage], **kwargs: Any) -> ChatResponse:
+        return ChatResponse(message=ChatMessage.from_str(self.chat_response))
+
+    def complete(self, prompt: str, formatted: bool = False, **kwargs: Any) -> CompletionResponse:
+        return CompletionResponse(text=self.completion_response)
+
+    def stream_chat(self, messages: Sequence[ChatMessage], **kwargs: Any) -> ChatResponseGen:
+        pass
+
+    def stream_complete(self, prompt: str, formatted: bool = False, **kwargs: Any) -> CompletionResponseGen:
+        pass
+
+    async def achat(self, messages: Sequence[ChatMessage], **kwargs: Any) -> ChatResponse:
+        pass
+
+    async def acomplete(self, prompt: str, formatted: bool = False, **kwargs: Any) -> CompletionResponse:
+        pass
+
+    async def astream_chat(self, messages: Sequence[ChatMessage], **kwargs: Any) -> ChatResponseAsyncGen:
+        pass
+
+    async def astream_complete(self, prompt: str, formatted: bool = False, **kwargs: Any) -> CompletionResponseAsyncGen:
+        pass
+
+
+class DummyEmbeddingModel(BaseEmbedding):
+    def _get_query_embedding(self, query: str) -> Embedding:
+        return [0.0] * 1024
+
+    async def _aget_query_embedding(self, query: str) -> Embedding:
+        return [0.0] * 1024
+
+    def _get_text_embedding(self, text: str) -> Embedding:
+        return [0.0] * 1024
+
+
+@pytest.fixture(autouse=True)
+def embedding_model(monkeypatch: pytest.MonkeyPatch) -> BaseEmbedding:
+    model = DummyEmbeddingModel()
+
+    # Requires that the app usages import the file and not the function directly as python creates a copy when importing the function
+    monkeypatch.setattr(models, 'get_embedding_model', lambda: model)
+    return model
+
+
+@pytest.fixture(autouse=True)
+def llm(monkeypatch: pytest.MonkeyPatch) -> LLM:
+    model = DummyLlm()
+
+    # Requires that the app usages import the file and not the function directly as python creates a copy when importing the function
+    monkeypatch.setattr(models, 'get_llm', lambda messages_to_prompt, completion_to_prompt, model_name: model)
+    return model
+
+
+@pytest.fixture
 def s3_object(
-    s3: "s3.ServiceResource", aws_region: str, document_id: str
+        s3: "s3.ServiceResource", aws_region: str, document_id: str
 ) -> "s3.Object":
     """Put and return a mocked S3 object"""
     bucket_name = "test_bucket"
@@ -95,16 +174,16 @@ def s3_object(
     return bucket.put_object(
         Key=key,
         # TODO: fixturize file
-        Body=b"test",
+        Body=b"Some text to be summarized and indexed",
         Metadata={"originalfilename": "test.txt"},
     )
 
 
 @pytest.fixture
 def client(
-    monkeypatch: pytest.MonkeyPatch,
-    s3: "s3.ServiceResource",
-    tmp_path: pathlib.Path,
+        monkeypatch: pytest.MonkeyPatch,
+        s3: "s3.ServiceResource",
+        tmp_path: pathlib.Path,
 ) -> Iterator[TestClient]:
     """Return a test client for making calls to the service.
 
@@ -113,13 +192,6 @@ def client(
     """
     databases_dir = str(tmp_path / "databases")
     monkeypatch.setenv("RAG_DATABASES_DIR", databases_dir)
-
-    # with monkeypatch.context() as m:
-    #     # service isn't pip-installable, so we have to import it
-    #     m.syspath_prepend(
-    #         os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."),
-    #     )
-    #     from app.main import app
 
     with TestClient(app) as test_client:
         yield test_client

@@ -40,58 +40,40 @@
 
 from typing import Any
 
-import pytest
 from llama_index.core import VectorStoreIndex
 from llama_index.core.vector_stores import VectorStoreQuery
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 from qdrant_client import qdrant_client
 
-from app.services.models import get_embedding_model
 from app.services.qdrant import table_name_from, create_qdrant_clients
+from app.services import models
 
-
-@pytest.fixture
-def data_source_id() -> int:
-    return -1
-
-
-@pytest.fixture
-def index_document_request_body(data_source_id, s3_object) -> dict[str, Any]:
-    return {
-        "data_source_id": data_source_id,
-        "s3_bucket_name": s3_object.bucket_name,
-        "s3_document_key": s3_object.key,
-        "configuration": {
-            "chunk_size": 512,
-            "chunk_overlap": 10,
-        },
-    }
-
-def get_vector_store_index(data_source_id):
+def get_vector_store_index(data_source_id) -> VectorStoreIndex:
     client = qdrant_client.QdrantClient(host="localhost", port=6333)
     collection_name = f"index_{data_source_id}"
     assert client.collection_exists(collection_name)
     vector_store = QdrantVectorStore(
         table_name_from(data_source_id), *create_qdrant_clients()
     )
-    index = VectorStoreIndex.from_vector_store(vector_store, embed_model=get_embedding_model())
+    index = VectorStoreIndex.from_vector_store(vector_store, embed_model=models.get_embedding_model())
     return index
 
-class TestCreateDocument:
-    """Test POST /index/download-and-index."""
+
+class TestDocumentIndexing:
 
     @staticmethod
-    def test_success(
+    def test_create_document(
             client,
             index_document_request_body: dict[str, Any],
             document_id: str,
             data_source_id: int,
     ) -> None:
+        """Test POST /index/download-and-index."""
         response = client.post(
             "/index/download-and-index",
             json=index_document_request_body,
         )
-        print(response.json())
+
         assert response.status_code == 200
         assert document_id is not None
         index = get_vector_store_index(data_source_id)
@@ -99,17 +81,14 @@ class TestCreateDocument:
         assert len(vectors.nodes) == 1
 
 
-
-class TestDeleteDataSource:
-    """Test DELETE /index/data_sources/{data_source_id}."""
-
     @staticmethod
-    def test_success(
+    def test_delete_data_source(
             client,
             data_source_id: int,
             document_id: str,
             index_document_request_body: dict[str, Any],
     ) -> None:
+        """Test DELETE /index/data_sources/{data_source_id}."""
         client.post(
             "/index/download-and-index",
             json=index_document_request_body,
@@ -122,21 +101,22 @@ class TestDeleteDataSource:
         response = client.delete(f"/index/data_sources/{data_source_id}")
         assert response.status_code == 200
 
-        client = qdrant_client.QdrantClient(host="localhost", port=6333)
+        q_client = qdrant_client.QdrantClient(host="localhost", port=6333)
         collection_name = f"index_{data_source_id}"
-        assert client.collection_exists(collection_name) is False
+        assert q_client.collection_exists(collection_name) is False
 
+        get_summary_response = client.get(f'/index/data_sources/{data_source_id}/documents/{document_id}/summary')
+        assert get_summary_response.status_code == 404
 
-class TestDeleteDocument:
-    """Test DELETE /index/data_sources/{data_source_id}/documents/{document_id}."""
 
     @staticmethod
-    def test_success(
+    def test_delete_document(
             client,
             data_source_id: int,
             document_id: str,
             index_document_request_body: dict[str, Any],
     ) -> None:
+        """Test DELETE /index/data_sources/{data_source_id}/documents/{document_id}."""
         client.post(
             "/index/download-and-index",
             json=index_document_request_body,
@@ -154,15 +134,13 @@ class TestDeleteDocument:
         assert len(vectors.nodes) == 0
 
 
-class TestGetSize:
-    """Test GET /index/data_sources/{data_source_id}/size."""
-
     @staticmethod
-    def test_success(
+    def test_get_size(
             client,
             data_source_id: int,
             index_document_request_body: dict[str, Any],
     ) -> None:
+        """Test GET /index/data_sources/{data_source_id}/size."""
         client.post(
             "/index/download-and-index",
             json=index_document_request_body,

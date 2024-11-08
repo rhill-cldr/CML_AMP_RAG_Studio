@@ -39,7 +39,10 @@ import os
 import shutil
 import tempfile
 from typing import cast
-from .models import get_embedding_model, get_llm
+
+from fastapi import HTTPException
+
+from . import models
 
 from llama_index.core import (
     DocumentSummaryIndex,
@@ -68,6 +71,10 @@ def index_dir(data_source_id: int) -> str:
 
 def read_summary(data_source_id: int, document_id: str) -> str:
     """Return the summary of `document_id`."""
+    index = index_dir(data_source_id)
+    if not os.path.exists(index):
+        raise HTTPException(status_code=404, detail="Knowledge base not found.")
+
     storage_context = make_storage_context(data_source_id)
     doc_summary_index = load_document_summary_index(storage_context)
 
@@ -91,8 +98,8 @@ def generate_summary(
     s3_document_key: str,
 ) -> str:
     ## todo: move to somewhere better; these are defaults to use when none are explicitly provided
-    Settings.llm = get_llm(messages_to_prompt, completion_to_prompt, "meta.llama3-8b-instruct-v1:0")
-    Settings.embed_model = get_embedding_model()
+    Settings.llm = models.get_llm(messages_to_prompt, completion_to_prompt, "meta.llama3-8b-instruct-v1:0")
+    Settings.embed_model = models.get_embedding_model()
     Settings.splitter = SentenceSplitter(chunk_size=1024)
 
     """Generate, persist, and return a summary for `s3_document_key`."""
