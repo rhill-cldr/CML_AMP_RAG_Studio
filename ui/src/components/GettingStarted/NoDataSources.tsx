@@ -39,7 +39,7 @@
 import { Button, Flex } from "antd";
 import { useNavigate } from "@tanstack/react-router";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { cdlWhite } from "@cloudera-internal/cuix-core/variables";
+import { cdlWhite } from "src/cuix/variables.ts";
 import NoKnowledgeBaseSellingPoints from "src/components/SellingPoints/NoKnowledgeBaseSellingPoints.tsx";
 import Images from "src/components/images/Images.ts";
 

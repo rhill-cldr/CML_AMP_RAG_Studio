@@ -46,7 +46,7 @@ import {
   cdlGreen500,
   cdlSlate800,
   cdlWhite,
-} from "@cloudera-internal/cuix-core/variables";
+} from "src/cuix/variables.ts";
 import AmpUpdateBanner from "src/components/AmpUpdate/AmpUpdateBanner.tsx";
 
 const customDarkTheme = {

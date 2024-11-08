@@ -35,24 +35,25 @@
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
  ******************************************************************************/
+import React from "react";
 
-import { Flex, Typography } from "antd";
-import { cdlAmber500 } from "src/cuix/variables.ts";
-import Images from "src/components/images/Images.ts";
+const ProductDataFlowLgIcon = (props: any) =>
+  /*#__PURE__*/ React.createElement(
+    "svg",
+    {
+      viewBox: "0 0 192 192",
+      fill: "none",
+      width: "1em",
+      height: "1em",
+      className: "cdp-icon-product-data-flow-lg",
+      ...props,
+    },
+    /*#__PURE__*/ React.createElement("path", {
+      fillRule: "evenodd",
+      clipRule: "evenodd",
+      d: "M151.145 91.522C144.68 85.053 136.623 77 121.333 77c-15.289 0-23.346 8.053-29.81 14.522-6.045 6.041-10.813 10.812-20.856 10.812-10.044 0-14.812-4.771-20.855-10.812-4.38-4.382-9.552-9.434-17.145-12.274V32.667h126.666v66.018c-2.878-1.901-5.407-4.383-8.188-7.163zm8.188 67.812H32.667V93.315c2.878 1.901 5.407 4.383 8.188 7.163C47.322 106.947 55.379 115 70.668 115c15.29 0 23.346-8.053 29.811-14.522 6.045-6.04 10.812-10.811 20.855-10.811 10.045 0 14.812 4.771 20.856 10.811 4.38 4.382 9.552 9.434 17.144 12.274v46.582zm0-139.334H32.667c-6.997 0-12.668 5.671-12.668 12.667v126.667C20 166.329 25.672 172 32.668 172h126.666c6.996 0 12.667-5.671 12.667-12.666V32.667C172 25.671 166.329 20 159.333 20z",
+      fill: "#C354FF",
+    }),
+  );
 
-const UserQuestion = (props: { question: string }) => (
-  <Flex justify="end" gap={8}>
-    <Typography.Text style={{ fontSize: 16 }}>{props.question}</Typography.Text>
-    <Images.User
-      style={{
-        padding: 4,
-        backgroundColor: cdlAmber500,
-        borderRadius: 20,
-        width: 24,
-        height: 24,
-      }}
-    />
-  </Flex>
-);
-
-export default UserQuestion;
+export default ProductDataFlowLgIcon;

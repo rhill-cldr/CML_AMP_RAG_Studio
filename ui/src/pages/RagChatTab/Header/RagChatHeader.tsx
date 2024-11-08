@@ -44,8 +44,8 @@ import { useContext } from "react";
 import { QueryConfiguration } from "src/api/chatApi.ts";
 import { RagChatContext } from "pages/RagChatTab/State/RagChatContext.tsx";
 import useModal from "src/utils/useModal.ts";
-import SettingsIcon from "@cloudera-internal/cuix-core/icons/react/SettingsIcon";
-import { cdlBlue600 } from "@cloudera-internal/cuix-core/variables";
+import SettingsIcon from "src/cuix/icons/SettingsIcon";
+import { cdlBlue600 } from "src/cuix/variables.ts";
 
 const { Header } = Layout;
 

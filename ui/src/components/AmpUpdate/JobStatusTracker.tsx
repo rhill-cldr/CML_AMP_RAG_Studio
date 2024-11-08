@@ -38,11 +38,7 @@
 
 import { JobStatus } from "src/api/ampUpdateApi.ts";
 import { Flex, Progress, Typography } from "antd";
-import {
-  cdlBlue600,
-  cdlGray200,
-  cdlGreen600,
-} from "@cloudera-internal/cuix-core/variables";
+import { cdlBlue600, cdlGray200, cdlGreen600 } from "src/cuix/variables.ts";
 
 const jobStatusDisplayValue = (jobStatus?: JobStatus): string => {
   const statusMap: { [key in JobStatus]?: string } = {

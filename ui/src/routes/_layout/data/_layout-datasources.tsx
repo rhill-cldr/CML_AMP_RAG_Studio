@@ -38,7 +38,7 @@
 
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Flex, Layout, Typography } from "antd";
-import { cdlGray300 } from "@cloudera-internal/cuix-core/variables";
+import { cdlGray300 } from "src/cuix/variables.ts";
 
 const { Content, Header } = Layout;
 

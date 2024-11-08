@@ -52,7 +52,7 @@ import {
   cdlGray800,
   cdlSlate800,
   cdlWhite,
-} from "@cloudera-internal/cuix-core/variables";
+} from "src/cuix/variables.ts";
 import CreateSessionModal from "./CreateSessionModal";
 import { Dictionary } from "lodash";
 import { RagChatContext } from "pages/RagChatTab/State/RagChatContext.tsx";

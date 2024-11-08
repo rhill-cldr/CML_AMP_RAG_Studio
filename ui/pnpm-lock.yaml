@@ -11,9 +11,6 @@ importers:
       '@ant-design/icons':
         specifier: ^5.4.0
         version: 5.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@cloudera-internal/cuix-core':
-        specifier: ^1.1.10
-        version: 1.1.10(react@18.3.1)
       '@tanstack/react-query':
         specifier: ^5.51.18
         version: 5.51.18(react@18.3.1)
@@ -189,7 +186,7 @@ packages:
     engines: {node: '>=6.9.0'}
 
   '@babel/code-frame@7.26.2':
-    resolution: {integrity: sha1-S1+rl9MzOO/5FiNQVfDrwh5XOoU=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@babel/code-frame/-/code-frame-7.26.2.tgz?dl=https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.26.2.tgz}
+    resolution: {integrity: sha512-RJlIHRueQgwWitWgF8OdFYGZX328Ax5BCemNGlqHfplnRT9ESi8JkFlvaVYbS+UubVY6dpv87Fs2u5M29iNFVQ==}
     engines: {node: '>=6.9.0'}
 
   '@babel/compat-data@7.25.2':
@@ -293,7 +290,7 @@ packages:
     engines: {node: '>=6.9.0'}
 
   '@babel/runtime@7.26.0':
-    resolution: {integrity: sha1-hgDC9ZXyd8YIFSVkGLhTVqZRc8E=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@babel/runtime/-/runtime-7.26.0.tgz?dl=https://registry.npmjs.org/@babel/runtime/-/runtime-7.26.0.tgz}
+    resolution: {integrity: sha512-FDSOghenHTiToteC/QRlv2q3DhPZ/oOXTBoirfWNx1Cx3TMVcGWQtMMmQcSvb/JjpNeGzx8Pq/b4fKEJuWm1sw==}
     engines: {node: '>=6.9.0'}
 
   '@babel/template@7.25.0':
@@ -315,17 +312,6 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha1-daLotRy3WKdVPWgEpZMteqznXDk=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz?dl=https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz}
 
-  '@cloudera-internal/cuix-core@1.1.10':
-    resolution: {integrity: sha1-1OJ61nFROof55W0WsaPyfugH118=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/@cloudera-internal/cuix-core/-/@cloudera-internal/cuix-core-1.1.10.tgz}
-    peerDependencies:
-      preact: '*'
-      react: '*'
-    peerDependenciesMeta:
-      preact:
-        optional: true
-      react:
-        optional: true
-
   '@ctrl/tinycolor@3.6.1':
     resolution: {integrity: sha1-tsdaVqGUfMkW6gWHctZmosiTLzE=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/@ctrl/tinycolor/-/tinycolor-3.6.1.tgz?dl=https://registry.npmjs.org/@ctrl/tinycolor/-/tinycolor-3.6.1.tgz}
     engines: {node: '>=10'}
@@ -337,139 +323,139 @@ packages:
     resolution: {integrity: sha1-dyESkcGQCnALinjPr9oxYNdpSe0=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/@emotion/unitless/-/unitless-0.7.5.tgz?dl=https://registry.npmjs.org/@emotion/unitless/-/unitless-0.7.5.tgz}
 
   '@esbuild/aix-ppc64@0.21.5':
-    resolution: {integrity: sha1-xxhKMmUz/N8bjuBzPiHHE7l1V18=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/aix-ppc64/-/aix-ppc64-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/aix-ppc64/-/aix-ppc64-0.21.5.tgz}
+    resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
     engines: {node: '>=12'}
     cpu: [ppc64]
     os: [aix]
 
   '@esbuild/android-arm64@0.21.5':
-    resolution: {integrity: sha1-Cdm0NXeA2p6jp9+4M6Hx/0ObQFI=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/android-arm64/-/android-arm64-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/android-arm64/-/android-arm64-0.21.5.tgz}
+    resolution: {integrity: sha512-c0uX9VAUBQ7dTDCjq+wdyGLowMdtR/GoC2U5IYk/7D1H1JYC0qseD7+11iMP2mRLN9RcCMRcjC4YMclCzGwS/A==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [android]
 
   '@esbuild/android-arm@0.21.5':
-    resolution: {integrity: sha1-mwQ4T7dxkm36bXrQQyTssqubLig=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/android-arm/-/android-arm-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/android-arm/-/android-arm-0.21.5.tgz}
+    resolution: {integrity: sha512-vCPvzSjpPHEi1siZdlvAlsPxXl7WbOVUBBAowWug4rJHb68Ox8KualB+1ocNvT5fjv6wpkX6o/iEpbDrf68zcg==}
     engines: {node: '>=12'}
     cpu: [arm]
     os: [android]
 
   '@esbuild/android-x64@0.21.5':
-    resolution: {integrity: sha1-KZGOwtt1TO3LbBsE3ozWVHr2Rh4=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/android-x64/-/android-x64-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/android-x64/-/android-x64-0.21.5.tgz}
+    resolution: {integrity: sha512-D7aPRUUNHRBwHxzxRvp856rjUHRFW1SdQATKXH2hqA0kAZb1hKmi02OpYRacl0TxIGz/ZmXWlbZgjwWYaCakTA==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [android]
 
   '@esbuild/darwin-arm64@0.21.5':
-    resolution: {integrity: sha1-5JW1OWYOUWkPOSivUKdvsKbM/yo=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/darwin-arm64/-/darwin-arm64-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.21.5.tgz}
+    resolution: {integrity: sha512-DwqXqZyuk5AiWWf3UfLiRDJ5EDd49zg6O9wclZ7kUMv2WRFr4HKjXp/5t8JZ11QbQfUS6/cRCKGwYhtNAY88kQ==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [darwin]
 
   '@esbuild/darwin-x64@0.21.5':
-    resolution: {integrity: sha1-wTg4+lc3KDmr3dyR1xVCzuouHiI=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/darwin-x64/-/darwin-x64-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/darwin-x64/-/darwin-x64-0.21.5.tgz}
+    resolution: {integrity: sha512-se/JjF8NlmKVG4kNIuyWMV/22ZaerB+qaSi5MdrXtd6R08kvs2qCN4C09miupktDitvh8jRFflwGFBQcxZRjbw==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [darwin]
 
   '@esbuild/freebsd-arm64@0.21.5':
-    resolution: {integrity: sha1-ZGuYmqIL+J/Qcd1dv61po1QuVQ4=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/freebsd-arm64/-/freebsd-arm64-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/freebsd-arm64/-/freebsd-arm64-0.21.5.tgz}
+    resolution: {integrity: sha512-5JcRxxRDUJLX8JXp/wcBCy3pENnCgBR9bN6JsY4OmhfUtIHe3ZW0mawA7+RDAcMLrMIZaf03NlQiX9DGyB8h4g==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [freebsd]
 
   '@esbuild/freebsd-x64@0.21.5':
-    resolution: {integrity: sha1-qmFc/ICvlU00WJBuOMoiwYz1wmE=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/freebsd-x64/-/freebsd-x64-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/freebsd-x64/-/freebsd-x64-0.21.5.tgz}
+    resolution: {integrity: sha512-J95kNBj1zkbMXtHVH29bBriQygMXqoVQOQYA+ISs0/2l3T9/kj42ow2mpqerRBxDJnmkUDCaQT/dfNXWX/ZZCQ==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [freebsd]
 
   '@esbuild/linux-arm64@0.21.5':
-    resolution: {integrity: sha1-cKxvoU9ct+H3+Ie8/7aArQmSK1s=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/linux-arm64/-/linux-arm64-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/linux-arm64/-/linux-arm64-0.21.5.tgz}
+    resolution: {integrity: sha512-ibKvmyYzKsBeX8d8I7MH/TMfWDXBF3db4qM6sy+7re0YXya+K1cem3on9XgdT2EQGMu4hQyZhan7TeQ8XkGp4Q==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [linux]
 
   '@esbuild/linux-arm@0.21.5':
-    resolution: {integrity: sha1-/G/RGorKVsH284lPK+oEefj2Jrk=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/linux-arm/-/linux-arm-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/linux-arm/-/linux-arm-0.21.5.tgz}
+    resolution: {integrity: sha512-bPb5AHZtbeNGjCKVZ9UGqGwo8EUu4cLq68E95A53KlxAPRmUyYv2D6F0uUI65XisGOL1hBP5mTronbgo+0bFcA==}
     engines: {node: '>=12'}
     cpu: [arm]
     os: [linux]
 
   '@esbuild/linux-ia32@0.21.5':
-    resolution: {integrity: sha1-MnH1Oz+T49CT1RjRZJ1taNNG7eI=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/linux-ia32/-/linux-ia32-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/linux-ia32/-/linux-ia32-0.21.5.tgz}
+    resolution: {integrity: sha512-YvjXDqLRqPDl2dvRODYmmhz4rPeVKYvppfGYKSNGdyZkA01046pLWyRKKI3ax8fbJoK5QbxblURkwK/MWY18Tg==}
     engines: {node: '>=12'}
     cpu: [ia32]
     os: [linux]
 
   '@esbuild/linux-loong64@0.21.5':
-    resolution: {integrity: sha1-7WLgQjjFcCauqDHFoTC3PA+fJt8=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/linux-loong64/-/linux-loong64-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/linux-loong64/-/linux-loong64-0.21.5.tgz}
+    resolution: {integrity: sha512-uHf1BmMG8qEvzdrzAqg2SIG/02+4/DHB6a9Kbya0XDvwDEKCoC8ZRWI5JJvNdUjtciBGFQ5PuBlpEOXQj+JQSg==}
     engines: {node: '>=12'}
     cpu: [loong64]
     os: [linux]
 
   '@esbuild/linux-mips64el@0.21.5':
-    resolution: {integrity: sha1-55uOtIvzsQb63sGsgkD7l7TmTL4=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/linux-mips64el/-/linux-mips64el-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/linux-mips64el/-/linux-mips64el-0.21.5.tgz}
+    resolution: {integrity: sha512-IajOmO+KJK23bj52dFSNCMsz1QP1DqM6cwLUv3W1QwyxkyIWecfafnI555fvSGqEKwjMXVLokcV5ygHW5b3Jbg==}
     engines: {node: '>=12'}
     cpu: [mips64el]
     os: [linux]
 
   '@esbuild/linux-ppc64@0.21.5':
-    resolution: {integrity: sha1-XyIDhgoUO5kZ04PvdXNSH7FUw+Q=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/linux-ppc64/-/linux-ppc64-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/linux-ppc64/-/linux-ppc64-0.21.5.tgz}
+    resolution: {integrity: sha512-1hHV/Z4OEfMwpLO8rp7CvlhBDnjsC3CttJXIhBi+5Aj5r+MBvy4egg7wCbe//hSsT+RvDAG7s81tAvpL2XAE4w==}
     engines: {node: '>=12'}
     cpu: [ppc64]
     os: [linux]
 
   '@esbuild/linux-riscv64@0.21.5':
-    resolution: {integrity: sha1-B7yv2ZMi1a9i9hjLnmqbf0u4Jdw=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/linux-riscv64/-/linux-riscv64-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/linux-riscv64/-/linux-riscv64-0.21.5.tgz}
+    resolution: {integrity: sha512-2HdXDMd9GMgTGrPWnJzP2ALSokE/0O5HhTUvWIbD3YdjME8JwvSCnNGBnTThKGEB91OZhzrJ4qIIxk/SBmyDDA==}
     engines: {node: '>=12'}
     cpu: [riscv64]
     os: [linux]
 
   '@esbuild/linux-s390x@0.21.5':
-    resolution: {integrity: sha1-t8z2hnUdaj5EuGJ6uryL4+9i2N4=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/linux-s390x/-/linux-s390x-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/linux-s390x/-/linux-s390x-0.21.5.tgz}
+    resolution: {integrity: sha512-zus5sxzqBJD3eXxwvjN1yQkRepANgxE9lgOW2qLnmr8ikMTphkjgXu1HR01K4FJg8h1kEEDAqDcZQtbrRnB41A==}
     engines: {node: '>=12'}
     cpu: [s390x]
     os: [linux]
 
   '@esbuild/linux-x64@0.21.5':
-    resolution: {integrity: sha1-bY8Mdo4HDmQwmvgAS7lOaKsrs7A=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/linux-x64/-/linux-x64-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.21.5.tgz}
+    resolution: {integrity: sha512-1rYdTpyv03iycF1+BhzrzQJCdOuAOtaqHTWJZCWvijKD2N5Xu0TtVC8/+1faWqcP9iBCWOmjmhoH94dH82BxPQ==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [linux]
 
   '@esbuild/netbsd-x64@0.21.5':
-    resolution: {integrity: sha1-u+Qw9g03jsuI3sshnGAmZzh6YEc=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/netbsd-x64/-/netbsd-x64-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/netbsd-x64/-/netbsd-x64-0.21.5.tgz}
+    resolution: {integrity: sha512-Woi2MXzXjMULccIwMnLciyZH4nCIMpWQAs049KEeMvOcNADVxo0UBIQPfSmxB3CWKedngg7sWZdLvLczpe0tLg==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [netbsd]
 
   '@esbuild/openbsd-x64@0.21.5':
-    resolution: {integrity: sha1-mdHPKTcnlWDSEEgh9czOIgyyr3A=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/openbsd-x64/-/openbsd-x64-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/openbsd-x64/-/openbsd-x64-0.21.5.tgz}
+    resolution: {integrity: sha512-HLNNw99xsvx12lFBUwoT8EVCsSvRNDVxNpjZ7bPn947b8gJPzeHWyNVhFsaerc0n3TsbOINvRP2byTZ5LKezow==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [openbsd]
 
   '@esbuild/sunos-x64@0.21.5':
-    resolution: {integrity: sha1-CHQVEsENUpVmurqDe0/gUsjzSHs=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/sunos-x64/-/sunos-x64-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/sunos-x64/-/sunos-x64-0.21.5.tgz}
+    resolution: {integrity: sha512-6+gjmFpfy0BHU5Tpptkuh8+uw3mnrvgs+dSPQXQOv3ekbordwnzTVEb4qnIvQcYXq6gzkyTnoZ9dZG+D4garKg==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [sunos]
 
   '@esbuild/win32-arm64@0.21.5':
-    resolution: {integrity: sha1-Z1tzhTmEESQHNQFhRKsumaYPx10=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/win32-arm64/-/win32-arm64-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/win32-arm64/-/win32-arm64-0.21.5.tgz}
+    resolution: {integrity: sha512-Z0gOTd75VvXqyq7nsl93zwahcTROgqvuAcYDUr+vOv8uHhNSKROyU961kgtCD1e95IqPKSQKH7tBTslnS3tA8A==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [win32]
 
   '@esbuild/win32-ia32@0.21.5':
-    resolution: {integrity: sha1-G/w86YqmypoJaeTSr3IUTFnBGTs=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/win32-ia32/-/win32-ia32-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/win32-ia32/-/win32-ia32-0.21.5.tgz}
+    resolution: {integrity: sha512-SWXFF1CL2RVNMaVs+BBClwtfZSvDgtL//G/smwAc5oVK/UPu2Gu9tIaRgFmYFFKrmg3SyAjSrElf0TiJ1v8fYA==}
     engines: {node: '>=12'}
     cpu: [ia32]
     os: [win32]
 
   '@esbuild/win32-x64@0.21.5':
-    resolution: {integrity: sha1-rK01HVgtFXuxRVNdsqb/U91RS1w=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@esbuild/win32-x64/-/win32-x64-0.21.5.tgz?dl=https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.21.5.tgz}
+    resolution: {integrity: sha512-tQd/1efJuzPC6rCFwEvLtci/xNFcTZknmXs98FYDfGE4wP9ClFV98nyKrzJKVPMhdDnjzLhdUyMX4PsQAPjwIw==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [win32]
@@ -548,7 +534,7 @@ packages:
     engines: {node: '>= 8'}
 
   '@pkgjs/parseargs@0.11.0':
-    resolution: {integrity: sha1-p36nQvqyV3UUVDTrHSMoz1ATrDM=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@pkgjs/parseargs/-/parseargs-0.11.0.tgz?dl=https://registry.npmjs.org/@pkgjs/parseargs/-/parseargs-0.11.0.tgz}
+    resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
   '@pkgr/core@0.1.1':
@@ -625,101 +611,92 @@ packages:
         optional: true
 
   '@rollup/rollup-android-arm-eabi@4.24.3':
-    resolution: {integrity: sha1-SaKpgIB08mg2Z5kqqUsojgtU/II=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-android-arm-eabi/-/rollup-android-arm-eabi-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-android-arm-eabi/-/rollup-android-arm-eabi-4.24.3.tgz}
+    resolution: {integrity: sha512-ufb2CH2KfBWPJok95frEZZ82LtDl0A6QKTa8MoM+cWwDZvVGl5/jNb79pIhRvAalUu+7LD91VYR0nwRD799HkQ==}
     cpu: [arm]
     os: [android]
 
   '@rollup/rollup-android-arm64@4.24.3':
-    resolution: {integrity: sha1-GX47wBwijTwjWR4PztypH485jsE=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-android-arm64/-/rollup-android-arm64-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-android-arm64/-/rollup-android-arm64-4.24.3.tgz}
+    resolution: {integrity: sha512-iAHpft/eQk9vkWIV5t22V77d90CRofgR2006UiCjHcHJFVI1E0oBkQIAbz+pLtthFw3hWEmVB4ilxGyBf48i2Q==}
     cpu: [arm64]
     os: [android]
 
   '@rollup/rollup-darwin-arm64@4.24.3':
-    resolution: {integrity: sha1-FncsAwnQ3DzKcWWAzax6HFYN30Y=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-darwin-arm64/-/rollup-darwin-arm64-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-darwin-arm64/-/rollup-darwin-arm64-4.24.3.tgz}
+    resolution: {integrity: sha512-QPW2YmkWLlvqmOa2OwrfqLJqkHm7kJCIMq9kOz40Zo9Ipi40kf9ONG5Sz76zszrmIZZ4hgRIkez69YnTHgEz1w==}
     cpu: [arm64]
     os: [darwin]
 
   '@rollup/rollup-darwin-x64@4.24.3':
-    resolution: {integrity: sha1-TpgSChxM2n1AQ8zOcjR87lN4QUA=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-darwin-x64/-/rollup-darwin-x64-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-darwin-x64/-/rollup-darwin-x64-4.24.3.tgz}
+    resolution: {integrity: sha512-KO0pN5x3+uZm1ZXeIfDqwcvnQ9UEGN8JX5ufhmgH5Lz4ujjZMAnxQygZAVGemFWn+ZZC0FQopruV4lqmGMshow==}
     cpu: [x64]
     os: [darwin]
 
   '@rollup/rollup-freebsd-arm64@4.24.3':
-    resolution: {integrity: sha1-JxReQUmG4hbg2bmo1IgCjzPDlWY=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-freebsd-arm64/-/rollup-freebsd-arm64-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-freebsd-arm64/-/rollup-freebsd-arm64-4.24.3.tgz}
+    resolution: {integrity: sha512-CsC+ZdIiZCZbBI+aRlWpYJMSWvVssPuWqrDy/zi9YfnatKKSLFCe6fjna1grHuo/nVaHG+kiglpRhyBQYRTK4A==}
     cpu: [arm64]
     os: [freebsd]
 
   '@rollup/rollup-freebsd-x64@4.24.3':
-    resolution: {integrity: sha1-Z+df2HqQMJDwOLISJzxJLlymsy8=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-freebsd-x64/-/rollup-freebsd-x64-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-freebsd-x64/-/rollup-freebsd-x64-4.24.3.tgz}
+    resolution: {integrity: sha512-F0nqiLThcfKvRQhZEzMIXOQG4EeX61im61VYL1jo4eBxv4aZRmpin6crnBJQ/nWnCsjH5F6J3W6Stdm0mBNqBg==}
     cpu: [x64]
     os: [freebsd]
 
   '@rollup/rollup-linux-arm-gnueabihf@4.24.3':
-    resolution: {integrity: sha1-u0XrrbuUlimKtUYTc73jV+jzPog=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-linux-arm-gnueabihf/-/rollup-linux-arm-gnueabihf-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-linux-arm-gnueabihf/-/rollup-linux-arm-gnueabihf-4.24.3.tgz}
+    resolution: {integrity: sha512-KRSFHyE/RdxQ1CSeOIBVIAxStFC/hnBgVcaiCkQaVC+EYDtTe4X7z5tBkFyRoBgUGtB6Xg6t9t2kulnX6wJc6A==}
     cpu: [arm]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.24.3':
-    resolution: {integrity: sha1-OEJ2wj/rCk1v+mA6mnYN7M6LQRg=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-linux-arm-musleabihf/-/rollup-linux-arm-musleabihf-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-linux-arm-musleabihf/-/rollup-linux-arm-musleabihf-4.24.3.tgz}
+    resolution: {integrity: sha512-h6Q8MT+e05zP5BxEKz0vi0DhthLdrNEnspdLzkoFqGwnmOzakEHSlXfVyA4HJ322QtFy7biUAVFPvIDEDQa6rw==}
     cpu: [arm]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.24.3':
-    resolution: {integrity: sha1-ieWkVw3dnsqQgySm3mC9ZPkE4/A=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-linux-arm64-gnu/-/rollup-linux-arm64-gnu-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-linux-arm64-gnu/-/rollup-linux-arm64-gnu-4.24.3.tgz}
+    resolution: {integrity: sha512-fKElSyXhXIJ9pqiYRqisfirIo2Z5pTTve5K438URf08fsypXrEkVmShkSfM8GJ1aUyvjakT+fn2W7Czlpd/0FQ==}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.24.3':
-    resolution: {integrity: sha1-n/181sbGZw2MA5BW1qSa2fH2aUk=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-linux-arm64-musl/-/rollup-linux-arm64-musl-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-linux-arm64-musl/-/rollup-linux-arm64-musl-4.24.3.tgz}
+    resolution: {integrity: sha512-YlddZSUk8G0px9/+V9PVilVDC6ydMz7WquxozToozSnfFK6wa6ne1ATUjUvjin09jp34p84milxlY5ikueoenw==}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-powerpc64le-gnu@4.24.3':
-    resolution: {integrity: sha1-TTLOmC4tJeO4EWM2rVzm4nC1oCQ=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-linux-powerpc64le-gnu/-/rollup-linux-powerpc64le-gnu-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-linux-powerpc64le-gnu/-/rollup-linux-powerpc64le-gnu-4.24.3.tgz}
+    resolution: {integrity: sha512-yNaWw+GAO8JjVx3s3cMeG5Esz1cKVzz8PkTJSfYzE5u7A+NvGmbVFEHP+BikTIyYWuz0+DX9kaA3pH9Sqxp69g==}
     cpu: [ppc64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-gnu@4.24.3':
-    resolution: {integrity: sha1-9D1OBXI5fj06zYLXfXnOAh3qMxA=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-linux-riscv64-gnu/-/rollup-linux-riscv64-gnu-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-linux-riscv64-gnu/-/rollup-linux-riscv64-gnu-4.24.3.tgz}
+    resolution: {integrity: sha512-lWKNQfsbpv14ZCtM/HkjCTm4oWTKTfxPmr7iPfp3AHSqyoTz5AgLemYkWLwOBWc+XxBbrU9SCokZP0WlBZM9lA==}
     cpu: [riscv64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-s390x-gnu@4.24.3':
-    resolution: {integrity: sha1-Jk+KTCBhc5Rb2rKmdtY4t5RRBqk=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-linux-s390x-gnu/-/rollup-linux-s390x-gnu-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-linux-s390x-gnu/-/rollup-linux-s390x-gnu-4.24.3.tgz}
+    resolution: {integrity: sha512-HoojGXTC2CgCcq0Woc/dn12wQUlkNyfH0I1ABK4Ni9YXyFQa86Fkt2Q0nqgLfbhkyfQ6003i3qQk9pLh/SpAYw==}
     cpu: [s390x]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.24.3':
-    resolution: {integrity: sha1-6GFypAey7dQVQOwq5jbkl/rcz/Y=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.24.3.tgz}
+    resolution: {integrity: sha512-mnEOh4iE4USSccBOtcrjF5nj+5/zm6NcNhbSEfR3Ot0pxBwvEn5QVUXcuOwwPkapDtGZ6pT02xLoPaNv06w7KQ==}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.24.3':
-    resolution: {integrity: sha1-ium/eJhtGxbMvImrby36loB9MXg=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-linux-x64-musl/-/rollup-linux-x64-musl-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-linux-x64-musl/-/rollup-linux-x64-musl-4.24.3.tgz}
+    resolution: {integrity: sha512-rMTzawBPimBQkG9NKpNHvquIUTQPzrnPxPbCY1Xt+mFkW7pshvyIS5kYgcf74goxXOQk0CP3EoOC1zcEezKXhw==}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-win32-arm64-msvc@4.24.3':
-    resolution: {integrity: sha1-Edaln2UaPCqeXqqwqZNnt3opwxk=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-win32-arm64-msvc/-/rollup-win32-arm64-msvc-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-win32-arm64-msvc/-/rollup-win32-arm64-msvc-4.24.3.tgz}
+    resolution: {integrity: sha512-2lg1CE305xNvnH3SyiKwPVsTVLCg4TmNCF1z7PSHX2uZY2VbUpdkgAllVoISD7JO7zu+YynpWNSKAtOrX3AiuA==}
     cpu: [arm64]
     os: [win32]
 
   '@rollup/rollup-win32-ia32-msvc@4.24.3':
-    resolution: {integrity: sha1-f/FG5T3G44i2Aym37DM1UB0rD5g=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-win32-ia32-msvc/-/rollup-win32-ia32-msvc-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-win32-ia32-msvc/-/rollup-win32-ia32-msvc-4.24.3.tgz}
+    resolution: {integrity: sha512-9SjYp1sPyxJsPWuhOCX6F4jUMXGbVVd5obVpoVEi8ClZqo52ViZewA6eFz85y8ezuOA+uJMP5A5zo6Oz4S5rVQ==}
     cpu: [ia32]
     os: [win32]
 
   '@rollup/rollup-win32-x64-msvc@4.24.3':
-    resolution: {integrity: sha1-doczV4Hv5r7hTW7Y7/l0ap8kyc0=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.24.3.tgz?dl=https://registry.npmjs.org/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.24.3.tgz}
+    resolution: {integrity: sha512-HGZgRFFYrMrP3TJlq58nR1xy8zHKId25vhmm5S9jETEfDf6xybPxsavFTJaufe2zgOGYJBskGlj49CwtEuFhWQ==}
     cpu: [x64]
     os: [win32]
 
@@ -861,7 +838,7 @@ packages:
     resolution: {integrity: sha1-hNeFaMSnHIhcsVdUv1HspCp3bv4=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/@tanstack/store/-/store-0.5.5.tgz?dl=https://registry.npmjs.org/@tanstack/store/-/store-0.5.5.tgz}
 
   '@testing-library/dom@10.4.0':
-    resolution: {integrity: sha1-gqnZRi8R0kDsrb9AZgfGzu7/Q6g=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@testing-library/dom/-/dom-10.4.0.tgz?dl=https://registry.npmjs.org/@testing-library/dom/-/dom-10.4.0.tgz}
+    resolution: {integrity: sha512-pemlzrSESWbdAloYml3bAJMEfNh1Z7EduzqPKprCH5S341frlpYnUEW0H72dLxa6IsYr+mPno20GiSm+h9dEdQ==}
     engines: {node: '>=18'}
 
   '@testing-library/jest-dom@6.4.8':
@@ -890,7 +867,7 @@ packages:
       '@testing-library/dom': '>=7.21.4'
 
   '@types/aria-query@5.0.4':
-    resolution: {integrity: sha1-GjHD03iFDSd42rtjdNA23LpLpwg=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/@types/aria-query/-/aria-query-5.0.4.tgz?dl=https://registry.npmjs.org/@types/aria-query/-/aria-query-5.0.4.tgz}
+    resolution: {integrity: sha512-rfT93uj5s0PRL7EzccGMs3brplhcrghnDoV26NqKhCAS1hVo+WdNsPvE/yb6ilfr5hi2MEk6d5EWJTKdxg8jVw==}
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -1161,7 +1138,7 @@ packages:
     engines: {node: '>=8'}
 
   ansi-styles@5.2.0:
-    resolution: {integrity: sha1-B0SWkK1Fd30ZJKwquy/IiV26g2s=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/ansi-styles/-/ansi-styles-5.2.0.tgz?dl=https://registry.npmjs.org/ansi-styles/-/ansi-styles-5.2.0.tgz}
+    resolution: {integrity: sha512-Cxwpt2SfTzTtXcfOlzGEee8O+c+MmUgGrNiBcXnuWxuFJHe6a5Hz7qwhwe5OgaSYI0IJvkLqWX1ASG+cJOkEiA==}
     engines: {node: '>=10'}
 
   ansi-styles@6.2.1:
@@ -1455,7 +1432,7 @@ packages:
     engines: {node: '>=6.0.0'}
 
   dom-accessibility-api@0.5.16:
-    resolution: {integrity: sha1-WnQp5gZus2ZNkR4z+w5F3o6whFM=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/dom-accessibility-api/-/dom-accessibility-api-0.5.16.tgz?dl=https://registry.npmjs.org/dom-accessibility-api/-/dom-accessibility-api-0.5.16.tgz}
+    resolution: {integrity: sha512-X7BJ2yElsnOJ30pZF4uIIDfBEVgF4XEBxL9Bxhy6dnrm5hkzqmsWHGTiHqRiITNhMyFLyAiWndIJP7Z1NTteDg==}
 
   dom-accessibility-api@0.6.3:
     resolution: {integrity: sha1-mT6SXMHXPyxmLn113VpURSWaj9g=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/dom-accessibility-api/-/dom-accessibility-api-0.6.3.tgz?dl=https://registry.npmjs.org/dom-accessibility-api/-/dom-accessibility-api-0.6.3.tgz}
@@ -1473,7 +1450,7 @@ packages:
     resolution: {integrity: sha1-dpmLkmhAnrPa496YklTUVucM/iM=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/emoji-regex/-/emoji-regex-10.3.0.tgz?dl=https://registry.npmjs.org/emoji-regex/-/emoji-regex-10.3.0.tgz}
 
   emoji-regex@8.0.0:
-    resolution: {integrity: sha1-6Bj9ac5cz8tARZT4QpY79TFkzDc=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/emoji-regex/-/emoji-regex-8.0.0.tgz?dl=https://registry.npmjs.org/emoji-regex/-/emoji-regex-8.0.0.tgz}
+    resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
 
   emoji-regex@9.2.2:
     resolution: {integrity: sha1-hAyIA7DYBH9P8M+WMXazLU7z7XI=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/emoji-regex/-/emoji-regex-9.2.2.tgz?dl=https://registry.npmjs.org/emoji-regex/-/emoji-regex-9.2.2.tgz}
@@ -1686,12 +1663,12 @@ packages:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
 
   fsevents@2.3.2:
-    resolution: {integrity: sha1-ilJveLj99GI7cJ4Ll1xSwkwC/Ro=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/fsevents/-/fsevents-2.3.2.tgz?dl=https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz}
+    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
   fsevents@2.3.3:
-    resolution: {integrity: sha1-ysZAd4XQNnWipeGlMFxpezR9kNY=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/fsevents/-/fsevents-2.3.3.tgz?dl=https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz}
+    resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
@@ -1906,7 +1883,7 @@ packages:
     resolution: {integrity: sha1-yHSbZfF8EzMT5mGxKJuVrT29YuY=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/is-finalizationregistry/-/is-finalizationregistry-1.0.2.tgz?dl=https://registry.npmjs.org/is-finalizationregistry/-/is-finalizationregistry-1.0.2.tgz}
 
   is-fullwidth-code-point@3.0.0:
-    resolution: {integrity: sha1-8Rb4Bk/pCz94RKOJl8C3UFEmnx0=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/is-fullwidth-code-point/-/is-fullwidth-code-point-3.0.0.tgz?dl=https://registry.npmjs.org/is-fullwidth-code-point/-/is-fullwidth-code-point-3.0.0.tgz}
+    resolution: {integrity: sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==}
     engines: {node: '>=8'}
 
   is-fullwidth-code-point@4.0.0:
@@ -2114,7 +2091,7 @@ packages:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
   lz-string@1.5.0:
-    resolution: {integrity: sha1-watQ93iHtxJiEgG6n9Tjpu0JmUE=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/lz-string/-/lz-string-1.5.0.tgz?dl=https://registry.npmjs.org/lz-string/-/lz-string-1.5.0.tgz}
+    resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
     hasBin: true
 
   magic-string@0.30.12:
@@ -2170,7 +2147,7 @@ packages:
     engines: {node: '>=16 || 14 >=14.17'}
 
   moment@2.30.1:
-    resolution: {integrity: sha1-+MkcB7enhuMMWZJt9TC06slpdK4=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/moment/-/moment-2.30.1.tgz?dl=https://registry.npmjs.org/moment/-/moment-2.30.1.tgz}
+    resolution: {integrity: sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==}
 
   ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
@@ -2179,7 +2156,7 @@ packages:
     resolution: {integrity: sha1-V0yBOM4dK1hh8LRFedut1gxmFbI=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/ms/-/ms-2.1.3.tgz?dl=https://registry.npmjs.org/ms/-/ms-2.1.3.tgz}
 
   nanoid@3.3.7:
-    resolution: {integrity: sha1-0MMBppG8jVTvoKIibM8/4v1la9g=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/nanoid/-/nanoid-3.3.7.tgz?dl=https://registry.npmjs.org/nanoid/-/nanoid-3.3.7.tgz}
+    resolution: {integrity: sha1-0MMBppG8jVTvoKIibM8/4v1la9g=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/nanoid/-/nanoid-3.3.7.tgz?dl=https://registry.npmjs.org/nanoid/-/nanoid-3.3.7.tgz}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -2306,7 +2283,7 @@ packages:
     resolution: {integrity: sha512-anP1Z8qwhkbmu7MFP5iTt+wQKXgwzf7zTyGlcdzabySa9vd0Xt392U0rVmz9poOaBj0uHJKyyo9/upk0HrEQew==}
 
   picocolors@1.1.1:
-    resolution: {integrity: sha1-PTIa8+q5ObCDyPkpodEs2oHCa2s=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/picocolors/-/picocolors-1.1.1.tgz?dl=https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz}
+    resolution: {integrity: sha1-PTIa8+q5ObCDyPkpodEs2oHCa2s=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/picocolors/-/picocolors-1.1.1.tgz?dl=https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz}
 
   picomatch@2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
@@ -2336,7 +2313,7 @@ packages:
     engines: {node: '>= 0.4'}
 
   postcss@8.4.47:
-    resolution: {integrity: sha1-W/bJoBDz5yTFA78D73lH3LD+o2U=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/postcss/-/postcss-8.4.47.tgz?dl=https://registry.npmjs.org/postcss/-/postcss-8.4.47.tgz}
+    resolution: {integrity: sha1-W/bJoBDz5yTFA78D73lH3LD+o2U=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/postcss/-/postcss-8.4.47.tgz?dl=https://registry.npmjs.org/postcss/-/postcss-8.4.47.tgz}
     engines: {node: ^10 || ^12 || >=14}
 
   prelude-ls@1.2.1:
@@ -2353,7 +2330,7 @@ packages:
     hasBin: true
 
   pretty-format@27.5.1:
-    resolution: {integrity: sha1-IYGHn96lGnpYUfs52SD6pj8B2I4=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/pretty-format/-/pretty-format-27.5.1.tgz?dl=https://registry.npmjs.org/pretty-format/-/pretty-format-27.5.1.tgz}
+    resolution: {integrity: sha512-Qb1gy5OrP5+zDf2Bvnzdl3jsTf1qXVMazbvCoKhtKqVs4/YK4ozX4gKQJJVyNe+cajNPn0KoC0MC3FUmaHWEmQ==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
 
   prop-types@15.8.1:
@@ -2609,7 +2586,7 @@ packages:
     resolution: {integrity: sha1-eJcppNw23imZ3BVt1sHZwYzqVqQ=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/react-is/-/react-is-16.13.1.tgz?dl=https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz}
 
   react-is@17.0.2:
-    resolution: {integrity: sha1-5pHUqOnHiTZWVVOas3J2Kw77VPA=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/react-is/-/react-is-17.0.2.tgz?dl=https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz}
+    resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
 
   react-is@18.3.1:
     resolution: {integrity: sha1-6DVX3BLq5jqZ4AOkY4ix3LtE234=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/react-is/-/react-is-18.3.1.tgz?dl=https://registry.npmjs.org/react-is/-/react-is-18.3.1.tgz}
@@ -2672,7 +2649,7 @@ packages:
     hasBin: true
 
   rollup@4.24.3:
-    resolution: {integrity: sha1-iyWQY3QK9gsAMDFfiGZbogQXibg=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/rollup/-/rollup-4.24.3.tgz?dl=https://registry.npmjs.org/rollup/-/rollup-4.24.3.tgz}
+    resolution: {integrity: sha1-iyWQY3QK9gsAMDFfiGZbogQXibg=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/rollup/-/rollup-4.24.3.tgz?dl=https://registry.npmjs.org/rollup/-/rollup-4.24.3.tgz}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
@@ -2762,7 +2739,7 @@ packages:
     engines: {node: '>=0.10.0'}
 
   source-map-js@1.2.1:
-    resolution: {integrity: sha1-HOVlD93YerwJnto33P8CTCZnrkY=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/source-map-js/-/source-map-js-1.2.1.tgz?dl=https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.1.tgz}
+    resolution: {integrity: sha1-HOVlD93YerwJnto33P8CTCZnrkY=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/source-map-js/-/source-map-js-1.2.1.tgz?dl=https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.1.tgz}
     engines: {node: '>=0.10.0'}
 
   stackback@0.0.2:
@@ -2779,7 +2756,7 @@ packages:
     resolution: {integrity: sha1-aYLMMEn7tM2F+LJFaLnZvznu/5c=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/string-convert/-/string-convert-0.2.1.tgz?dl=https://registry.npmjs.org/string-convert/-/string-convert-0.2.1.tgz}
 
   string-width@4.2.3:
-    resolution: {integrity: sha1-JpxxF9J7Ba0uU2gwqOyJXvnG0BA=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/string-width/-/string-width-4.2.3.tgz?dl=https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz}
+    resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}
     engines: {node: '>=8'}
 
   string-width@5.1.2:
@@ -3014,7 +2991,7 @@ packages:
         optional: true
 
   vite@5.4.10:
-    resolution: {integrity: sha1-01invYvtps8PO3pFCox2k6T4DBg=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/vite/-/vite-5.4.10.tgz?dl=https://registry.npmjs.org/vite/-/vite-5.4.10.tgz}
+    resolution: {integrity: sha1-01invYvtps8PO3pFCox2k6T4DBg=, tarball: https://npm.infra.cloudera.com/api/npm/cloudera-npm/vite/-/vite-5.4.10.tgz?dl=https://registry.npmjs.org/vite/-/vite-5.4.10.tgz}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -3126,7 +3103,7 @@ packages:
     engines: {node: '>=0.10.0'}
 
   wrap-ansi@7.0.0:
-    resolution: {integrity: sha1-Z+FFz/UQpqaYS98RUpEdadLrnkM=, tarball: https://npm.infra.cloudera.com:443/api/npm/cloudera-npm/wrap-ansi/-/wrap-ansi-7.0.0.tgz?dl=https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-7.0.0.tgz}
+    resolution: {integrity: sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==}
     engines: {node: '>=10'}
 
   wrap-ansi@8.1.0:
@@ -3390,10 +3367,6 @@ snapshots:
       '@babel/helper-validator-identifier': 7.25.9
 
   '@bcoe/v8-coverage@0.2.3': {}
-
-  '@cloudera-internal/cuix-core@1.1.10(react@18.3.1)':
-    optionalDependencies:
-      react: 18.3.1
 
   '@ctrl/tinycolor@3.6.1': {}
 

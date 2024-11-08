@@ -45,8 +45,8 @@ import {
 } from "src/api/ragDocumentsApi.ts";
 import { bytesConversion } from "src/utils/bytesConversion.ts";
 import StatsWidget from "pages/DataSources/ManageTab/StatsWidget.tsx";
-import AiAssistantIcon from "@cloudera-internal/cuix-core/icons/react/AiAssistantIcon";
-import DocumentationIcon from "@cloudera-internal/cuix-core/icons/react/DocumentationIcon";
+import AiAssistantIcon from "src/cuix/icons/AiAssistantIcon";
+import DocumentationIcon from "src/cuix/icons/DocumentationIcon";
 import { useGetDocumentSummary } from "src/api/summaryApi.ts";
 import { useState } from "react";
 

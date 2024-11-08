@@ -48,7 +48,7 @@ import { chatHistoryQueryKey } from "src/api/chatApi.ts";
 import messageQueue from "src/utils/messageQueue.ts";
 import { QueryKeys } from "src/api/utils.ts";
 import { Flex, Menu, Modal, Popover, Tooltip, Typography } from "antd";
-import { cdlWhite } from "@cloudera-internal/cuix-core/variables";
+import { cdlWhite } from "src/cuix/variables.ts";
 import { ClearOutlined, DeleteOutlined, MoreOutlined } from "@ant-design/icons";
 import { useState } from "react";
 

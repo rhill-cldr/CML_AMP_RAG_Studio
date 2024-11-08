@@ -38,10 +38,7 @@
 
 import { Evaluation } from "src/api/chatApi.ts";
 import { Flex, Popover, Typography } from "antd";
-import {
-  cdlBlue600,
-  cdlGreen600,
-} from "@cloudera-internal/cuix-core/variables";
+import { cdlBlue600, cdlGreen600 } from "src/cuix/variables.ts";
 import Images from "src/components/images/Images.ts";
 
 const evaluationNames = {
