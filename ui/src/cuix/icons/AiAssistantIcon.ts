@@ -37,6 +37,7 @@
  ******************************************************************************/
 import React from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const AiAssistantIcon = (props: any) =>
   /*#__PURE__*/ React.createElement(
     "svg",

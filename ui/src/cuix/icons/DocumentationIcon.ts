@@ -37,6 +37,7 @@
  ******************************************************************************/
 import React from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const DocumentationIcon = (props: any) =>
   /*#__PURE__*/ React.createElement(
     "svg",

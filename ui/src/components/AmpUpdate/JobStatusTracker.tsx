@@ -41,7 +41,7 @@ import { Flex, Progress, Typography } from "antd";
 import { cdlBlue600, cdlGray200, cdlGreen600 } from "src/cuix/variables.ts";
 
 const jobStatusDisplayValue = (jobStatus?: JobStatus): string => {
-  const statusMap: { [key in JobStatus]?: string } = {
+  const statusMap: Record<JobStatus, string> = {
     [JobStatus.SCHEDULING]: "Scheduling",
     [JobStatus.STARTING]: "Starting",
     [JobStatus.RUNNING]: "Running",
