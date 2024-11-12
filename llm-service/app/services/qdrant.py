@@ -36,10 +36,8 @@
 #  DATA.
 # ##############################################################################
 import logging
-import os
 
 import botocore.exceptions
-import qdrant_client
 from fastapi import HTTPException
 from llama_index.core.base.llms.types import ChatMessage
 from llama_index.core.chat_engine import CondenseQuestionChatEngine
@@ -52,22 +50,16 @@ from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.readers import SimpleDirectoryReader
 from llama_index.core.response_synthesizers import get_response_synthesizer
 from llama_index.core.storage import StorageContext
-from llama_index.vector_stores.qdrant import QdrantVectorStore
 from pydantic import BaseModel
-from qdrant_client.http.models import CountResult
 
+from . import rag_vector_store
 from ..rag_types import RagPredictConfiguration
 from .chat_store import RagContext
 from .llama_utils import completion_to_prompt, messages_to_prompt
 from . import models
 from .utils import get_last_segment
+
 logger = logging.getLogger(__name__)
-
-qdrant_host = os.environ.get("QDRANT_HOST", "localhost")
-
-
-def table_name_from(data_source_id: int):
-    return f"index_{data_source_id}"
 
 
 class RagIndexDocumentConfiguration(BaseModel):
@@ -99,7 +91,7 @@ def download_and_index(
         ) from e
 
     logger.info("instantiating vector store")
-    vector_store = create_qdrant_vector_store(data_source_id)
+    vector_store = rag_vector_store.create_rag_vector_store(data_source_id).access_vector_store()
     logger.info("instantiated vector store")
 
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
@@ -130,48 +122,28 @@ def check_data_source_exists(data_source_size: int) -> None:
 
 
 def size_of(data_source_id: int) -> int:
-    """
-    If the collection does not exist, return -1
-    """
-    client, _ = create_qdrant_clients()
-    table_name = table_name_from(data_source_id)
-    if not client.collection_exists(table_name):
-        return -1
-    document_count: CountResult = client.count(table_name)
-    return document_count.count
+    vector_store = rag_vector_store.create_rag_vector_store(data_source_id)
+    return vector_store.size()
 
 
 def chunk_contents(data_source_id: int, chunk_id: str) -> str:
-    vector_store = QdrantVectorStore(
-        table_name_from(data_source_id), *create_qdrant_clients()
-    )
+    vector_store = rag_vector_store.create_rag_vector_store(data_source_id).access_vector_store()
     node = vector_store.get_nodes([chunk_id])[0]
     return node.get_content()
 
 
 def delete(data_source_id: int) -> None:
-    client, _ = create_qdrant_clients()
-    table_name = table_name_from(data_source_id)
-    if client.collection_exists(table_name):
-        client.delete_collection(table_name)
+    vector_store = rag_vector_store.create_rag_vector_store(data_source_id)
+    vector_store.delete()
 
 
 def delete_document(data_source_id: int, document_id: str) -> None:
-    vector_store = create_qdrant_vector_store(data_source_id)
+    vector_store = rag_vector_store.create_rag_vector_store(data_source_id).access_vector_store()
     index = VectorStoreIndex.from_vector_store(
         vector_store=vector_store,
         embed_model=models.get_embedding_model(),
     )
     index.delete_ref_doc(document_id)
-
-
-def create_qdrant_clients() -> tuple[
-    qdrant_client.QdrantClient,
-    qdrant_client.AsyncQdrantClient,
-]:
-    client = qdrant_client.QdrantClient(host=qdrant_host, port=6333)
-    aclient = qdrant_client.AsyncQdrantClient(host=qdrant_host, port=6334)
-    return client, aclient
 
 
 def query(
@@ -180,7 +152,7 @@ def query(
         configuration: RagPredictConfiguration,
         chat_history: list[RagContext],
 ) -> AgentChatResponse:
-    vector_store = create_qdrant_vector_store(data_source_id)
+    vector_store = rag_vector_store.create_rag_vector_store(data_source_id).access_vector_store()
     embedding_model = models.get_embedding_model()
     index = VectorStoreIndex.from_vector_store(
         vector_store=vector_store,
@@ -226,9 +198,3 @@ def query(
             detail=json_error["message"],
         ) from error
 
-
-def create_qdrant_vector_store(data_source_id: int) -> QdrantVectorStore:
-    vector_store = QdrantVectorStore(
-        table_name_from(data_source_id), *create_qdrant_clients()
-    )
-    return vector_store

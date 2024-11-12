@@ -53,12 +53,20 @@ from moto import mock_aws
 from pydantic import Field
 
 from app.main import app
-from app.services import models
+from app.services import models, rag_vector_store
+from app.services.rag_qdrant_vector_store import RagQdrantVectorStore
 
 
 @pytest.fixture
 def aws_region() -> str:
     return os.environ.get("AWS_DEFAULT_REGION", "us-west-2")
+
+
+@pytest.fixture(autouse=True)
+def databases_dir(monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path) -> str:
+    databases_dir: str = str(tmp_path / "databases")
+    monkeypatch.setenv("RAG_DATABASES_DIR", databases_dir)
+    return databases_dir
 
 
 @pytest.fixture
@@ -134,13 +142,38 @@ class DummyLlm(LLM):
 
 class DummyEmbeddingModel(BaseEmbedding):
     def _get_query_embedding(self, query: str) -> Embedding:
-        return [0.0] * 1024
+        return [0.1] * 1024
 
     async def _aget_query_embedding(self, query: str) -> Embedding:
-        return [0.0] * 1024
+        return [0.1] * 1024
 
     def _get_text_embedding(self, text: str) -> Embedding:
-        return [0.0] * 1024
+        return [0.1] * 1024
+
+
+# We're hacking our vector stores to run in-memory. Since they are in memory, we need
+# to be sure to return the same instance for the same data source id
+table_name_to_vector_store = {}
+
+
+def _get_vector_store_instance(data_source_id: int, table_prefix: str) -> RagQdrantVectorStore:
+    if data_source_id in table_name_to_vector_store:
+        return table_name_to_vector_store[data_source_id]
+    res = RagQdrantVectorStore(table_name=f"{table_prefix}{data_source_id}", memory_store=True)
+    table_name_to_vector_store[data_source_id] = res
+    return res
+
+
+@pytest.fixture(autouse=True)
+def vector_store(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setattr(rag_vector_store, 'create_rag_vector_store',
+                        lambda ds_id: _get_vector_store_instance(ds_id, "index_"))
+
+
+@pytest.fixture(autouse=True)
+def summary_vector_store(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setattr(rag_vector_store, 'create_summary_vector_store',
+                        lambda ds_id: _get_vector_store_instance(ds_id, "summary_index_"))
 
 
 @pytest.fixture(autouse=True)
@@ -181,17 +214,12 @@ def s3_object(
 
 @pytest.fixture
 def client(
-        monkeypatch: pytest.MonkeyPatch,
         s3: "s3.ServiceResource",
-        tmp_path: pathlib.Path,
 ) -> Iterator[TestClient]:
     """Return a test client for making calls to the service.
 
     https://www.starlette.io/testclient/
 
     """
-    databases_dir = str(tmp_path / "databases")
-    monkeypatch.setenv("RAG_DATABASES_DIR", databases_dir)
-
     with TestClient(app) as test_client:
         yield test_client

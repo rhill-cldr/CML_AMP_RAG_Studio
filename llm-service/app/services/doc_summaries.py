@@ -52,10 +52,9 @@ from llama_index.core import (
 )
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.readers import SimpleDirectoryReader
-from llama_index.vector_stores.qdrant import QdrantVectorStore
 
 from .llama_utils import completion_to_prompt, messages_to_prompt
-from .qdrant import create_qdrant_clients
+from . import rag_vector_store
 from .s3 import download
 from .utils import get_last_segment
 from ..config import settings
@@ -156,19 +155,12 @@ def summarize_data_source(data_source_id: int) -> str:
 def make_storage_context(data_source_id):
     storage_context = StorageContext.from_defaults(
         persist_dir=index_dir(data_source_id),
-        vector_store=create_qdrant_vector_store(data_source_id),
+        vector_store=rag_vector_store.create_summary_vector_store(data_source_id).access_vector_store(),
     )
     return storage_context
 
 
-def create_qdrant_vector_store(data_source_id: int) -> QdrantVectorStore:
-    vector_store = QdrantVectorStore(
-        table_name_from(data_source_id), *create_qdrant_clients()
-    )
-    return vector_store
-
-
-def table_name_from(data_source_id: int):
+def doc_summary_vector_table_name_from(data_source_id: int):
     return f"summary_index_{data_source_id}"
 
 
@@ -177,8 +169,7 @@ def delete_data_source(data_source_id):
     index = index_dir(data_source_id)
     if os.path.exists(index):
         shutil.rmtree(index)
-    [qdrant_client, _] = create_qdrant_clients()
-    qdrant_client.delete_collection(table_name_from(data_source_id))
+    rag_vector_store.create_summary_vector_store(data_source_id).delete()
 
 
 def delete_document(data_source_id, doc_id):

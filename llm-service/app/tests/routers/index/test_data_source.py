@@ -42,19 +42,13 @@ from typing import Any
 
 from llama_index.core import VectorStoreIndex
 from llama_index.core.vector_stores import VectorStoreQuery
-from llama_index.vector_stores.qdrant import QdrantVectorStore
-from qdrant_client import qdrant_client
 
-from app.services.qdrant import table_name_from, create_qdrant_clients
 from app.services import models
+from app.services import rag_vector_store
+
 
 def get_vector_store_index(data_source_id) -> VectorStoreIndex:
-    client = qdrant_client.QdrantClient(host="localhost", port=6333)
-    collection_name = f"index_{data_source_id}"
-    assert client.collection_exists(collection_name)
-    vector_store = QdrantVectorStore(
-        table_name_from(data_source_id), *create_qdrant_clients()
-    )
+    vector_store = rag_vector_store.create_rag_vector_store(data_source_id).access_vector_store()
     index = VectorStoreIndex.from_vector_store(vector_store, embed_model=models.get_embedding_model())
     return index
 
@@ -77,9 +71,8 @@ class TestDocumentIndexing:
         assert response.status_code == 200
         assert document_id is not None
         index = get_vector_store_index(data_source_id)
-        vectors = index.vector_store.query(VectorStoreQuery(query_embedding=[-1] * 1024, doc_ids=[document_id]))
+        vectors = index.vector_store.query(VectorStoreQuery(query_embedding=[0.66] * 1024, doc_ids=[document_id]))
         assert len(vectors.nodes) == 1
-
 
     @staticmethod
     def test_delete_data_source(
@@ -95,19 +88,16 @@ class TestDocumentIndexing:
         )
 
         index = get_vector_store_index(data_source_id)
-        vectors = index.vector_store.query(VectorStoreQuery(query_embedding=[-1] * 1024, doc_ids=[document_id]))
+        vectors = index.vector_store.query(VectorStoreQuery(query_embedding=[0.66] * 1024, doc_ids=[document_id]))
         assert len(vectors.nodes) == 1
 
         response = client.delete(f"/index/data_sources/{data_source_id}")
         assert response.status_code == 200
-
-        q_client = qdrant_client.QdrantClient(host="localhost", port=6333)
-        collection_name = f"index_{data_source_id}"
-        assert q_client.collection_exists(collection_name) is False
+        vector_store = rag_vector_store.create_rag_vector_store(data_source_id)
+        assert vector_store.exists() is False
 
         get_summary_response = client.get(f'/index/data_sources/{data_source_id}/documents/{document_id}/summary')
         assert get_summary_response.status_code == 404
-
 
     @staticmethod
     def test_delete_document(
@@ -123,16 +113,15 @@ class TestDocumentIndexing:
         )
 
         index = get_vector_store_index(data_source_id)
-        vectors = index.vector_store.query(VectorStoreQuery(query_embedding=[-1] * 1024, doc_ids=[document_id]))
+        vectors = index.vector_store.query(VectorStoreQuery(query_embedding=[.2] * 1024, doc_ids=[document_id]))
         assert len(vectors.nodes) == 1
 
         response = client.delete(f"/index/data_sources/{data_source_id}/documents/{document_id}")
         assert response.status_code == 200
 
         index = get_vector_store_index(data_source_id)
-        vectors = index.vector_store.query(VectorStoreQuery(query_embedding=[-1] * 1024, doc_ids=[document_id]))
+        vectors = index.vector_store.query(VectorStoreQuery(query_embedding=[.2] * 1024, doc_ids=[document_id]))
         assert len(vectors.nodes) == 0
-
 
     @staticmethod
     def test_get_size(
