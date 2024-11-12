@@ -39,6 +39,7 @@ import requests
 import json
 import os
 
+from fastapi import HTTPException
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
 
@@ -60,6 +61,9 @@ def describe_endpoint(domain: str, endpoint_name: str):
     }
 
     desc = requests.post(describe_url, headers=headers, json=desc_json)
+    if desc.status_code == 404:
+        raise HTTPException(status_code=404, detail = f"Endpoint '{endpoint_name}' not found")
+    print(desc.content)
     content = json.loads(desc.content)
     return content
 
@@ -92,14 +96,20 @@ def get_embedding_model() -> BaseEmbedding:
     endpoint = describe_endpoint(domain=domain, endpoint_name=endpoint_name)
     return CaiiEmbeddingModel(endpoint=endpoint)
 
+### metadata methods below here
+
 def get_caii_llm_models():
     domain = os.environ['CAII_DOMAIN']
     endpoint_name = os.environ['CAII_INFERENCE_ENDPOINT_NAME']
     models = describe_endpoint(domain=domain, endpoint_name=endpoint_name)
-    return [{ "model_id": models["name"], "name": models["name"] }]
+    return [{ "model_id": models["name"], "name": models["name"], "replica_count": models["replica_count"] }]
 
 def get_caii_embedding_models():
+    # notes:
+    # NameResolutionError is we can't contact the CAII_DOMAIN
+    # HTTPException (404) is we can't find the endpoint by name
+
     domain = os.environ['CAII_DOMAIN']
     endpoint_name = os.environ['CAII_EMBEDDING_ENDPOINT_NAME']
     models = describe_endpoint(domain=domain, endpoint_name=endpoint_name)
-    return [{ "model_id": models["name"], "name": models["name"] }]
+    return [{ "model_id": models["name"], "name": models["name"], "replica_count": models["replica_count"]  }]
