@@ -36,8 +36,15 @@ Cloudera for assistance.  Additionally, further details on the AMP status can be
 
 ## Installation
 
+### Important
+
+#### The latest stable version of the AMP lives on the `release/1` branch. The `main` branch is the development branch and may contain unstable code.
+
 Follow the [standard instructions](https://docs.cloudera.com/machine-learning/cloud/applied-ml-prototypes/topics/ml-amp-add-catalog.html) for installing this AMP into your CML workspace.
 The "File Name" to use is `catalog-entry.yaml`.
+
+If you do not want to use the catalog-entry, then you should specify the release branch when installing the AMP directly:
+- `release/1` is the branch name to use for the latest stable release.
 
 For configuring the project, you will need to provide some environment variables.
 

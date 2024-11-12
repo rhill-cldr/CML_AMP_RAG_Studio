@@ -64,7 +64,12 @@ const GettingStarted = () => {
   return (
     <Flex style={{ height: "100vh" }}>
       <Flex style={{ padding: 64 }} flex={1} vertical>
-        <Image src={Images.Cloudera} alt="cloudera" style={{ width: 125 }} />
+        <Image
+          src={Images.Cloudera}
+          alt="cloudera"
+          style={{ width: 125 }}
+          preview={false}
+        />
         <Flex vertical gap={24}>
           <Typography.Title
             style={{
