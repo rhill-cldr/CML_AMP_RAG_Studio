@@ -35,6 +35,7 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: gradle
+          cache-dependency-path: backend/build.gradle.kts
 
       - name: Run Java backend tests
         run: ./gradlew test

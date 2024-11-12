@@ -1,4 +1,0 @@
-CloudConfigurationAwsInstanceProfile:
-  type: string
-  enum:
-    - instance_profile
