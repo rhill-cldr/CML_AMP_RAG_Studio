@@ -41,6 +41,7 @@ import uuid
 
 from llama_index.core.base.llms.types import MessageRole
 
+from ..rag_types import RagPredictConfiguration
 from . import evaluators, qdrant
 from .chat_store import (
     Evaluation,
@@ -49,7 +50,6 @@ from .chat_store import (
     RagStudioChatMessage,
     chat_store,
 )
-from ..types import RagPredictConfiguration
 
 
 def v2_chat(
@@ -129,7 +129,9 @@ def format_source_nodes(response):
     return response_source_nodes
 
 
-def generate_suggested_questions(configuration, data_source_id, chat_history, data_source_size):
+def generate_suggested_questions(
+    configuration, data_source_id, chat_history, data_source_size
+):
     if data_source_size == 0:
         suggested_questions = []
     else:

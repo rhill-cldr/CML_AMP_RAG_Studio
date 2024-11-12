@@ -35,7 +35,6 @@
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
  ******************************************************************************/
-
 export enum ResponseSynthesizerOptions {
   "Llama31-8bInstructV1" = "meta.llama3-1-8b-instruct-v1:0",
   "Llama31-70bInstructV1" = "meta.llama3-1-70b-instruct-v1:0",

@@ -54,6 +54,7 @@ export interface UseMutationType<T> {
 
 export enum MutationKeys {
   "createRagDocuments" = "createRagDocuments",
+  "deleteRagDocument" = "deleteRagDocument",
   "chatMutation" = "chatMutation",
   "createDataSource" = "createDataSource",
   "updateDataSource" = "updateDataSource",
@@ -77,6 +78,8 @@ export enum QueryKeys {
   "getAmpUpdateStatus" = "getAmpUpdateStatus",
   "getDataSourceSummary" = "getDataSourceSummary",
   "getAmpUpdateJobStatus" = "getAmpUpdateJobStatus",
+  "getLlmModels" = "getLlmModels",
+  "getEmbeddingModels" = "getEmbeddingModels",
 }
 
 export const commonHeaders = {

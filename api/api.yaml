@@ -1,0 +1,191 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: RAG Studio API
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:8000/api/v1
+paths:
+  /configurations/cloud:
+    get:
+      summary: List cloud configurations
+      operationId: listCloudConfigurations
+      tags:
+        - config_cloud
+      responses:
+        '200':
+          description: List of clouds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudConfigurationList'
+    post:
+      summary: Create a cloud configuration
+      operationId: createCloudConfiguration
+      tags:
+        - config_cloud
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloudConfigurationCreateRequest'
+      responses:
+        '200':
+          description: Cloud configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudConfiguration'
+  
+  /configurations/cloud/{id}:
+    get:
+      summary: Get a cloud configuration
+      operationId: getCloudConfiguration
+      tags:
+        - config_cloud
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cloud configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudConfiguration'
+    put:
+      summary: Update a cloud configuration
+      operationId: updateCloudConfiguration
+      tags:
+        - config_cloud
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloudConfigurationUpdateRequest'
+      responses:
+        '200':
+          description: Cloud configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudConfiguration'
+    delete:
+      summary: Delete a cloud configuration
+      operationId: deleteCloudConfiguration
+      tags:
+        - config_cloud
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cloud configuration deleted
+
+components:
+  schemas:
+    CloudConfiguration:
+      type: object
+      required:
+        - id
+        - name
+        - configuration
+      properties:
+        id:
+          type: string
+          description: Cloud configuration ID
+        name:
+          type: string
+          description: Cloud configuration name
+        configuration:
+          type: object
+          oneOf:
+            - $ref: '#/components/schemas/CloudConfigurationAws'
+
+    CloudConfigurationAws:
+      type: object
+      required:
+        - aws
+      properties:
+        aws:
+          type: object
+          required:
+            - region
+            - type
+          properties:
+            region:
+              type: string
+            type:
+              oneOf:
+                - $ref: '#/components/schemas/CloudConfigurationAwsInstanceProfile'
+                - $ref: '#/components/schemas/CloudConfigurationAwsKey'
+
+    CloudConfigurationAwsInstanceProfile:
+      type: string
+      enum:
+        - instance_profile
+
+    CloudConfigurationAwsKey:
+      type: object
+      required:
+        - access_key_id
+        - secret_access_key
+      properties:
+        access_key_id:
+          type: string
+        secret_access_key:
+          type: string
+
+    CloudConfigurationCreateRequest:
+      type: object
+      required:
+        - name
+        - configuration
+      properties:
+        name:
+          type: string
+          description: Cloud configuration name
+        configuration:
+          type: object
+          oneOf:
+            - $ref: '#/components/schemas/CloudConfigurationAws'
+
+    CloudConfigurationList:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CloudConfiguration"
+
+    CloudConfigurationUpdateRequest:
+      type: object
+      required:
+        - name
+        - configuration
+      properties:
+        name:
+          type: string
+          description: Cloud configuration name
+        configuration:
+          type: object
+          oneOf:
+            - $ref: '#/components/schemas/CloudConfigurationAws'
+

@@ -39,18 +39,8 @@
 import { Collapse, Form, FormInstance, Input, InputNumber, Select } from "antd";
 import { ConnectionType, DataSourceBaseType } from "src/api/dataSourceApi";
 import RequestConfigureOptions from "pages/DataSources/DataSourcesManagement/RequestConfigureOptions.tsx";
-
-export const embeddingModelOptions = [
-  {
-    value: "cohere.embed-english-v3",
-    label: "Cohere English Embedding v3",
-  },
-  {
-    value: "cohere.embed-multilingual-v3",
-    label: "Cohere Multilingual Embedding v3",
-    disabled: true,
-  },
-];
+import { Model, useGetEmbeddingModels } from "src/api/modelsApi.ts";
+import { useEffect } from "react";
 
 export const distanceMetricOptions = [
   {
@@ -140,6 +130,23 @@ const DataSourcesForm = ({
   updateMode,
   initialValues = dataSourceCreationInitialValues,
 }: DataSourcesFormProps) => {
+  const embeddingsModels = useGetEmbeddingModels();
+
+  useEffect(() => {
+    form.setFieldsValue({
+      embeddingModel: [embeddingsModels.data?.[0]?.model_id],
+    });
+  }, [embeddingsModels.data]);
+
+  const transformModelOptions = (models?: Model[]) => {
+    if (!models) {
+      return [];
+    }
+    return models.map((model) => ({
+      value: model.model_id,
+      label: model.name,
+    }));
+  };
   return (
     <Form
       id="create-new-dataset"
@@ -180,9 +187,12 @@ const DataSourcesForm = ({
       <Form.Item
         name="embeddingModel"
         label="Embedding model"
-        initialValue="cohere.embed-english-v3"
+        rules={[{ required: true }]}
       >
-        <Select options={embeddingModelOptions} disabled={updateMode} />
+        <Select
+          options={transformModelOptions(embeddingsModels.data)}
+          disabled={updateMode}
+        />
       </Form.Item>
       <Form.Item
         name="connectionType"
