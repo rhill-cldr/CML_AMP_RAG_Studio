@@ -83,24 +83,12 @@ def read_summary(data_source_id: int, document_id: str) -> str:
     return doc_summary_index.get_document_summary(doc_id=document_id)
 
 
-def load_document_summary_index(storage_context) -> DocumentSummaryIndex:
-    doc_summary_index: DocumentSummaryIndex = cast(
-        DocumentSummaryIndex,
-        load_index_from_storage(storage_context, summary_query=SUMMARY_PROMPT),
-    )
-    return doc_summary_index
-
 
 def generate_summary(
     data_source_id: int,
     s3_bucket_name: str,
     s3_document_key: str,
 ) -> str:
-    ## todo: move to somewhere better; these are defaults to use when none are explicitly provided
-    Settings.llm = models.get_llm(messages_to_prompt, completion_to_prompt, "meta.llama3-8b-instruct-v1:0")
-    Settings.embed_model = models.get_embedding_model()
-    Settings.splitter = SentenceSplitter(chunk_size=1024)
-
     """Generate, persist, and return a summary for `s3_document_key`."""
     with tempfile.TemporaryDirectory() as tmpdirname:
         # load document(s)
@@ -128,12 +116,29 @@ def generate_summary(
         return doc_summary_index.get_document_summary(doc_id=document_id)
 
 
+## todo: move to somewhere better; these are defaults to use when none are explicitly provided
+def set_settings_globals():
+    Settings.llm = models.get_llm(messages_to_prompt, completion_to_prompt, "meta.llama3-8b-instruct-v1:0")
+    Settings.embed_model = models.get_embedding_model()
+    Settings.splitter = SentenceSplitter(chunk_size=1024)
+
+
 def initialize_summary_index_storage(data_source_id):
+    set_settings_globals()
     doc_summary_index = DocumentSummaryIndex.from_documents(
         [],
         summary_query=SUMMARY_PROMPT,
     )
     doc_summary_index.storage_context.persist(persist_dir=index_dir(data_source_id))
+
+
+def load_document_summary_index(storage_context) -> DocumentSummaryIndex:
+    set_settings_globals()
+    doc_summary_index: DocumentSummaryIndex = cast(
+        DocumentSummaryIndex,
+        load_index_from_storage(storage_context, summary_query=SUMMARY_PROMPT),
+    )
+    return doc_summary_index
 
 
 def summarize_data_source(data_source_id: int) -> str:
