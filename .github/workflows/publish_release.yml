@@ -24,12 +24,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.BRANCH }}
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
@@ -42,41 +42,34 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
         working-directory: api
-        
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9
+
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-
-      - name: Cache pnpm
-        uses: actions/cache@v3
-        with:
-          path: |
-            ui/node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
-
-      - name: Install PNPM
-        run: |
-          npm --dd install @pnpm/exe
+          cache: 'pnpm'
+          cache-dependency-path: ui/pnpm-lock.yaml
 
       - name: Install UI Dependencies
-        run: ../node_modules/\@pnpm/exe/pnpm install --no-frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
         working-directory: ui
 
       - name: Lint with PNPM
-        run: ../node_modules/\@pnpm/exe/pnpm lint
+        run: pnpm lint
         working-directory: ui
 
       - name: Run frontend tests
-        run: |
-          ../node_modules/\@pnpm/exe/pnpm test
+        run: pnpm test
         working-directory: ui
 
       - name: Install and build with pnpm
         run: |
-          ../node_modules/\@pnpm/exe/pnpm build
+          pnpm build
           tar --no-xattrs -czvf fe-dist.tar.gz dist
         working-directory: ui
 
