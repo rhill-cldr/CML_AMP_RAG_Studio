@@ -67,8 +67,6 @@ tasks:
   - type: run_job
     entity_label: refresh_project
     short_summary: Run job to refresh the project from source and rebuilding.
-    environment:
-      RELEASE_TAG: "latest"
 
   - type: start_application
     name: RagStudio

@@ -14,6 +14,7 @@ on:
         options:
           - main
           - mob/main
+          - release/1
 jobs:
   build:
 
