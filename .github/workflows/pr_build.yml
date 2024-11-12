@@ -39,6 +39,7 @@ jobs:
         with:
           node-version: 20
           cache: 'pnpm'
+          cache-dependency-path: ui/pnpm-lock.yaml
 
       - name: Install UI Dependencies
         run: pnpm install --no-frozen-lockfile
