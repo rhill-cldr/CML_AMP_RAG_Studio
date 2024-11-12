@@ -97,7 +97,7 @@ const SessionItem = ({ session }: { session: Session }) => {
   return (
     <Flex
       justify="space-between"
-      style={{ paddingLeft: 8 }}
+      style={{ paddingLeft: 8, width: "100%" }}
       onMouseEnter={() => {
         setIsHovered(true);
       }}
