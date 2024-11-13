@@ -36,8 +36,10 @@
 #  DATA.
 #
 from fastapi import APIRouter
+
 from .... import exceptions
-from ....services.models import get_available_embedding_models, get_available_llm_models, get_model_source, ModelSource
+from ....services.models import get_available_embedding_models, get_available_llm_models, get_model_source, ModelSource, \
+    test_llm_model, test_embedding_model
 
 router = APIRouter(prefix="/models")
 
@@ -55,3 +57,13 @@ def get_llm_embedding_models() -> list:
 @exceptions.propagates
 def get_model() -> ModelSource:
     return get_model_source()
+
+@router.get('/llm/{model_name}/test', summary="Test LLM Inference model.")
+@exceptions.propagates
+def llm_model_test(model_name: str) -> str:
+    return test_llm_model(model_name)
+
+@router.get('/embedding/{model_name}/test', summary="Test Embedding model.")
+@exceptions.propagates
+def embedding_model_test() -> str:
+    return test_embedding_model()

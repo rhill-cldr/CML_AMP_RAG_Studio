@@ -38,10 +38,12 @@
 import os
 from enum import Enum
 
+from fastapi import HTTPException
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
 from llama_index.embeddings.bedrock import BedrockEmbedding
 from llama_index.llms.bedrock import Bedrock
+from .llama_utils import messages_to_prompt, completion_to_prompt
 
 from .caii import get_embedding_model as caii_embedding
 from .caii import get_llm as caii_llm, get_caii_embedding_models, get_caii_llm_models
@@ -53,7 +55,7 @@ def get_embedding_model() -> BaseEmbedding:
     return BedrockEmbedding(model_name="cohere.embed-english-v3")
 
 
-def get_llm(messages_to_prompt, completion_to_prompt, model_name: str=None) -> LLM:
+def get_llm(model_name: str=None) -> LLM:
     if "CAII_DOMAIN" in os.environ:
         return caii_llm(domain=os.environ["CAII_DOMAIN"],
                         endpoint_name=os.environ["CAII_INFERENCE_ENDPOINT_NAME"],
@@ -106,3 +108,19 @@ def get_model_source() -> ModelSource:
     if "CAII_DOMAIN" in os.environ:
         return ModelSource.CAII
     return ModelSource.BEDROCK
+
+def test_llm_model(model_name: str) -> str:
+    models = get_available_llm_models()
+    for model in models:
+        if model["model_id"] == model_name:
+            if model["available"]:
+                get_llm(model_name).complete("Are you available to answer questions?")
+                return 'ok'
+            else:
+                raise HTTPException(status_code=503, detail="Model unavailable")
+
+    raise HTTPException(status_code=404, detail="Model not found")
+
+def test_embedding_model() -> str:
+    get_embedding_model()
+    return 'ok'
