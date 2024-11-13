@@ -38,11 +38,14 @@
 
 import { Flex, Typography } from "antd";
 import EmbeddingModelTable from "pages/Models/EmbeddingModelTable.tsx";
-import { useGetEmbeddingModels } from "src/api/modelsApi.ts";
+import { useGetEmbeddingModels, useGetLlmModels } from "src/api/modelsApi.ts";
+import InferenceModelTable from "pages/Models/InferenceModelTable.tsx";
 
 const ModelPage = () => {
   const { data: embeddingModels, isLoading: areEmbeddingModelsLoading } =
     useGetEmbeddingModels();
+  const { data: inferenceModels, isLoading: areInferenceModelsLoading } =
+    useGetLlmModels();
 
   return (
     <Flex vertical align="center">
@@ -53,6 +56,10 @@ const ModelPage = () => {
           areEmbeddingModelsLoading={areEmbeddingModelsLoading}
         />
         <Typography.Title level={3}>Inference Models</Typography.Title>
+        <InferenceModelTable
+          inferenceModels={inferenceModels}
+          areInferenceModelsLoading={areInferenceModelsLoading}
+        />
       </Flex>
     </Flex>
   );
