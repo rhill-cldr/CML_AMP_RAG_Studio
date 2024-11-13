@@ -36,9 +36,17 @@
  * DATA.
  ******************************************************************************/
 
-import { createLazyFileRoute } from "@tanstack/react-router";
-import ModelPage from "pages/Models/ModelPage.tsx";
+import { Flex, Typography } from "antd";
 
-export const Route = createLazyFileRoute("/_layout/models/_layout-models/")({
-  component: () => <ModelPage />,
-});
+const ModelPage = () => {
+  return (
+    <Flex vertical align="center">
+      <Flex vertical style={{ width: "80%", maxWidth: 1000 }} gap={20}>
+        <Typography.Title level={3}>Embedding Models</Typography.Title>
+        <Typography.Title level={3}>Inference Models</Typography.Title>
+      </Flex>
+    </Flex>
+  );
+};
+
+export default ModelPage;
