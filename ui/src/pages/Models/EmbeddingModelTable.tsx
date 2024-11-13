@@ -38,7 +38,7 @@
 
 import { Button, Table, TableProps } from "antd";
 import { Model, useTestEmbeddingModel } from "src/api/modelsApi.ts";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const columns = (
   testModel: (model_id: string) => void,
@@ -67,7 +67,6 @@ const columns = (
   },
   {
     title: "Test",
-    key: "test",
     render: (_, { model_id, available }) => {
       return (
         <Button
@@ -94,9 +93,18 @@ const EmbeddingModelTable = ({
   const { data } = useTestEmbeddingModel(model_id ?? "");
   const [testedModelIds, setTestedModelIds] =
     useState<Record<string, boolean>>();
-  console.log(data);
+  useEffect(() => {
+    if (data && model_id) {
+      setTestedModelIds((existing) => ({
+        ...existing,
+        [model_id]: data === "ok",
+      }));
+    }
+  }, [data, model_id, setTestedModelIds]);
+  console.log(testedModelIds);
   const testModel = (model_id: string) => {
     setModelId(model_id);
+
     console.log(`Testing model with id: ${model_id}`);
   };
 
