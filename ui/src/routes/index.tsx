@@ -41,5 +41,5 @@ import { getDataSourcesQueryOptions } from "src/api/dataSourceApi.ts";
 
 export const Route = createFileRoute("/")({
   loader: async ({ context: { queryClient } }) =>
-    queryClient.ensureQueryData(getDataSourcesQueryOptions),
+    await queryClient.ensureQueryData(getDataSourcesQueryOptions),
 });
