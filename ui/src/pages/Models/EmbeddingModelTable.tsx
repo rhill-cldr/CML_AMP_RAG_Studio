@@ -36,34 +36,46 @@
  * DATA.
  ******************************************************************************/
 
-import { Button, Table, TableProps } from "antd";
+import { Button, Flex, Table, TableProps, Tooltip } from "antd";
 import { Model, useTestEmbeddingModel } from "src/api/modelsApi.ts";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import { cdlGreen600, cdlRed600 } from "src/cuix/variables.ts";
 
 const ModelTestCell = (props: {
-  onClick: () => void;
   available: boolean | undefined;
   model_id: string;
 }) => {
-  const { data, isLoading } = useTestEmbeddingModel(props.model_id);
-  if (data) {
-    return data ? "ok" : "not ok";
+  const [testModel, setTestModel] = useState("");
+  const { data, isLoading } = useTestEmbeddingModel(testModel);
+
+  const handleTestModel = () => {
+    setTestModel(props.model_id);
+  };
+
+  if (data === "ok") {
+    return <CheckCircleOutlined style={{ color: cdlGreen600 }} />;
   }
+
   return (
-    <Button
-      onClick={props.onClick}
-      disabled={props.available != undefined && !props.available}
-      loading={isLoading}
-    >
-      Test
-    </Button>
+    <Flex gap={8}>
+      <Button
+        onClick={handleTestModel}
+        disabled={props.available != undefined && !props.available}
+        loading={isLoading}
+      >
+        Test
+      </Button>
+      {data && data !== "ok" && (
+        <Tooltip title="an error occurred">
+          <CloseCircleOutlined style={{ color: cdlRed600 }} />
+        </Tooltip>
+      )}
+    </Flex>
   );
 };
 
-const columns = (
-  testModel: (model_id: string) => void,
-  testedModelIds?: Record<string, boolean>,
-): TableProps<Model>["columns"] => [
+const columns: TableProps<Model>["columns"] = [
   {
     title: "Model ID",
     dataIndex: "model_id",
@@ -88,19 +100,9 @@ const columns = (
   },
   {
     title: "Test",
+    width: 140,
     render: (_, { model_id, available }) => {
-      if (testedModelIds) {
-        return testedModelIds[model_id] ? "ok" : "not ok";
-      }
-      return (
-        <ModelTestCell
-          onClick={() => {
-            testModel(model_id);
-          }}
-          available={available}
-          model_id={model_id}
-        />
-      );
+      return <ModelTestCell available={available} model_id={model_id} />;
     },
   },
 ];
@@ -112,30 +114,13 @@ const EmbeddingModelTable = ({
   embeddingModels?: Model[];
   areEmbeddingModelsLoading: boolean;
 }) => {
-  const [model_id, setModelId] = useState<string | undefined>(undefined);
-  const [testedModelIds, setTestedModelIds] =
-    useState<Record<string, boolean>>();
-  useEffect(() => {
-    if (data && model_id) {
-      setTestedModelIds((existing) => ({
-        ...existing,
-        [model_id]: data === "ok",
-      }));
-    }
-  }, [data, model_id, setTestedModelIds]);
-  console.log(testedModelIds);
-  const testModel = (model_id: string) => {
-    setModelId(model_id);
-
-    console.log(`Testing model with id: ${model_id}`);
-  };
-
   return (
     <Table
       dataSource={embeddingModels}
-      columns={columns(testModel, testedModelIds)}
+      columns={columns}
       style={{ width: "100%" }}
       loading={areEmbeddingModelsLoading}
+      rowKey={(record) => record.model_id}
     />
   );
 };
