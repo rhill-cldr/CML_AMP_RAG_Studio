@@ -36,26 +36,50 @@
  * DATA.
  ******************************************************************************/
 
-import { Flex, Typography } from "antd";
-import EmbeddingModelTable from "pages/Models/EmbeddingModelTable.tsx";
-import { useGetEmbeddingModels } from "src/api/modelsApi.ts";
+import { Button, Table, TableProps } from "antd";
+import { Model } from "src/api/modelsApi.ts";
 
-const ModelPage = () => {
-  const { data: embeddingModels, isLoading: areEmbeddingModelsLoading } =
-    useGetEmbeddingModels();
+const columns: TableProps<Model>["columns"] = [
+  {
+    title: "Model ID",
+    dataIndex: "model_id",
+    key: "model_id",
+    width: 180,
+  },
+  {
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "Status",
+    dataIndex: "available",
+    key: "available",
+  },
+  {
+    title: "Test",
+    key: "test",
+    render: (_, { model_id }) => {
+      return <Button onClick={() => console.log(model_id)}>Test</Button>;
+    },
+  },
+];
 
+const EmbeddingModelTable = ({
+  embeddingModels,
+  areEmbeddingModelsLoading,
+}: {
+  embeddingModels?: Model[];
+  areEmbeddingModelsLoading: boolean;
+}) => {
   return (
-    <Flex vertical align="center">
-      <Flex vertical style={{ width: "80%", maxWidth: 1000 }} gap={20}>
-        <Typography.Title level={3}>Embedding Models</Typography.Title>
-        <EmbeddingModelTable
-          embeddingModels={embeddingModels}
-          areEmbeddingModelsLoading={areEmbeddingModelsLoading}
-        />
-        <Typography.Title level={3}>Inference Models</Typography.Title>
-      </Flex>
-    </Flex>
+    <Table
+      dataSource={embeddingModels}
+      columns={columns}
+      style={{ width: "100%" }}
+      loading={areEmbeddingModelsLoading}
+    />
   );
 };
 
-export default ModelPage;
+export default EmbeddingModelTable;
