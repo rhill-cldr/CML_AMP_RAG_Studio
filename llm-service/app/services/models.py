@@ -74,15 +74,19 @@ def get_llm(model_name: str = None) -> LLM:
 
 
 def get_available_embedding_models():
-    if "CAII_DOMAIN" in os.environ:
+    if is_caii_enabled():
         return get_caii_embedding_models()
     return _get_bedrock_embedding_models()
 
 
 def get_available_llm_models():
-    if "CAII_DOMAIN" in os.environ:
+    if is_caii_enabled():
         return get_caii_llm_models()
     return _get_bedrock_llm_models()
+
+
+def is_caii_enabled():
+    return "CAII_DOMAIN" in os.environ
 
 
 def _get_bedrock_llm_models():
@@ -126,27 +130,23 @@ def test_llm_model(model_name: str) -> Literal["ok"]:
     models = get_available_llm_models()
     for model in models:
         if model["model_id"] == model_name:
-            if model["available"]:
+            if not is_caii_enabled() or model['available']:
                 get_llm(model_name).complete("Are you available to answer questions?")
                 return "ok"
             else:
-                raise HTTPException(status_code=503, detail="Model unavailable")
+                raise HTTPException(status_code=503, detail="Model not ready")
 
     raise HTTPException(status_code=404, detail="Model not found")
 
-
-def test_embedding_model(model_name: str) -> Literal["ok"]:
+def test_embedding_model(model_name: str) -> str:
     models = get_available_embedding_models()
     for model in models:
         if model["model_id"] == model_name:
-            print(f"{model=}")  # TODO: remove this after we're done debugging
-            if model["available"]:  # TODO: KeyError here!!!
-                # NOTE: when we make embedding models configurable, pass the name to get_embedding_model()
-                get_embedding_model().get_text_embedding("Embed this")
-                return "ok"
+            if not is_caii_enabled() or model['available']:
+                # TODO: Update to pass embedding model in the future when multiple are supported
+                get_embedding_model().get_text_embedding('test')
+                return 'ok'
             else:
-                raise HTTPException(status_code=503, detail="Model unavailable")
+                raise HTTPException(status_code=503, detail="Model not ready")
 
     raise HTTPException(status_code=404, detail="Model not found")
-
-    return "ok"

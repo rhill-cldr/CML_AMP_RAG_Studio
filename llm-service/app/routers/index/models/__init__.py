@@ -78,5 +78,5 @@ def llm_model_test(model_name: str) -> Literal["ok"]:
 
 @router.get("/embedding/{model_name}/test", summary="Test Embedding model.")
 @exceptions.propagates
-def embedding_model_test(model_name: str) -> Literal["ok"]:
+def embedding_model_test(model_name: str) -> str:
     return test_embedding_model(model_name)
