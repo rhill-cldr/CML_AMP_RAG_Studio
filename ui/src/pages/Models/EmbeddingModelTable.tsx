@@ -40,8 +40,29 @@ import { Button, Table, TableProps } from "antd";
 import { Model, useTestEmbeddingModel } from "src/api/modelsApi.ts";
 import { useEffect, useState } from "react";
 
+const ModelTestCell = (props: {
+  onClick: () => void;
+  available: boolean | undefined;
+  model_id: string;
+}) => {
+  const { data, isLoading } = useTestEmbeddingModel(props.model_id);
+  if (data) {
+    return data ? "ok" : "not ok";
+  }
+  return (
+    <Button
+      onClick={props.onClick}
+      disabled={props.available != undefined && !props.available}
+      loading={isLoading}
+    >
+      Test
+    </Button>
+  );
+};
+
 const columns = (
   testModel: (model_id: string) => void,
+  testedModelIds?: Record<string, boolean>,
 ): TableProps<Model>["columns"] => [
   {
     title: "Model ID",
@@ -68,15 +89,17 @@ const columns = (
   {
     title: "Test",
     render: (_, { model_id, available }) => {
+      if (testedModelIds) {
+        return testedModelIds[model_id] ? "ok" : "not ok";
+      }
       return (
-        <Button
+        <ModelTestCell
           onClick={() => {
             testModel(model_id);
           }}
-          disabled={available != undefined && !available}
-        >
-          Test
-        </Button>
+          available={available}
+          model_id={model_id}
+        />
       );
     },
   },
@@ -90,7 +113,6 @@ const EmbeddingModelTable = ({
   areEmbeddingModelsLoading: boolean;
 }) => {
   const [model_id, setModelId] = useState<string | undefined>(undefined);
-  const { data } = useTestEmbeddingModel(model_id ?? "");
   const [testedModelIds, setTestedModelIds] =
     useState<Record<string, boolean>>();
   useEffect(() => {
@@ -111,7 +133,7 @@ const EmbeddingModelTable = ({
   return (
     <Table
       dataSource={embeddingModels}
-      columns={columns(testModel)}
+      columns={columns(testModel, testedModelIds)}
       style={{ width: "100%" }}
       loading={areEmbeddingModelsLoading}
     />
