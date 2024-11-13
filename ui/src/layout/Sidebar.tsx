@@ -92,7 +92,7 @@ const Sidebar: React.FC = () => {
     feedbackModal.setIsModalOpen(true);
   };
 
-  const items: MenuItem[] = [
+  const baseItems: MenuItem[] = [
     {
       label: (
         <Tag
@@ -133,13 +133,23 @@ const Sidebar: React.FC = () => {
       navToData,
       <DatabaseFilled />,
     ),
-    getItem(
-      <div data-testid="data-management-nav">Leave Feedback</div>,
-      "leave-feedback",
-      popupFeedback,
-      <ThumbUpIcon />,
-    ),
   ];
+
+  // const caiiModels = getItem(
+  //     <div data-testid="data-management-nav">CAII Models</div>,
+  //     "caii-models",
+  //     navToData,
+  //     <DatabaseFilled />,
+  //   )
+
+  const feedbackItem = getItem(
+    <div data-testid="data-management-nav">Leave Feedback</div>,
+    "leave-feedback",
+    popupFeedback,
+    <ThumbUpIcon />,
+  );
+
+  const items = [...baseItems, feedbackItem];
 
   function chooseRoute() {
     if (matchRoute({ to: "/data", fuzzy: true })) {

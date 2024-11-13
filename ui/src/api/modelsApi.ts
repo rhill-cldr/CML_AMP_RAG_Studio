@@ -35,12 +35,14 @@
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
  ******************************************************************************/
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { getRequest, llmServicePath, QueryKeys } from "src/api/utils.ts";
 
 export interface Model {
   name: string;
   model_id: string;
+  available?: boolean;
+  replica_count?: number;
 }
 
 export const useGetLlmModels = () => {
@@ -67,4 +69,17 @@ export const useGetEmbeddingModels = () => {
 
 const getEmbeddingModels = async (): Promise<Model[]> => {
   return await getRequest(`${llmServicePath}/index/models/embeddings`);
+};
+
+type ModelSource = "CAII" | "Bedrock";
+
+export const getModelSourceQueryOptions = queryOptions({
+  queryKey: [QueryKeys.getModelSource],
+  queryFn: async () => {
+    return await getModelSource();
+  },
+});
+
+const getModelSource = async (): Promise<ModelSource> => {
+  return await getRequest(`${llmServicePath}/index/models/model_source`);
 };

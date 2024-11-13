@@ -36,6 +36,7 @@
 #  DATA.
 #
 import os
+from enum import Enum
 
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
@@ -97,3 +98,11 @@ def _get_bedrock_embedding_models():
         "name": "cohere.embed-english-v3",
     }]
 
+class ModelSource(str, Enum):
+    BEDROCK = "Bedrock"
+    CAII = "CAII"
+
+def get_model_source() -> ModelSource:
+    if "CAII_DOMAIN" in os.environ:
+        return ModelSource.CAII
+    return ModelSource.BEDROCK

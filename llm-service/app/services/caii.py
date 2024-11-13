@@ -102,7 +102,7 @@ def get_caii_llm_models():
     domain = os.environ['CAII_DOMAIN']
     endpoint_name = os.environ['CAII_INFERENCE_ENDPOINT_NAME']
     models = describe_endpoint(domain=domain, endpoint_name=endpoint_name)
-    return [{ "model_id": models["name"], "name": models["name"], "replica_count": models["replica_count"] }]
+    return build_model_response(models)
 
 def get_caii_embedding_models():
     # notes:
@@ -112,4 +112,8 @@ def get_caii_embedding_models():
     domain = os.environ['CAII_DOMAIN']
     endpoint_name = os.environ['CAII_EMBEDDING_ENDPOINT_NAME']
     models = describe_endpoint(domain=domain, endpoint_name=endpoint_name)
-    return [{ "model_id": models["name"], "name": models["name"], "replica_count": models["replica_count"]  }]
+    return build_model_response(models)
+
+def build_model_response(models):
+    return [{"model_id": models["name"], "name": models["name"], "available": models['replica_count'] > 0,
+             "replica_count": models["replica_count"]}]

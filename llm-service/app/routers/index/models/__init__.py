@@ -37,7 +37,7 @@
 #
 from fastapi import APIRouter
 from .... import exceptions
-from ....services.models import get_available_embedding_models, get_available_llm_models
+from ....services.models import get_available_embedding_models, get_available_llm_models, get_model_source, ModelSource
 
 router = APIRouter(prefix="/models")
 
@@ -50,3 +50,8 @@ def get_llm_models() -> list:
 @exceptions.propagates
 def get_llm_embedding_models() -> list:
     return get_available_embedding_models()
+
+@router.get("/model_source", summary="Model source enabled - Bedrock or CAII")
+@exceptions.propagates
+def get_model() -> ModelSource:
+    return get_model_source()
