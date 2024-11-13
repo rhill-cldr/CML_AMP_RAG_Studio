@@ -162,6 +162,8 @@ const Sidebar: React.FC = () => {
       return ["data"];
     } else if (matchRoute({ to: "/sessions", fuzzy: true })) {
       return ["chat"];
+    } else if (matchRoute({ to: "/models", fuzzy: true })) {
+      return ["models"];
     } else {
       return ["chat"];
     }

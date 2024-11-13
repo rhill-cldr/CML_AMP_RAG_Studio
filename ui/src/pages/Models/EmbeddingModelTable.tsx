@@ -39,7 +39,9 @@
 import { Button, Table, TableProps } from "antd";
 import { Model } from "src/api/modelsApi.ts";
 
-const columns: TableProps<Model>["columns"] = [
+const columns = (
+  testModel: (model_id: string) => void,
+): TableProps<Model>["columns"] => [
   {
     title: "Model ID",
     dataIndex: "model_id",
@@ -55,12 +57,24 @@ const columns: TableProps<Model>["columns"] = [
     title: "Status",
     dataIndex: "available",
     key: "available",
+    render: (available: boolean) => {
+      return available ? "Available" : "Unavailable";
+    },
   },
   {
     title: "Test",
     key: "test",
-    render: (_, { model_id }) => {
-      return <Button onClick={() => console.log(model_id)}>Test</Button>;
+    render: (_, { model_id, available }) => {
+      return (
+        <Button
+          onClick={() => {
+            testModel(model_id);
+          }}
+          disabled={!available}
+        >
+          Test
+        </Button>
+      );
     },
   },
 ];
@@ -72,10 +86,14 @@ const EmbeddingModelTable = ({
   embeddingModels?: Model[];
   areEmbeddingModelsLoading: boolean;
 }) => {
+  const testModel = (model_id: string) => {
+    console.log(`Testing model with id: ${model_id}`);
+  };
+
   return (
     <Table
       dataSource={embeddingModels}
-      columns={columns}
+      columns={columns(testModel)}
       style={{ width: "100%" }}
       loading={areEmbeddingModelsLoading}
     />
