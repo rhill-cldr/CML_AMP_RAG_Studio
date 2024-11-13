@@ -58,7 +58,10 @@ const columns = (
     title: "Status",
     dataIndex: "available",
     key: "available",
-    render: (available: boolean) => {
+    render: (available?: boolean) => {
+      if (available === undefined) {
+        return "Unknown";
+      }
       return available ? "Available" : "Unavailable";
     },
   },
@@ -88,8 +91,10 @@ const EmbeddingModelTable = ({
   areEmbeddingModelsLoading: boolean;
 }) => {
   const [model_id, setModelId] = useState<string | undefined>(undefined);
-  const { data } = useTestEmbeddingModel(model_id);
-
+  const { data } = useTestEmbeddingModel(model_id ?? "");
+  const [testedModelIds, setTestedModelIds] =
+    useState<Record<string, boolean>>();
+  console.log(data);
   const testModel = (model_id: string) => {
     setModelId(model_id);
     console.log(`Testing model with id: ${model_id}`);

@@ -86,7 +86,7 @@ const getModelSource = async (): Promise<ModelSource> => {
 
 export const useTestLlmModel = (model_id: string) => {
   return useQuery({
-    queryKey: [QueryKeys.testLlmModel, model_id],
+    queryKey: [QueryKeys.testLlmModel, { model_id }],
     queryFn: async () => {
       return await testLlmModel(model_id);
     },
@@ -101,7 +101,7 @@ const testLlmModel = async (model_id: string): Promise<string> => {
 
 export const useTestEmbeddingModel = (model_id: string) => {
   return useQuery({
-    queryKey: [QueryKeys.testEmbeddingModel, model_id],
+    queryKey: [QueryKeys.testEmbeddingModel, { model_id }],
     queryFn: async () => {
       return await testEmbeddingModel(model_id);
     },
