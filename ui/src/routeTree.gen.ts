@@ -30,7 +30,7 @@ const LayoutDataImport = createFileRoute('/_layout/data')()
 const LayoutRoute = LayoutImport.update({
   id: '/_layout',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() => import('./routes/_layout.lazy').then((d) => d.Route))
 
 const IndexRoute = IndexImport.update({
   id: '/',
