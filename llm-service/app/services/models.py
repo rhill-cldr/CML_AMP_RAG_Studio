@@ -52,13 +52,13 @@ from .llama_utils import completion_to_prompt, messages_to_prompt
 
 
 def get_embedding_model() -> BaseEmbedding:
-    if "CAII_DOMAIN" in os.environ:
+    if is_caii_enabled():
         return caii_embedding()
     return BedrockEmbedding(model_name="cohere.embed-english-v3")
 
 
 def get_llm(model_name: str = None) -> LLM:
-    if "CAII_DOMAIN" in os.environ:
+    if is_caii_enabled():
         return caii_llm(
             domain=os.environ["CAII_DOMAIN"],
             endpoint_name=os.environ["CAII_INFERENCE_ENDPOINT_NAME"],
@@ -121,7 +121,7 @@ class ModelSource(str, Enum):
 
 
 def get_model_source() -> ModelSource:
-    if "CAII_DOMAIN" in os.environ:
+    if is_caii_enabled():
         return ModelSource.CAII
     return ModelSource.BEDROCK
 

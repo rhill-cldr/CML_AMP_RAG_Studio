@@ -88,6 +88,12 @@ const Sidebar: React.FC = () => {
     return;
   };
 
+  const navToModels = () => {
+    navigate({ to: "/models" })
+      .then(() => null)
+      .catch(() => null);
+  };
+
   const popupFeedback = () => {
     feedbackModal.setIsModalOpen(true);
   };
@@ -135,12 +141,12 @@ const Sidebar: React.FC = () => {
     ),
   ];
 
-  // const caiiModels = getItem(
-  //     <div data-testid="data-management-nav">CAII Models</div>,
-  //     "caii-models",
-  //     navToData,
-  //     <DatabaseFilled />,
-  //   )
+  const models = getItem(
+    <div data-testid="data-management-nav">Models</div>,
+    "models",
+    navToModels,
+    <DatabaseFilled />,
+  );
 
   const feedbackItem = getItem(
     <div data-testid="data-management-nav">Leave Feedback</div>,
@@ -149,7 +155,7 @@ const Sidebar: React.FC = () => {
     <ThumbUpIcon />,
   );
 
-  const items = [...baseItems, feedbackItem];
+  const items = [...baseItems, models, feedbackItem];
 
   function chooseRoute() {
     if (matchRoute({ to: "/data", fuzzy: true })) {

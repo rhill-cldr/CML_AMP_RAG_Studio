@@ -35,81 +35,32 @@
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
  ******************************************************************************/
-import { queryOptions, useQuery } from "@tanstack/react-query";
-import { getRequest, llmServicePath, QueryKeys } from "src/api/utils.ts";
 
-export interface Model {
-  name: string;
-  model_id: string;
-  available?: boolean;
-  replica_count?: number;
-}
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { Flex, Layout, Typography } from "antd";
+import { cdlGray300 } from "src/cuix/variables.ts";
 
-export const useGetLlmModels = () => {
-  return useQuery({
-    queryKey: [QueryKeys.getLlmModels],
-    queryFn: async () => {
-      return await getLlmModels();
-    },
-  });
-};
+const { Content, Header } = Layout;
 
-const getLlmModels = async (): Promise<Model[]> => {
-  return await getRequest(`${llmServicePath}/index/models/llm`);
-};
-
-export const useGetEmbeddingModels = () => {
-  return useQuery({
-    queryKey: [QueryKeys.getEmbeddingModels],
-    queryFn: async () => {
-      return await getEmbeddingModels();
-    },
-  });
-};
-
-const getEmbeddingModels = async (): Promise<Model[]> => {
-  return await getRequest(`${llmServicePath}/index/models/embeddings`);
-};
-
-type ModelSource = "CAII" | "Bedrock";
-
-export const getModelSourceQueryOptions = queryOptions({
-  queryKey: [QueryKeys.getModelSource],
-  queryFn: async () => {
-    return await getModelSource();
-  },
+export const Route = createFileRoute("/_layout/models/_layout-models")({
+  component: () => (
+    <Layout
+      style={{
+        minHeight: "100vh",
+        width: "100%",
+        margin: 0,
+      }}
+    >
+      <Header style={{ height: 48, borderBottom: `1px solid ${cdlGray300}` }}>
+        <Flex align="center" style={{ height: "100%" }}>
+          <Typography.Title level={4} style={{ margin: 0 }}>
+            Models
+          </Typography.Title>
+        </Flex>
+      </Header>
+      <Content style={{ margin: "0", overflowY: "auto" }}>
+        <Outlet />
+      </Content>
+    </Layout>
+  ),
 });
-
-const getModelSource = async (): Promise<ModelSource> => {
-  return await getRequest(`${llmServicePath}/index/models/model_source`);
-};
-
-export const useTestLlmModel = (model_id: string) => {
-  return useQuery({
-    queryKey: [QueryKeys.testLlmModel, model_id],
-    queryFn: async () => {
-      return await testLlmModel(model_id);
-    },
-  });
-};
-
-const testLlmModel = async (model_id: string): Promise<string> => {
-  return await getRequest(
-    `${llmServicePath}/index/models/llm/${model_id}/test`,
-  );
-};
-
-export const useTestEmbeddingModel = (model_id: string) => {
-  return useQuery({
-    queryKey: [QueryKeys.testEmbeddingModel, model_id],
-    queryFn: async () => {
-      return await testEmbeddingModel(model_id);
-    },
-  });
-};
-
-const testEmbeddingModel = async (model_id: string): Promise<string> => {
-  return await getRequest(
-    `${llmServicePath}/index/models/embedding/${model_id}/test`,
-  );
-};
