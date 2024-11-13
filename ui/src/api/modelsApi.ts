@@ -105,6 +105,7 @@ export const useTestEmbeddingModel = (model_id: string) => {
     queryFn: async () => {
       return await testEmbeddingModel(model_id);
     },
+    enabled: !!model_id,
   });
 };
 

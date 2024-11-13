@@ -37,7 +37,8 @@
  ******************************************************************************/
 
 import { Button, Table, TableProps } from "antd";
-import { Model } from "src/api/modelsApi.ts";
+import { Model, useTestEmbeddingModel } from "src/api/modelsApi.ts";
+import { useState } from "react";
 
 const columns = (
   testModel: (model_id: string) => void,
@@ -70,7 +71,7 @@ const columns = (
           onClick={() => {
             testModel(model_id);
           }}
-          disabled={!available}
+          disabled={available != undefined && !available}
         >
           Test
         </Button>
@@ -86,7 +87,11 @@ const EmbeddingModelTable = ({
   embeddingModels?: Model[];
   areEmbeddingModelsLoading: boolean;
 }) => {
+  const [model_id, setModelId] = useState<string | undefined>(undefined);
+  const { data } = useTestEmbeddingModel(model_id);
+
   const testModel = (model_id: string) => {
+    setModelId(model_id);
     console.log(`Testing model with id: ${model_id}`);
   };
 
