@@ -47,7 +47,7 @@ const ModelTestCell = (props: {
   model_id: string;
 }) => {
   const [testModel, setTestModel] = useState("");
-  const { data, isLoading } = useTestLlmModel(testModel);
+  const { data, isLoading, error } = useTestLlmModel(testModel);
 
   const handleTestModel = () => {
     setTestModel(props.model_id);
@@ -66,11 +66,11 @@ const ModelTestCell = (props: {
       >
         Test
       </Button>
-      {data && data !== "ok" && (
-        <Tooltip title="an error occurred">
+      {error || (data && data !== "ok") ? (
+        <Tooltip title={error?.message ?? "an error occurred"}>
           <CloseCircleOutlined style={{ color: cdlRed600 }} />
         </Tooltip>
-      )}
+      ) : null}
     </Flex>
   );
 };

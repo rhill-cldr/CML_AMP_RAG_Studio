@@ -92,15 +92,15 @@ def is_caii_enabled():
 def _get_bedrock_llm_models():
     return [
         {
-            "model_id": "Llama31-8bInstructV1",
+            "model_id": "meta.llama3-1-8b-instruct-v1:0",
             "name": "Llama3.1 8B Instruct v1",
         },
         {
-            "model_id": "Llama31-70bInstructV1",
+            "model_id": "meta.llama3-1-70b-instruct-v1:0",
             "name": "Llama3.1 70B Instruct v1",
         },
         {
-            "model_id": "Llama31-405bInstructV1",
+            "model_id": "meta.llama3-1-405b-instruct-v1:0",
             "name": "Llama3.1 405B Instruct v1",
         },
     ]
