@@ -66,7 +66,6 @@ class CaiiModel(OpenAI):
 
     @property
     def metadata(self) -> LLMMetadata:
-        print("metadata called at: ", datetime.now())
         ## todo: pull this info from somewhere
         return LLMMetadata(
             context_window=self.context,

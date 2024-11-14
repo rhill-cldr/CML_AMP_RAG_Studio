@@ -87,14 +87,42 @@ def messages_to_prompt(
 
         string_messages.append(str_message)
 
-    return "".join(string_messages)
+    result = "".join(string_messages)
+    print(f"messages_to_prompt:\n {result}")
+    return result
+
+def messages_to_prompt_mistral(
+    messages: Sequence[ChatMessage], system_prompt: Optional[str] = None
+) -> str:
+    string_messages: List[str] = []
+
+    for i in range(0, len(messages), 2):
+        # first message should always be a user
+        user_message = messages[i]
+        assert user_message.role == MessageRole.USER
+        string_messages[-1] += f"{EOT}\n"
+
+        # include user message content
+        str_message = f"{SH}user{EH}\n\n{user_message.content}{EOT}\n{SH}assistant{EH}\n\n"
+
+        if len(messages) > (i + 1):
+            # if assistant message exists, add to str_message
+            assistant_message = messages[i + 1]
+            assert assistant_message.role == MessageRole.ASSISTANT
+            str_message += f"{assistant_message.content}"
+
+        string_messages.append(str_message)
+
+    result = "".join(string_messages)
+    print(f"messages_to_prompt_mistral:\n {result}")
+    return result
 
 
 def completion_to_prompt(completion: str, system_prompt: Optional[str] = None) -> str:
     system_prompt_str = system_prompt or DEFAULT_SYSTEM_PROMPT
 
-    return (
-        f"{BOS}{SH}system{EH}\n\n{system_prompt_str.strip()}{EOT}\n"
-        f"{SH}user{EH}\n\n{completion.strip()}{EOT}\n"
-        f"{SH}assistant{EH}\n\n"
-    )
+    result = (f"{BOS}{SH}system{EH}\n\n{system_prompt_str.strip()}{EOT}\n" \
+          f"{SH}user{EH}\n\n{completion.strip()}{EOT}\n" \
+          f"{SH}assistant{EH}\n\n")
+    print(f"completion_to_prompt:\n {result}")
+    return result

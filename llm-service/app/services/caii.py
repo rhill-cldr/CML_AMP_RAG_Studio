@@ -63,9 +63,7 @@ def describe_endpoint(domain: str, endpoint_name: str):
     desc = requests.post(describe_url, headers=headers, json=desc_json)
     if desc.status_code == 404:
         raise HTTPException(status_code=404, detail = f"Endpoint '{endpoint_name}' not found")
-    print(desc.content)
-    content = json.loads(desc.content)
-    return content
+    return json.loads(desc.content)
 
 def get_llm(domain: str, endpoint_name: str, messages_to_prompt, completion_to_prompt) -> LLM:
     endpoint = describe_endpoint(domain=domain, endpoint_name=endpoint_name)
