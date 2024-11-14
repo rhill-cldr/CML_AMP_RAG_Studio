@@ -95,7 +95,7 @@ const columns: TableProps<Model>["columns"] = [
       if (available === undefined) {
         return "Unknown";
       }
-      return available ? "Available" : "Unavailable";
+      return available ? "Available" : "Not Ready";
     },
   },
   {
