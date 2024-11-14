@@ -80,7 +80,6 @@ const columns: TableProps<Model>["columns"] = [
     title: "Model ID",
     dataIndex: "model_id",
     key: "model_id",
-    width: 180,
   },
   {
     title: "Name",
