@@ -35,6 +35,7 @@
 #  BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
 #  DATA.
 #
+import logging
 from typing import Any, Sequence, List, Optional, Union, Dict
 
 import httpx
@@ -46,9 +47,15 @@ from llama_index.core.llms.function_calling import FunctionCallingLLM
 from llama_index.llms.mistralai.base import to_mistral_chatmessage, DEFAULT_MISTRALAI_MAX_TOKENS, \
     DEFAULT_MISTRALAI_MODEL
 from llama_index.llms.openai import OpenAI
-from mistralai import Mistral
+from mistralai import Mistral, Logger
 from llama_index.core.bridge.pydantic import Field, PrivateAttr
+from mistralai._hooks import BeforeRequestHook, BeforeRequestContext
 
+logging.basicConfig(
+    format="%(levelname)s [%(asctime)s] %(name)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    level=logging.DEBUG
+)
 
 class CaiiModel(OpenAI):
     context: int = Field(
@@ -82,6 +89,14 @@ class CaiiModel(OpenAI):
             is_function_calling_model=True,
             model_name=self.model,
         )
+
+class MyHook(BeforeRequestHook):
+
+    def before_request(self, hook_ctx: BeforeRequestContext, request: httpx.Request) -> Union[httpx.Request, Exception]:
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Hooked !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print(request.headers.get("Authorization"))
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Hooked !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        return request
 
 
 class CaiiModelMistral(FunctionCallingLLM):
@@ -129,14 +144,18 @@ class CaiiModelMistral(FunctionCallingLLM):
             default_headers):
         super().__init__(
             context=context,
-            api_key="test",
+            api_key=default_headers.get("Authorization"),
             model=model,
             endpoint=api_base,
             messages_to_prompt=messages_to_prompt,
             completion_to_prompt=completion_to_prompt)
         self.context = context
-        httpx_client=  httpx.Client(headers=default_headers)
-        self._client = Mistral(api_key="test", server_url=api_base, client=httpx_client)
+        httpx_client = httpx.Client(headers=default_headers)
+        print(f"api_base: {api_base}")
+        raw_url = api_base.removesuffix('/v1')
+        self._client = Mistral(api_key=default_headers.get("Authorization"), server_url=raw_url, client=httpx_client)
+        self._client.sdk_configuration.get_hooks().register_before_request_hook(MyHook())
+
 
     @classmethod
     def class_name(cls) -> str:
