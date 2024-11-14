@@ -35,6 +35,7 @@
 #  BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
 #  DATA.
 #
+import httpx
 import requests
 import json
 import os
@@ -43,8 +44,9 @@ from fastapi import HTTPException
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
 from llama_index.llms.mistralai import MistralAI
+from mistralai import Mistral, HttpClient
 
-from .CaiiModel import CaiiModel
+from .CaiiModel import CaiiModel, CaiiModelMistral
 from .CaiiEmbeddingModel import CaiiEmbeddingModel
 
 def describe_endpoint(domain: str, endpoint_name: str):
@@ -77,14 +79,16 @@ def get_llm(domain: str, endpoint_name: str, messages_to_prompt, completion_to_p
     }
 
     model = endpoint["endpointmetadata"]["model_name"]
-
-    if "mistral" in model:
-        llm = MistralAI(
-            api_key="test",
+    print(f"Model: {model}")
+    if "mistral" in endpoint_name:
+        print("using customized mistral model")
+        llm = CaiiModelMistral(
             model=model,
             messages_to_prompt=messages_to_prompt,
             completion_to_prompt=completion_to_prompt,
-            endpoint=api_base,
+            api_base=api_base,
+            context=128000,
+            default_headers=headers,
         )
 
     else:

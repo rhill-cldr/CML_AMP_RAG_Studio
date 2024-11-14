@@ -63,7 +63,7 @@ def v2_chat(
         return RagStudioChatMessage(
             id=response_id,
             source_nodes=[],
-            ragmessage={
+            rag_message={
                 "user": query,
                 "assistant": "I don't have any documents to answer your question.",
             },
