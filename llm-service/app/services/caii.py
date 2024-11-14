@@ -42,6 +42,7 @@ import os
 from fastapi import HTTPException
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
+from llama_index.llms.mistralai import MistralAI
 
 from .CaiiModel import CaiiModel
 from .CaiiEmbeddingModel import CaiiEmbeddingModel
@@ -77,14 +78,24 @@ def get_llm(domain: str, endpoint_name: str, messages_to_prompt, completion_to_p
 
     model = endpoint["endpointmetadata"]["model_name"]
 
-    llm = CaiiModel(
-        model=model,
-        context=128000,
-        messages_to_prompt=messages_to_prompt,
-        completion_to_prompt=completion_to_prompt,
-        api_base=api_base,
-        default_headers=headers,
-    )
+    if "mistral" in model:
+        llm = MistralAI(
+            api_key="test",
+            model=model,
+            messages_to_prompt=messages_to_prompt,
+            completion_to_prompt=completion_to_prompt,
+            endpoint=api_base,
+        )
+
+    else:
+        llm = CaiiModel(
+            model=model,
+            context=128000,
+            messages_to_prompt=messages_to_prompt,
+            completion_to_prompt=completion_to_prompt,
+            api_base=api_base,
+            default_headers=headers,
+        )
 
     return llm
 

@@ -39,10 +39,45 @@ from datetime import datetime
 
 from llama_index.core.base.llms.types import LLMMetadata
 from llama_index.llms.openai import OpenAI
+from llama_index.llms.mistralai import MistralAI
 from pydantic import Field
 
 
 class CaiiModel(OpenAI):
+    context: int = Field(
+        description="The context size",
+        gt=0,
+    )
+
+    def __init__(
+            self,
+            model: str,
+            context: int,
+            api_base: str,
+            messages_to_prompt,
+            completion_to_prompt,
+            default_headers):
+        super().__init__(
+            model=model,
+            api_base=api_base,
+            messages_to_prompt=messages_to_prompt,
+            completion_to_prompt=completion_to_prompt,
+            default_headers=default_headers)
+        self.context = context
+
+    @property
+    def metadata(self) -> LLMMetadata:
+        ## todo: pull this info from somewhere
+        return LLMMetadata(
+            context_window=self.context,
+            num_output=self.max_tokens or -1,
+            is_chat_model=True,
+            is_function_calling_model=True,
+            model_name=self.model,
+        )
+
+
+class CaiiModelMistral(MistralAI):
     context: int = Field(
         description="The context size",
         gt=0,
