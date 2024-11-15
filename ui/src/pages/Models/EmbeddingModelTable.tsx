@@ -36,32 +36,43 @@
  * DATA.
  ******************************************************************************/
 
-import { Table } from "antd";
+import { Table, TableProps } from "antd";
 import { Model, useTestEmbeddingModel } from "src/api/modelsApi.ts";
 import { useState } from "react";
 import { modelColumns, TestCell } from "pages/Models/ModelTable.tsx";
 
-const EmbeddingModelTestCell = (props: {
-  available: boolean | undefined;
-  model_id: string;
-}) => {
+const EmbeddingModelTestCell = ({ model }: { model: Model }) => {
   const [testModel, setTestModel] = useState("");
-  const { data, isLoading, error } = useTestEmbeddingModel(testModel);
+  const {
+    data: testResult,
+    isLoading,
+    error,
+  } = useTestEmbeddingModel(testModel);
 
   const handleTestModel = () => {
-    setTestModel(props.model_id);
+    setTestModel(model.model_id);
   };
 
   return (
     <TestCell
       onClick={handleTestModel}
-      available={props.available}
+      model={model}
       loading={isLoading}
       error={error}
-      data={data}
+      testResult={testResult}
     />
   );
 };
+
+const testCell: TableProps<Model>["columns"] = [
+  {
+    title: "Test",
+    width: 140,
+    render: (_, model) => {
+      return <EmbeddingModelTestCell model={model} />;
+    },
+  },
+];
 
 const EmbeddingModelTable = ({
   embeddingModels,
@@ -73,7 +84,7 @@ const EmbeddingModelTable = ({
   return (
     <Table
       dataSource={embeddingModels}
-      columns={modelColumns(EmbeddingModelTestCell)}
+      columns={modelColumns ? [...modelColumns, ...testCell] : testCell}
       style={{ width: "100%" }}
       loading={areEmbeddingModelsLoading}
       rowKey={(record) => record.model_id}

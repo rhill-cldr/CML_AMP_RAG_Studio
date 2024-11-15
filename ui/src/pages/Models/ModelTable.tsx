@@ -35,7 +35,6 @@
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
  ******************************************************************************/
-import React from "react";
 import { Button, Flex, TableProps, Tooltip, Typography } from "antd";
 import { Model } from "src/api/modelsApi.ts";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
@@ -43,18 +42,22 @@ import { cdlGreen600, cdlRed600 } from "src/cuix/variables.ts";
 
 export const TestCell = ({
   onClick,
-  available,
+  model,
   loading,
   error,
-  data,
+  testResult,
 }: {
   onClick: () => void;
-  available?: boolean;
+  model: Model;
   loading: boolean;
   error: Error | null;
-  data: string | undefined;
+  testResult: string | undefined;
 }) => {
-  if (data === "ok") {
+  if (!model.name) {
+    return null;
+  }
+
+  if (testResult === "ok") {
     return <CheckCircleOutlined style={{ color: cdlGreen600 }} />;
   }
 
@@ -62,12 +65,12 @@ export const TestCell = ({
     <Flex gap={8}>
       <Button
         onClick={onClick}
-        disabled={available != undefined && !available}
+        disabled={model.available != undefined && !model.available}
         loading={loading}
       >
         Test
       </Button>
-      {error || (data && data !== "ok") ? (
+      {error || (testResult && testResult !== "ok") ? (
         <Tooltip title={error?.message ?? "an error occurred"}>
           <CloseCircleOutlined style={{ color: cdlRed600 }} />
         </Tooltip>
@@ -76,42 +79,34 @@ export const TestCell = ({
   );
 };
 
-export type TestCellProps = (props: {
-  available: boolean | undefined;
-  model_id: string;
-}) => React.ReactNode;
-
-export const modelColumns = (
-  testCell: TestCellProps,
-): TableProps<Model>["columns"] => [
+export const modelColumns: TableProps<Model>["columns"] = [
   {
     title: "Model ID",
     dataIndex: "model_id",
     key: "model_id",
+    width: 350,
   },
   {
     title: "Name",
     dataIndex: "name",
     key: "name",
+    width: 350,
     render: (name?: string) =>
       name ?? <Typography.Text type="warning">No model found</Typography.Text>,
   },
   {
     title: "Status",
     dataIndex: "available",
+    width: 150,
     key: "available",
-    render: (available?: boolean) => {
-      if (available === undefined) {
+    render: (_, model) => {
+      if (!model.name) {
+        return null;
+      }
+      if (model.available === undefined) {
         return "Unknown";
       }
-      return available ? "Available" : "Not Ready";
-    },
-  },
-  {
-    title: "Test",
-    width: 140,
-    render: (_, { model_id, available }) => {
-      return testCell({ available, model_id });
+      return model.available ? "Available" : "Not Ready";
     },
   },
 ];

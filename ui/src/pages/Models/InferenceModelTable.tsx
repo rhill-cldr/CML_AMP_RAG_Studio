@@ -36,32 +36,39 @@
  * DATA.
  ******************************************************************************/
 
-import { Table } from "antd";
+import { Table, TableProps } from "antd";
 import { Model, useTestLlmModel } from "src/api/modelsApi.ts";
 import { useState } from "react";
 import { modelColumns, TestCell } from "pages/Models/ModelTable.tsx";
 
-const InferenceModelTestCell = (props: {
-  available: boolean | undefined;
-  model_id: string;
-}) => {
+const InferenceModelTestCell = ({ model }: { model: Model }) => {
   const [testModel, setTestModel] = useState("");
-  const { data, isLoading, error } = useTestLlmModel(testModel);
+  const { data: testResult, isLoading, error } = useTestLlmModel(testModel);
 
   const handleTestModel = () => {
-    setTestModel(props.model_id);
+    setTestModel(model.model_id);
   };
 
   return (
     <TestCell
       onClick={handleTestModel}
-      available={props.available}
+      model={model}
       loading={isLoading}
       error={error}
-      data={data}
+      testResult={testResult}
     />
   );
 };
+
+const testCell: TableProps<Model>["columns"] = [
+  {
+    title: "Test",
+    width: 140,
+    render: (_, model) => {
+      return <InferenceModelTestCell model={model} />;
+    },
+  },
+];
 
 const InferenceModelTable = ({
   inferenceModels,
@@ -73,7 +80,7 @@ const InferenceModelTable = ({
   return (
     <Table
       dataSource={inferenceModels}
-      columns={modelColumns(InferenceModelTestCell)}
+      columns={modelColumns ? [...modelColumns, ...testCell] : testCell}
       style={{ width: "100%" }}
       loading={areInferenceModelsLoading}
       rowKey={(record) => record.model_id}
