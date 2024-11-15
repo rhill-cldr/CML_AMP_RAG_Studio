@@ -43,7 +43,7 @@ from fastapi import HTTPException
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
 
-from .CaiiModel import CaiiModel
+from .CaiiModel import CaiiModel, CaiiModelMistral
 from .CaiiEmbeddingModel import CaiiEmbeddingModel
 
 def describe_endpoint(domain: str, endpoint_name: str):
@@ -63,9 +63,7 @@ def describe_endpoint(domain: str, endpoint_name: str):
     desc = requests.post(describe_url, headers=headers, json=desc_json)
     if desc.status_code == 404:
         raise HTTPException(status_code=404, detail = f"Endpoint '{endpoint_name}' not found")
-    print(desc.content)
-    content = json.loads(desc.content)
-    return content
+    return json.loads(desc.content)
 
 def get_llm(domain: str, endpoint_name: str, messages_to_prompt, completion_to_prompt) -> LLM:
     endpoint = describe_endpoint(domain=domain, endpoint_name=endpoint_name)
@@ -78,15 +76,25 @@ def get_llm(domain: str, endpoint_name: str, messages_to_prompt, completion_to_p
     }
 
     model = endpoint["endpointmetadata"]["model_name"]
+    if "mistral" in endpoint_name.lower():
+        llm = CaiiModelMistral(
+            model=model,
+            messages_to_prompt=messages_to_prompt,
+            completion_to_prompt=completion_to_prompt,
+            api_base=api_base,
+            context=128000,
+            default_headers=headers,
+        )
 
-    llm = CaiiModel(
-        model=model,
-        context=128000,
-        messages_to_prompt=messages_to_prompt,
-        completion_to_prompt=completion_to_prompt,
-        api_base=api_base,
-        default_headers=headers,
-    )
+    else:
+        llm = CaiiModel(
+            model=model,
+            context=128000,
+            messages_to_prompt=messages_to_prompt,
+            completion_to_prompt=completion_to_prompt,
+            api_base=api_base,
+            default_headers=headers,
+        )
 
     return llm
 
