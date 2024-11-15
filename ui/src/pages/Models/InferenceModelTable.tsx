@@ -38,11 +38,36 @@
 
 import { Button, Flex, Table, TableProps, Tooltip } from "antd";
 import { Model, useTestLlmModel } from "src/api/modelsApi.ts";
-import { useState } from "react";
+import React, { useState } from "react";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { cdlGreen600, cdlRed600 } from "src/cuix/variables.ts";
 
-const ModelTestCell = (props: {
+export function TestCell(props: {
+  onClick: () => void;
+  available?: boolean;
+  loading: boolean;
+  error: Error | null;
+  data: string | undefined;
+}) {
+  return (
+    <Flex gap={8}>
+      <Button
+        onClick={props.onClick}
+        disabled={props.available != undefined && !props.available}
+        loading={props.loading}
+      >
+        Test
+      </Button>
+      {props.error || (props.data && props.data !== "ok") ? (
+        <Tooltip title={props.error?.message ?? "an error occurred"}>
+          <CloseCircleOutlined style={{ color: cdlRed600 }} />
+        </Tooltip>
+      ) : null}
+    </Flex>
+  );
+}
+
+const InferenceModelTestCell = (props: {
   available: boolean | undefined;
   model_id: string;
 }) => {
@@ -58,24 +83,24 @@ const ModelTestCell = (props: {
   }
 
   return (
-    <Flex gap={8}>
-      <Button
-        onClick={handleTestModel}
-        disabled={props.available != undefined && !props.available}
-        loading={isLoading}
-      >
-        Test
-      </Button>
-      {error || (data && data !== "ok") ? (
-        <Tooltip title={error?.message ?? "an error occurred"}>
-          <CloseCircleOutlined style={{ color: cdlRed600 }} />
-        </Tooltip>
-      ) : null}
-    </Flex>
+    <TestCell
+      onClick={handleTestModel}
+      available={props.available}
+      loading={isLoading}
+      error={error}
+      data={data}
+    />
   );
 };
 
-const columns: TableProps<Model>["columns"] = [
+export interface TestCellProps {
+  available: boolean | undefined;
+  model_id: string;
+}
+
+export const modelColumns = (
+  testCell: (props: TestCellProps) => React.JSX.Element,
+): TableProps<Model>["columns"] => [
   {
     title: "Model ID",
     dataIndex: "model_id",
@@ -101,7 +126,7 @@ const columns: TableProps<Model>["columns"] = [
     title: "Test",
     width: 140,
     render: (_, { model_id, available }) => {
-      return <ModelTestCell available={available} model_id={model_id} />;
+      return testCell({ available, model_id });
     },
   },
 ];
@@ -116,7 +141,7 @@ const InferenceModelTable = ({
   return (
     <Table
       dataSource={inferenceModels}
-      columns={columns}
+      columns={modelColumns(InferenceModelTestCell)}
       style={{ width: "100%" }}
       loading={areInferenceModelsLoading}
       rowKey={(record) => record.model_id}
