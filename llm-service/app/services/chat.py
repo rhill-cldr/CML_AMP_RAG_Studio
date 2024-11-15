@@ -163,8 +163,6 @@ def generate_suggested_questions(
         )
 
         suggested_questions = process_response(response.response)
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        print(response.response)
     return suggested_questions
 
 
