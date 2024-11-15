@@ -77,7 +77,7 @@ def get_llm(domain: str, endpoint_name: str, messages_to_prompt, completion_to_p
 
     model = endpoint["endpointmetadata"]["model_name"]
     print(f"Model: {model}")
-    if "mistral" in endpoint_name:
+    if "mistral" in endpoint_name.lower():
         print("using customized mistral model")
         llm = CaiiModelMistral(
             model=model,
