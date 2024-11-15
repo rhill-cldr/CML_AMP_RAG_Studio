@@ -36,75 +36,32 @@
  * DATA.
  ******************************************************************************/
 
-import { Button, Flex, Table, TableProps, Tooltip } from "antd";
+import { Table } from "antd";
 import { Model, useTestEmbeddingModel } from "src/api/modelsApi.ts";
 import { useState } from "react";
-import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
-import { cdlGreen600, cdlRed600 } from "src/cuix/variables.ts";
+import { modelColumns, TestCell } from "pages/Models/ModelTable.tsx";
 
-const ModelTestCell = (props: {
+const EmbeddingModelTestCell = (props: {
   available: boolean | undefined;
   model_id: string;
 }) => {
   const [testModel, setTestModel] = useState("");
-  const { data, isLoading } = useTestEmbeddingModel(testModel);
+  const { data, isLoading, error } = useTestEmbeddingModel(testModel);
 
   const handleTestModel = () => {
     setTestModel(props.model_id);
   };
 
-  if (data === "ok") {
-    return <CheckCircleOutlined style={{ color: cdlGreen600 }} />;
-  }
-
   return (
-    <Flex gap={8}>
-      <Button
-        onClick={handleTestModel}
-        disabled={props.available != undefined && !props.available}
-        loading={isLoading}
-      >
-        Test
-      </Button>
-      {data && data !== "ok" && (
-        <Tooltip title="an error occurred">
-          <CloseCircleOutlined style={{ color: cdlRed600 }} />
-        </Tooltip>
-      )}
-    </Flex>
+    <TestCell
+      onClick={handleTestModel}
+      available={props.available}
+      loading={isLoading}
+      error={error}
+      data={data}
+    />
   );
 };
-
-const columns: TableProps<Model>["columns"] = [
-  {
-    title: "Model ID",
-    dataIndex: "model_id",
-    key: "model_id",
-  },
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "Status",
-    dataIndex: "available",
-    key: "available",
-    render: (available?: boolean) => {
-      if (available === undefined) {
-        return "Unknown";
-      }
-      return available ? "Available" : "Not Ready";
-    },
-  },
-  {
-    title: "Test",
-    width: 140,
-    render: (_, { model_id, available }) => {
-      return <ModelTestCell available={available} model_id={model_id} />;
-    },
-  },
-];
 
 const EmbeddingModelTable = ({
   embeddingModels,
@@ -116,7 +73,7 @@ const EmbeddingModelTable = ({
   return (
     <Table
       dataSource={embeddingModels}
-      columns={columns}
+      columns={modelColumns(EmbeddingModelTestCell)}
       style={{ width: "100%" }}
       loading={areEmbeddingModelsLoading}
       rowKey={(record) => record.model_id}

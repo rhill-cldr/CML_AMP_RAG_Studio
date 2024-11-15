@@ -35,50 +35,83 @@
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
  ******************************************************************************/
+import React from "react";
+import { Button, Flex, TableProps, Tooltip, Typography } from "antd";
+import { Model } from "src/api/modelsApi.ts";
+import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import { cdlGreen600, cdlRed600 } from "src/cuix/variables.ts";
 
-import { Table } from "antd";
-import { Model, useTestLlmModel } from "src/api/modelsApi.ts";
-import { useState } from "react";
-import { modelColumns, TestCell } from "pages/Models/ModelTable.tsx";
+export const TestCell = ({
+  onClick,
+  available,
+  loading,
+  error,
+  data,
+}: {
+  onClick: () => void;
+  available?: boolean;
+  loading: boolean;
+  error: Error | null;
+  data: string | undefined;
+}) => {
+  if (data === "ok") {
+    return <CheckCircleOutlined style={{ color: cdlGreen600 }} />;
+  }
 
-const InferenceModelTestCell = (props: {
+  return (
+    <Flex gap={8}>
+      <Button
+        onClick={onClick}
+        disabled={available != undefined && !available}
+        loading={loading}
+      >
+        Test
+      </Button>
+      {error || (data && data !== "ok") ? (
+        <Tooltip title={error?.message ?? "an error occurred"}>
+          <CloseCircleOutlined style={{ color: cdlRed600 }} />
+        </Tooltip>
+      ) : null}
+    </Flex>
+  );
+};
+
+export type TestCellProps = (props: {
   available: boolean | undefined;
   model_id: string;
-}) => {
-  const [testModel, setTestModel] = useState("");
-  const { data, isLoading, error } = useTestLlmModel(testModel);
+}) => React.ReactNode;
 
-  const handleTestModel = () => {
-    setTestModel(props.model_id);
-  };
-
-  return (
-    <TestCell
-      onClick={handleTestModel}
-      available={props.available}
-      loading={isLoading}
-      error={error}
-      data={data}
-    />
-  );
-};
-
-const InferenceModelTable = ({
-  inferenceModels,
-  areInferenceModelsLoading,
-}: {
-  inferenceModels?: Model[];
-  areInferenceModelsLoading: boolean;
-}) => {
-  return (
-    <Table
-      dataSource={inferenceModels}
-      columns={modelColumns(InferenceModelTestCell)}
-      style={{ width: "100%" }}
-      loading={areInferenceModelsLoading}
-      rowKey={(record) => record.model_id}
-    />
-  );
-};
-
-export default InferenceModelTable;
+export const modelColumns = (
+  testCell: TestCellProps,
+): TableProps<Model>["columns"] => [
+  {
+    title: "Model ID",
+    dataIndex: "model_id",
+    key: "model_id",
+  },
+  {
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
+    render: (name?: string) =>
+      name ?? <Typography.Text type="warning">No model found</Typography.Text>,
+  },
+  {
+    title: "Status",
+    dataIndex: "available",
+    key: "available",
+    render: (available?: boolean) => {
+      if (available === undefined) {
+        return "Unknown";
+      }
+      return available ? "Available" : "Not Ready";
+    },
+  },
+  {
+    title: "Test",
+    width: 140,
+    render: (_, { model_id, available }) => {
+      return testCell({ available, model_id });
+    },
+  },
+];

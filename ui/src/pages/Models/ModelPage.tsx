@@ -42,8 +42,8 @@ import { useGetEmbeddingModels, useGetLlmModels } from "src/api/modelsApi.ts";
 import InferenceModelTable from "pages/Models/InferenceModelTable.tsx";
 
 const ModelPage = () => {
-  const { data: embeddingModels, isLoading: areEmbeddingModelsLoading } =
-    useGetEmbeddingModels();
+  // const { data: embeddingModels, isLoading: areEmbeddingModelsLoading } =
+  //   useGetEmbeddingModels();
   const { data: inferenceModels, isLoading: areInferenceModelsLoading } =
     useGetLlmModels();
 
@@ -51,10 +51,10 @@ const ModelPage = () => {
     <Flex vertical align="center">
       <Flex vertical style={{ width: "80%", maxWidth: 1000 }} gap={20}>
         <Typography.Title level={3}>Embedding Models</Typography.Title>
-        <EmbeddingModelTable
-          embeddingModels={embeddingModels}
-          areEmbeddingModelsLoading={areEmbeddingModelsLoading}
-        />
+        {/*<EmbeddingModelTable*/}
+        {/*  embeddingModels={embeddingModels}*/}
+        {/*  areEmbeddingModelsLoading={areEmbeddingModelsLoading}*/}
+        {/*/>*/}
         <Typography.Title level={3}>Inference Models</Typography.Title>
         <InferenceModelTable
           inferenceModels={inferenceModels}
