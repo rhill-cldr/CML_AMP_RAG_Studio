@@ -115,11 +115,16 @@ def get_caii_llm_models():
 def get_caii_embedding_models():
     # notes:
     # NameResolutionError is we can't contact the CAII_DOMAIN
-    # HTTPException (404) is we can't find the endpoint by name
 
     domain = os.environ['CAII_DOMAIN']
     endpoint_name = os.environ['CAII_EMBEDDING_ENDPOINT_NAME']
-    models = describe_endpoint(domain=domain, endpoint_name=endpoint_name)
+    try:
+        models = describe_endpoint(domain=domain, endpoint_name=endpoint_name)
+    except HTTPException as e:
+        if e.status_code == 404:
+            return [{"model_id": endpoint_name}]
+        else:
+            raise e
     return build_model_response(models)
 
 def build_model_response(models):

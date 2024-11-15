@@ -67,6 +67,7 @@ import messageQueue from "src/utils/messageQueue.ts";
 import { useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "src/api/utils.ts";
 import useModal from "src/utils/useModal.ts";
+import { cdlWhite } from "src/cuix/variables.ts";
 
 function SummaryPopover({
   dataSourceId,
@@ -101,7 +102,24 @@ const columns = (
   handleDeleteFile: (document: RagDocumentResponseType) => void,
 ): TableProps<RagDocumentResponseType>["columns"] => [
   {
-    title: <AiAssistantIcon />,
+    title: (
+      <Tooltip
+        title={
+          <Flex vertical gap={4}>
+            <Typography.Text style={{ color: cdlWhite }}>
+              Document Summary
+            </Typography.Text>
+            <Typography.Text style={{ fontSize: 10, color: cdlWhite }}>
+              Note: Document summarization can take a significant amount of
+              time, but will not impact the ability to use the document for
+              Chat.
+            </Typography.Text>
+          </Flex>
+        }
+      >
+        <AiAssistantIcon />
+      </Tooltip>
+    ),
     dataIndex: "summaryCreationTimestamp",
     key: "summaryCreationTimestamp",
     render: (timestamp: number | null, data) => {
