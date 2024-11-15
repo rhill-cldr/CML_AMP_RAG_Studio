@@ -35,7 +35,6 @@
 #  BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
 #  DATA.
 #
-import httpx
 import requests
 import json
 import os
@@ -43,8 +42,6 @@ import os
 from fastapi import HTTPException
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
-from llama_index.llms.mistralai import MistralAI
-from mistralai import Mistral, HttpClient
 
 from .CaiiModel import CaiiModel, CaiiModelMistral
 from .CaiiEmbeddingModel import CaiiEmbeddingModel

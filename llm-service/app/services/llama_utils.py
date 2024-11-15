@@ -88,7 +88,6 @@ def messages_to_prompt(
         string_messages.append(str_message)
 
     result = "".join(string_messages)
-    print(f"messages_to_prompt:\n {result}")
     return result
 
 def messages_to_prompt_mistral(
@@ -113,8 +112,8 @@ def messages_to_prompt_mistral(
         string_messages.append(str_message)
 
     result = "".join(string_messages)
-    print(f"messages_to_prompt_mistral:\n {result}")
     return result
+
 
 
 def completion_to_prompt(completion: str, system_prompt: Optional[str] = None) -> str:
@@ -123,5 +122,31 @@ def completion_to_prompt(completion: str, system_prompt: Optional[str] = None) -
     result = (f"{BOS}{SH}system{EH}\n\n{system_prompt_str.strip()}{EOT}\n" \
           f"{SH}user{EH}\n\n{completion.strip()}{EOT}\n" \
           f"{SH}assistant{EH}\n\n")
-    print(f"completion_to_prompt:\n {result}")
     return result
+
+
+def mistralv2_messages_to_prompt(messages):
+    print(f"mistralv2_messages_to_prompt: {messages}")
+    conversation = ""
+    bos_token = "<s>"
+    eos_token= "</s>"
+    if messages[0].role ==  MessageRole.SYSTEM:
+        loop_messages = messages[1:]
+        system_message = messages[0].content
+    else:
+        loop_messages = messages
+        system_message = False
+
+    for index, message in enumerate(loop_messages):
+        if (message.role == MessageRole.USER) != (index % 2 == 0):
+            raise Exception('HFI Conversation roles must alternate user/assistant/user/assistant/...')
+        if index == 0 and system_message != False:
+            content = '<<SYS>>\n' + system_message + '\n<</SYS>>\n\n' + message.content
+        else:
+            content = message.content
+        if message.role == MessageRole.USER:
+            conversation += bos_token + '[INST] ' + content.strip() + ' [/INST]'
+        elif message.role == MessageRole.ASSISTANT:
+            conversation += ' ' + content.strip() + ' ' + eos_token
+
+    return (conversation)

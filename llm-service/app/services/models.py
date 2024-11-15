@@ -48,7 +48,7 @@ from llama_index.llms.bedrock import Bedrock
 from .caii import get_caii_embedding_models, get_caii_llm_models
 from .caii import get_embedding_model as caii_embedding
 from .caii import get_llm as caii_llm
-from .llama_utils import completion_to_prompt, messages_to_prompt, messages_to_prompt_mistral
+from .llama_utils import completion_to_prompt, messages_to_prompt
 
 
 def get_embedding_model() -> BaseEmbedding:
@@ -59,16 +59,10 @@ def get_embedding_model() -> BaseEmbedding:
 
 def get_llm(model_name: str = None) -> LLM:
     if is_caii_enabled():
-        print(f"Model name: {model_name}")
-        if "mistral" in model_name:
-            print("Using Mistral prompt for LLM")
-            chat_prompt_function = messages_to_prompt_mistral
-        else:
-            chat_prompt_function = messages_to_prompt
         return caii_llm(
             domain=os.environ["CAII_DOMAIN"],
             endpoint_name=os.environ["CAII_INFERENCE_ENDPOINT_NAME"],
-            messages_to_prompt=chat_prompt_function,
+            messages_to_prompt=messages_to_prompt,
             completion_to_prompt=completion_to_prompt,
         )
     return Bedrock(

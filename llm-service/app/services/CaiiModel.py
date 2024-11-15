@@ -35,27 +35,11 @@
 #  BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
 #  DATA.
 #
-import logging
-from typing import Any, Sequence, List, Optional, Union, Dict
-
-import httpx
-from llama_index.core.base.llms.generic_utils import chat_to_completion_decorator
-from llama_index.core.base.llms.types import LLMMetadata, CompletionResponseAsyncGen, ChatMessage, ChatResponseAsyncGen, \
-    CompletionResponse, ChatResponse, CompletionResponseGen, ChatResponseGen, MessageRole
-from llama_index.core.constants import DEFAULT_TEMPERATURE
-from llama_index.core.llms.function_calling import FunctionCallingLLM
-from llama_index.llms.mistralai.base import to_mistral_chatmessage, DEFAULT_MISTRALAI_MAX_TOKENS, \
-    DEFAULT_MISTRALAI_MODEL
+from llama_index.core.base.llms import generic_utils
+from llama_index.core.base.llms.types import LLMMetadata
+from llama_index.core.bridge.pydantic import Field
+from llama_index.llms.mistralai.base import MistralAI
 from llama_index.llms.openai import OpenAI
-from mistralai import Mistral, Logger
-from llama_index.core.bridge.pydantic import Field, PrivateAttr
-from mistralai._hooks import BeforeRequestHook, BeforeRequestContext
-
-logging.basicConfig(
-    format="%(levelname)s [%(asctime)s] %(name)s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-    level=logging.DEBUG
-)
 
 class CaiiModel(OpenAI):
     context: int = Field(
@@ -90,49 +74,8 @@ class CaiiModel(OpenAI):
             model_name=self.model,
         )
 
-class MyHook(BeforeRequestHook):
 
-    def before_request(self, hook_ctx: BeforeRequestContext, request: httpx.Request) -> Union[httpx.Request, Exception]:
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Hooked !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        print(request.headers.get("Authorization"))
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Hooked !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        return request
-
-
-class CaiiModelMistral(FunctionCallingLLM):
-
-    context: int = Field(
-        description="The context size",
-        gt=0,
-    )
-    _client: Mistral = PrivateAttr()
-    max_tokens: int = Field(
-        default=DEFAULT_MISTRALAI_MAX_TOKENS,
-        description="The maximum number of tokens to generate.",
-        gt=0,
-    )
-    model: str = Field(
-        default=DEFAULT_MISTRALAI_MODEL, description="The mistralai model to use."
-    )
-    temperature: float = Field(
-        default=DEFAULT_TEMPERATURE,
-        description="The temperature to use for sampling.",
-        gte=0.0,
-        lte=1.0,
-    )
-    random_seed: str = Field(
-        default=None, description="The random seed to use for sampling."
-    )
-    additional_kwargs: Dict[str, Any] = Field(
-        default_factory=dict, description="Additional kwargs for the MistralAI API."
-    )
-    timeout: float = Field(
-        default=120, description="The timeout to use in seconds.", gte=0
-    )
-    max_retries: int = Field(
-        default=5, description="The maximum number of API retries.", gte=0
-    )
-
+class CaiiModelMistral(MistralAI):
 
     def __init__(
             self,
@@ -143,100 +86,21 @@ class CaiiModelMistral(FunctionCallingLLM):
             completion_to_prompt,
             default_headers):
         super().__init__(
-            context=context,
             api_key=default_headers.get("Authorization"),
             model=model,
-            endpoint=api_base,
+            endpoint=api_base.removesuffix("/v1"), # mistral expects the base url without the /v1
             messages_to_prompt=messages_to_prompt,
-            completion_to_prompt=completion_to_prompt)
-        self.context = context
-        httpx_client = httpx.Client(headers=default_headers)
-        print(f"api_base: {api_base}")
-        raw_url = api_base.removesuffix('/v1')
-        self._client = Mistral(api_key=default_headers.get("Authorization"), server_url=raw_url, client=httpx_client)
-        self._client.sdk_configuration.get_hooks().register_before_request_hook(MyHook())
-
-
-    @classmethod
-    def class_name(cls) -> str:
-        return "Custom_MistralAI_LLM"
-
-    @property
-    def _model_kwargs(self) -> Dict[str, Any]:
-        base_kwargs = {
-            "model": self.model,
-            "temperature": self.temperature,
-            "max_tokens": self.max_tokens,
-            "random_seed": self.random_seed,
-            "retries": self.max_retries,
-            "timeout_ms": self.timeout * 1000,
-        }
-        return {
-            **base_kwargs,
-            **self.additional_kwargs,
-        }
-
-    def _get_all_kwargs(self, **kwargs: Any) -> Dict[str, Any]:
-        return {
-            **self._model_kwargs,
-            **kwargs,
-        }
-
-    def chat(self, messages: Sequence[ChatMessage], **kwargs: Any) -> ChatResponse:
-        messages = to_mistral_chatmessage(messages)
-        all_kwargs = self._get_all_kwargs(**kwargs)
-        response = self._client.chat.complete(messages=messages, **all_kwargs)
-
-        tool_calls = response.choices[0].message.tool_calls
-
-        return ChatResponse(
-            message=ChatMessage(
-                role=MessageRole.ASSISTANT,
-                content=response.choices[0].message.content,
-                additional_kwargs=(
-                    {"tool_calls": tool_calls} if tool_calls is not None else {}
-                ),
-            ),
-            raw=dict(response),
+            completion_to_prompt=completion_to_prompt
         )
+
 
     @property
     def metadata(self) -> LLMMetadata:
         ## todo: pull this info from somewhere
         return LLMMetadata(
-            context_window=self.context,
+            context_window=32000,  ## this is the minimum mistral context window from utils.py
             num_output=self.max_tokens or -1,
-            is_chat_model=True,
+            is_chat_model=False,
             is_function_calling_model=True,
             model_name=self.model,
         )
-
-    def complete(self, prompt: str, formatted: bool = False, **kwargs: Any) -> CompletionResponse:
-        complete_fn = chat_to_completion_decorator(self.chat)
-        return complete_fn(prompt, **kwargs)
-
-    def stream_chat(self, messages: Sequence[ChatMessage], **kwargs: Any) -> ChatResponseGen:
-        pass
-
-    def stream_complete(self, prompt: str, formatted: bool = False, **kwargs: Any) -> CompletionResponseGen:
-        pass
-
-    async def achat(self, messages: Sequence[ChatMessage], **kwargs: Any) -> ChatResponse:
-        pass
-
-    async def acomplete(self, prompt: str, formatted: bool = False, **kwargs: Any) -> CompletionResponse:
-        pass
-
-    async def astream_chat(self, messages: Sequence[ChatMessage], **kwargs: Any) -> ChatResponseAsyncGen:
-        pass
-
-    async def astream_complete(self, prompt: str, formatted: bool = False, **kwargs: Any) -> CompletionResponseAsyncGen:
-        pass
-
-
-    def _prepare_chat_with_tools(self, tools: List["BaseTool"], user_msg: Optional[Union[str, ChatMessage]] = None,
-                                 chat_history: Optional[List[ChatMessage]] = None, verbose: bool = False,
-                                 allow_parallel_tool_calls: bool = False, **kwargs: Any) -> Dict[str, Any]:
-        pass
-
-
