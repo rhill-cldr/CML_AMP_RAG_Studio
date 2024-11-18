@@ -49,8 +49,8 @@ import {
 const jobStatusDisplayValue = (jobStatus?: JobStatus): string => {
   const statusMap: Record<JobStatus, string> = {
     [JobStatus.SCHEDULING]: "Scheduling",
-    [JobStatus.STARTING]: "Starting",
-    [JobStatus.RUNNING]: "Running",
+    [JobStatus.STARTING]: "Job Starting",
+    [JobStatus.RUNNING]: "Job Running",
     [JobStatus.STOPPING]: "Stopping",
     [JobStatus.STOPPED]: "Stopped",
     [JobStatus.UNKNOWN]: "Unknown",
