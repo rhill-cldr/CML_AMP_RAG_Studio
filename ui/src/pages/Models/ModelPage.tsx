@@ -36,19 +36,41 @@
  * DATA.
  ******************************************************************************/
 
-import { Flex, Typography } from "antd";
+import { Alert, Flex, Typography } from "antd";
 import EmbeddingModelTable from "pages/Models/EmbeddingModelTable.tsx";
 import { useGetEmbeddingModels, useGetLlmModels } from "src/api/modelsApi.ts";
 import InferenceModelTable from "pages/Models/InferenceModelTable.tsx";
 
 const ModelPage = () => {
-  const { data: embeddingModels, isLoading: areEmbeddingModelsLoading } =
-    useGetEmbeddingModels();
-  const { data: inferenceModels, isLoading: areInferenceModelsLoading } =
-    useGetLlmModels();
+  const {
+    data: embeddingModels,
+    isLoading: areEmbeddingModelsLoading,
+    error: embeddingError,
+  } = useGetEmbeddingModels();
+  const {
+    data: inferenceModels,
+    isLoading: areInferenceModelsLoading,
+    error: inferenceError,
+  } = useGetLlmModels();
 
   return (
     <Flex vertical align="center">
+      <div style={{ maxWidth: 800 }}>
+        {inferenceError ? (
+          <Alert
+            style={{ margin: 10 }}
+            message={`Inference model error: ${inferenceError.message}`}
+            type="error"
+          />
+        ) : null}
+        {embeddingError ? (
+          <Alert
+            style={{ margin: 10 }}
+            message={`Embedding model error: ${embeddingError.message}`}
+            type="error"
+          />
+        ) : null}
+      </div>
       <Flex vertical style={{ width: "80%", maxWidth: 1000 }} gap={20}>
         <Typography.Title level={3}>Embedding Models</Typography.Title>
         <EmbeddingModelTable

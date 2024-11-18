@@ -38,22 +38,27 @@
 
 import { Table, TableProps } from "antd";
 import { Model, useTestLlmModel } from "src/api/modelsApi.ts";
-import { useState } from "react";
 import { modelColumns, TestCell } from "pages/Models/ModelTable.tsx";
 
 const InferenceModelTestCell = ({ model }: { model: Model }) => {
-  const [testModel, setTestModel] = useState("");
-  const { data: testResult, isLoading, error } = useTestLlmModel(testModel);
+  const {
+    data: testResult,
+    isPending,
+    error,
+    mutate,
+  } = useTestLlmModel({
+    onError: () => undefined,
+  });
 
   const handleTestModel = () => {
-    setTestModel(model.model_id);
+    mutate(model.model_id);
   };
 
   return (
     <TestCell
       onClick={handleTestModel}
       model={model}
-      loading={isLoading}
+      loading={isPending}
       error={error}
       testResult={testResult}
     />
