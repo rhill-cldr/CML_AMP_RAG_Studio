@@ -60,7 +60,7 @@ router.include_router(data_source.router)
 router.include_router(sessions.router)
 router.include_router(amp_update.router)
 # include this for legacy UI calls
-router.include_router(amp_update.router, prefix="/index")
+router.include_router(amp_update.router, prefix="/index", deprecated=True)
 router.include_router(models.router)
 
 
