@@ -35,13 +35,15 @@
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
  ******************************************************************************/
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 import {
   ApiError,
   CustomError,
   getRequest,
   llmServicePath,
+  MutationKeys,
   QueryKeys,
+  UseMutationType,
 } from "src/api/utils.ts";
 
 export interface Model {
@@ -97,14 +99,15 @@ const getModelSource = async (): Promise<ModelSource> => {
   return await getRequest(`${llmServicePath}/index/models/model_source`);
 };
 
-export const useTestLlmModel = (model_id: string) => {
-  return useQuery({
-    queryKey: [QueryKeys.testLlmModel, { model_id }],
-    queryFn: async () => {
-      return await testLlmModel(model_id);
-    },
-    enabled: !!model_id,
-    retry: false,
+export const useTestLlmModel = ({
+  onSuccess,
+  onError,
+}: UseMutationType<string>) => {
+  return useMutation({
+    mutationKey: [MutationKeys.testLlmModel],
+    mutationFn: testLlmModel,
+    onError,
+    onSuccess,
   });
 };
 
@@ -121,14 +124,15 @@ const testLlmModel = async (model_id: string): Promise<string> => {
   });
 };
 
-export const useTestEmbeddingModel = (model_id: string) => {
-  return useQuery({
-    queryKey: [QueryKeys.testEmbeddingModel, { model_id }],
-    queryFn: async () => {
-      return await testEmbeddingModel(model_id);
-    },
-    retry: false,
-    enabled: !!model_id,
+export const useTestEmbeddingModel = ({
+  onSuccess,
+  onError,
+}: UseMutationType<string>) => {
+  return useMutation({
+    mutationKey: [MutationKeys.testEmbeddingModel],
+    mutationFn: testEmbeddingModel,
+    onError,
+    onSuccess,
   });
 };
 

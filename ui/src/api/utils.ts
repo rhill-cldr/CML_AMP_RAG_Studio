@@ -65,6 +65,8 @@ export enum MutationKeys {
   "deleteChatHistory" = "deleteChatHistory",
   "deleteSession" = "deleteSession",
   "updateAmp" = "updateAmp",
+  "testLlmModel" = "testLlmModel",
+  "testEmbeddingModel" = "testEmbeddingModel",
 }
 
 export enum QueryKeys {
@@ -81,8 +83,6 @@ export enum QueryKeys {
   "getLlmModels" = "getLlmModels",
   "getEmbeddingModels" = "getEmbeddingModels",
   "getModelSource" = "getModelSource",
-  "testLlmModel" = "testLlmModel",
-  "testEmbeddingModel" = "testEmbeddingModel",
 }
 
 export const commonHeaders = {
