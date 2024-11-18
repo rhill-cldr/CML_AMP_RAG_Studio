@@ -44,6 +44,7 @@ import static com.cloudera.cai.rag.external.RagBackendClient.*;
 import com.cloudera.cai.rag.configuration.JdbiConfiguration;
 import com.cloudera.cai.rag.datasources.RagDataSourceRepository;
 import com.cloudera.cai.rag.external.RagBackendClient;
+import com.cloudera.cai.util.exceptions.NotFound;
 import com.cloudera.cai.util.reconcilers.*;
 import io.opentelemetry.api.OpenTelemetry;
 import java.time.Instant;
@@ -106,8 +107,12 @@ public class RagFileIndexReconciler extends BaseReconciler<RagDocument> {
     for (RagDocument document : documents) {
       log.info("starting indexing document: {}", document);
       IndexConfiguration indexConfiguration = fetchIndexConfiguration(document.dataSourceId());
-      ragBackendClient.indexFile(document, bucketName, indexConfiguration);
-      log.info("finished requesting indexing of file {}", document);
+        try {
+            ragBackendClient.indexFile(document, bucketName, indexConfiguration);
+        } catch (NotFound e) {
+            throw new RuntimeException(e);
+        }
+        log.info("finished requesting indexing of file {}", document);
       String updateSql =
           """
         UPDATE rag_data_source_document
