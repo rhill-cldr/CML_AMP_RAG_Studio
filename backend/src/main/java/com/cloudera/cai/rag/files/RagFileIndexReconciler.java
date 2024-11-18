@@ -107,12 +107,7 @@ public class RagFileIndexReconciler extends BaseReconciler<RagDocument> {
     for (RagDocument document : documents) {
       log.info("starting indexing document: {}", document);
       IndexConfiguration indexConfiguration = fetchIndexConfiguration(document.dataSourceId());
-        try {
-            ragBackendClient.indexFile(document, bucketName, indexConfiguration);
-        } catch (NotFound e) {
-            throw new RuntimeException(e);
-        }
-        log.info("finished requesting indexing of file {}", document);
+      Instant updateTimestamp = indexFile(document, indexConfiguration);
       String updateSql =
           """
         UPDATE rag_data_source_document
@@ -122,11 +117,24 @@ public class RagFileIndexReconciler extends BaseReconciler<RagDocument> {
       jdbi.useHandle(
           handle -> {
             try (Update update = handle.createUpdate(updateSql)) {
-              update.bind("id", document.id()).bind("now", Instant.now()).execute();
+              update.bind("id", document.id()).bind("now", updateTimestamp).execute();
             }
           });
     }
     return new ReconcileResult();
+  }
+
+  private Instant indexFile(RagDocument document, IndexConfiguration indexConfiguration) {
+    Instant updateTimestamp;
+    try {
+      ragBackendClient.indexFile(document, bucketName, indexConfiguration);
+      updateTimestamp = Instant.now();
+      log.info("finished requesting indexing of file {}", document);
+    } catch (NotFound e) {
+      updateTimestamp = Instant.EPOCH;
+      log.info("not found exception from RAG Backend: {}", e.getMessage());
+    }
+    return updateTimestamp;
   }
 
   private IndexConfiguration fetchIndexConfiguration(Long dataSourceId) {

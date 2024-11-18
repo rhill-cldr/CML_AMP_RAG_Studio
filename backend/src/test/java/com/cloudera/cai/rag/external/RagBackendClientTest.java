@@ -135,7 +135,9 @@ class RagBackendClientTest {
   void null_handlesThrowable() {
     RagBackendClient client =
         RagBackendClient.createNull(new Tracker<>(), new NotFound("not found"));
-    assertThatThrownBy(() -> client.indexFile(null, null, null)).isInstanceOf(NotFound.class);
+    RagDocument document = indexRequest("s3Path", 1234L);
+    assertThatThrownBy(() -> client.indexFile(document, "fakeit", null))
+        .isInstanceOf(NotFound.class);
   }
 
   private static RagDocument indexRequest(String s3Path, Long dataSourceId) {

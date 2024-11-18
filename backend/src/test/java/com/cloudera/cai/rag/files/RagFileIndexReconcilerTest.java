@@ -156,8 +156,7 @@ class RagFileIndexReconcilerTest {
             () -> {
               assertThat(reconciler.isEmpty()).isTrue();
               RagDocument updatedDocument = ragFileRepository.findDocumentByDocumentId(documentId);
-              assertThat(updatedDocument.vectorUploadTimestamp())
-                  .isNotNull(); // todo: check for the expected value
+              assertThat(updatedDocument.vectorUploadTimestamp()).isEqualTo(Instant.EPOCH);
             });
     assertThat(requestTracker.getValues())
         .contains(

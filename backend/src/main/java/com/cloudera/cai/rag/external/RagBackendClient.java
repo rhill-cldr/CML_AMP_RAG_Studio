@@ -123,12 +123,12 @@ public class RagBackendClient {
       @Override
       public void indexFile(
           Types.RagDocument ragDocument, String bucketName, IndexConfiguration configuration) {
-        checkForException();
         super.indexFile(ragDocument, bucketName, configuration);
         tracker.track(
             new TrackedRequest<>(
                 new TrackedIndexRequest(
                     bucketName, ragDocument.s3Path(), ragDocument.dataSourceId(), configuration)));
+        checkForException();
       }
 
       private void checkForException() {
@@ -139,32 +139,32 @@ public class RagBackendClient {
 
       @Override
       public void deleteDataSource(Long dataSourceId) {
-        checkForException();
         super.deleteDataSource(dataSourceId);
         tracker.track(new TrackedRequest<>(new TrackedDeleteDataSourceRequest(dataSourceId)));
+        checkForException();
       }
 
       @Override
       public String createSummary(Types.RagDocument ragDocument, String bucketName) {
-        checkForException();
         String result = super.createSummary(ragDocument, bucketName);
         tracker.track(new TrackedRequest<>(new SummaryRequest(bucketName, ragDocument.s3Path())));
+        checkForException();
         return result;
       }
 
       @Override
       public void deleteSession(Long sessionId) {
-        checkForException();
         super.deleteSession(sessionId);
         tracker.track(new TrackedRequest<>(new TrackedDeleteSessionRequest(sessionId)));
+        checkForException();
       }
 
       @Override
       public void deleteDocument(long dataSourceId, String documentId) {
-        checkForException();
         super.deleteDocument(dataSourceId, documentId);
         tracker.track(
             new TrackedRequest<>(new TrackedDeleteDocumentRequest(dataSourceId, documentId)));
+        checkForException();
       }
     };
   }
