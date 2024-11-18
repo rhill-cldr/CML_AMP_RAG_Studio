@@ -67,7 +67,7 @@ class RagBackendClientTest {
         .contains(
             new TrackedHttpRequest<>(
                 HttpMethod.POST,
-                "http://rag-backend:8000/index/download-and-index",
+                "http://rag-backend:8000/download-and-index",
                 new RagBackendClient.IndexRequest(
                     "bucketName", "s3Path", 1234L, indexConfiguration)));
   }
@@ -86,7 +86,7 @@ class RagBackendClientTest {
         .contains(
             new TrackedHttpRequest<>(
                 HttpMethod.POST,
-                "http://rag-backend:8000/index/data_sources/1234/summarize-document",
+                "http://rag-backend:8000/data_sources/1234/summarize-document",
                 new RagBackendClient.SummaryRequest("bucketName", "s3Path")));
   }
 
@@ -100,7 +100,7 @@ class RagBackendClientTest {
         .hasSize(1)
         .contains(
             new TrackedHttpRequest<>(
-                HttpMethod.DELETE, "http://rag-backend:8000/index/data_sources/1234", null));
+                HttpMethod.DELETE, "http://rag-backend:8000/data_sources/1234", null));
   }
 
   @Test
@@ -114,7 +114,7 @@ class RagBackendClientTest {
         .contains(
             new TrackedHttpRequest<>(
                 HttpMethod.DELETE,
-                "http://rag-backend:8000/index/data_sources/1234/documents/documentId",
+                "http://rag-backend:8000/data_sources/1234/documents/documentId",
                 null));
   }
 
@@ -128,7 +128,7 @@ class RagBackendClientTest {
         .hasSize(1)
         .contains(
             new TrackedHttpRequest<>(
-                HttpMethod.DELETE, "http://rag-backend:8000/index/sessions/1234", null));
+                HttpMethod.DELETE, "http://rag-backend:8000/sessions/1234", null));
   }
 
   @Test

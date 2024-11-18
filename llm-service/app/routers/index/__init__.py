@@ -55,9 +55,7 @@ from . import models
 logger = logging.getLogger(__name__)
 
 
-router = APIRouter(
-    prefix="/index",
-)
+router = APIRouter()
 router.include_router(data_source.router)
 router.include_router(sessions.router)
 router.include_router(amp_update.router)

@@ -64,7 +64,7 @@ class TestDocumentIndexing:
     ) -> None:
         """Test POST /index/download-and-index."""
         response = client.post(
-            "/index/download-and-index",
+            "/download-and-index",
             json=index_document_request_body,
         )
 
@@ -83,7 +83,7 @@ class TestDocumentIndexing:
     ) -> None:
         """Test DELETE /index/data_sources/{data_source_id}."""
         client.post(
-            "/index/download-and-index",
+            "/download-and-index",
             json=index_document_request_body,
         )
 
@@ -91,12 +91,12 @@ class TestDocumentIndexing:
         vectors = index.vector_store.query(VectorStoreQuery(query_embedding=[0.66] * 1024, doc_ids=[document_id]))
         assert len(vectors.nodes) == 1
 
-        response = client.delete(f"/index/data_sources/{data_source_id}")
+        response = client.delete(f"/data_sources/{data_source_id}")
         assert response.status_code == 200
         vector_store = rag_vector_store.create_rag_vector_store(data_source_id)
         assert vector_store.exists() is False
 
-        get_summary_response = client.get(f'/index/data_sources/{data_source_id}/documents/{document_id}/summary')
+        get_summary_response = client.get(f'/data_sources/{data_source_id}/documents/{document_id}/summary')
         assert get_summary_response.status_code == 404
 
     @staticmethod
@@ -108,7 +108,7 @@ class TestDocumentIndexing:
     ) -> None:
         """Test DELETE /index/data_sources/{data_source_id}/documents/{document_id}."""
         client.post(
-            "/index/download-and-index",
+            "/download-and-index",
             json=index_document_request_body,
         )
 
@@ -116,7 +116,7 @@ class TestDocumentIndexing:
         vectors = index.vector_store.query(VectorStoreQuery(query_embedding=[.2] * 1024, doc_ids=[document_id]))
         assert len(vectors.nodes) == 1
 
-        response = client.delete(f"/index/data_sources/{data_source_id}/documents/{document_id}")
+        response = client.delete(f"/data_sources/{data_source_id}/documents/{document_id}")
         assert response.status_code == 200
 
         index = get_vector_store_index(data_source_id)
@@ -131,10 +131,10 @@ class TestDocumentIndexing:
     ) -> None:
         """Test GET /index/data_sources/{data_source_id}/size."""
         client.post(
-            "/index/download-and-index",
+            "/download-and-index",
             json=index_document_request_body,
         )
 
-        response = client.get(f"/index/data_sources/{data_source_id}/size")
+        response = client.get(f"/data_sources/{data_source_id}/size")
         assert response.status_code == 200
         assert response.json() == 1

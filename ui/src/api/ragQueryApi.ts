@@ -78,7 +78,9 @@ export const useSuggestQuestions = (request: SuggestQuestionsRequest) => {
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: suggestedQuestionKey(request.data_source_id),
     queryFn: () => suggestQuestionsQuery(request),
-    enabled: !!request.data_source_id,
+    enabled:
+      Boolean(request.data_source_id) &&
+      Boolean(request.configuration.model_name),
     gcTime: 0,
   });
 };
@@ -86,10 +88,7 @@ export const useSuggestQuestions = (request: SuggestQuestionsRequest) => {
 const suggestQuestionsQuery = async (
   request: SuggestQuestionsRequest,
 ): Promise<SuggestQuestionsResponse> => {
-  return await postRequest(
-    `${llmServicePath}/index/suggest-questions`,
-    request,
-  );
+  return await postRequest(`${llmServicePath}/suggest-questions`, request);
 };
 
 type ChunkContents = string;
@@ -110,6 +109,6 @@ const getChunkContents = async (
   request: ChunkContentsRequest,
 ): Promise<ChunkContents> => {
   return getRequest(
-    `${llmServicePath}/index/data_sources/${request.data_source_id}/chunks/${request.chunk_id}`,
+    `${llmServicePath}/data_sources/${request.data_source_id}/chunks/${request.chunk_id}`,
   );
 };
