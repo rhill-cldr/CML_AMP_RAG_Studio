@@ -111,6 +111,9 @@ def get_caii_llm_models():
     endpoint_name = os.environ['CAII_INFERENCE_ENDPOINT_NAME']
     try:
         models = describe_endpoint(domain=domain, endpoint_name=endpoint_name)
+    except requests.exceptions.ConnectionError as e:
+        print(e)
+        raise HTTPException(status_code=421, detail = f"Unable to connect to host {domain}. Please check your CAII_DOMAIN env variable.")
     except HTTPException as e:
         if e.status_code == 404:
             return [{"model_id": endpoint_name}]
@@ -126,6 +129,9 @@ def get_caii_embedding_models():
     endpoint_name = os.environ['CAII_EMBEDDING_ENDPOINT_NAME']
     try:
         models = describe_endpoint(domain=domain, endpoint_name=endpoint_name)
+    except requests.exceptions.ConnectionError as e:
+        print(e)
+        raise HTTPException(status_code=421, detail = f"Unable to connect to host {domain}. Please check your CAII_DOMAIN env variable.")
     except HTTPException as e:
         if e.status_code == 404:
             return [{"model_id": endpoint_name}]
