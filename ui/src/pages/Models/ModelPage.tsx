@@ -40,34 +40,12 @@ import { Flex, Typography } from "antd";
 import EmbeddingModelTable from "pages/Models/EmbeddingModelTable.tsx";
 import { useGetEmbeddingModels, useGetLlmModels } from "src/api/modelsApi.ts";
 import InferenceModelTable from "pages/Models/InferenceModelTable.tsx";
-import { useEffect } from "react";
-import messageQueue from "src/utils/messageQueue.ts";
 
 const ModelPage = () => {
-  const {
-    data: embeddingModels,
-    isLoading: areEmbeddingModelsLoading,
-    error: embeddingModelsError,
-  } = useGetEmbeddingModels();
-  const {
-    data: inferenceModels,
-    isLoading: areInferenceModelsLoading,
-    error: inferenceModelsError,
-  } = useGetLlmModels();
-
-  useEffect(() => {
-    if (embeddingModelsError) {
-      messageQueue.error(
-        `Error fetching embedding models: ${embeddingModelsError.message}`,
-      );
-    }
-
-    if (inferenceModelsError) {
-      messageQueue.error(
-        `Error fetching inference models: ${inferenceModelsError.message}`,
-      );
-    }
-  }, [inferenceModelsError, embeddingModelsError]);
+  const { data: embeddingModels, isLoading: areEmbeddingModelsLoading } =
+    useGetEmbeddingModels();
+  const { data: inferenceModels, isLoading: areInferenceModelsLoading } =
+    useGetLlmModels();
 
   return (
     <Flex vertical align="center">

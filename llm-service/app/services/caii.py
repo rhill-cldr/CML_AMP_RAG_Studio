@@ -109,7 +109,13 @@ def get_embedding_model() -> BaseEmbedding:
 def get_caii_llm_models():
     domain = os.environ['CAII_DOMAIN']
     endpoint_name = os.environ['CAII_INFERENCE_ENDPOINT_NAME']
-    models = describe_endpoint(domain=domain, endpoint_name=endpoint_name)
+    try:
+        models = describe_endpoint(domain=domain, endpoint_name=endpoint_name)
+    except HTTPException as e:
+        if e.status_code == 404:
+            return [{"model_id": endpoint_name}]
+        else:
+            raise e
     return build_model_response(models)
 
 def get_caii_embedding_models():
