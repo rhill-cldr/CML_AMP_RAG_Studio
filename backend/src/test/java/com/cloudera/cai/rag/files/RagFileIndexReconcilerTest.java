@@ -113,6 +113,11 @@ class RagFileIndexReconcilerTest {
                     "rag-files", "path_in_s3", dataSourceId, new IndexConfiguration(1024, 20))));
   }
 
+  @Test
+  void reconcile_notFound() {
+    RagFileIndexReconciler reconciler = createTestInstance(new Tracker<>());
+  }
+
   private RagFileIndexReconciler createTestInstance(
       Tracker<RagBackendClient.TrackedRequest<?>> tracker) {
     Jdbi jdbi = new JdbiConfiguration().jdbi();

@@ -39,12 +39,14 @@
 package com.cloudera.cai.rag.external;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.cloudera.cai.rag.Types.RagDocument;
 import com.cloudera.cai.rag.external.RagBackendClient.IndexConfiguration;
 import com.cloudera.cai.util.SimpleHttpClient;
 import com.cloudera.cai.util.SimpleHttpClient.TrackedHttpRequest;
 import com.cloudera.cai.util.Tracker;
+import com.cloudera.cai.util.exceptions.NotFound;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
@@ -127,6 +129,13 @@ class RagBackendClientTest {
         .contains(
             new TrackedHttpRequest<>(
                 HttpMethod.DELETE, "http://rag-backend:8000/index/sessions/1234", null));
+  }
+
+  @Test
+  void null_handlesThrowable() {
+    RagBackendClient client =
+        RagBackendClient.createNull(new Tracker<>(), new NotFound("not found"));
+    assertThatThrownBy(() -> client.indexFile(null, null, null)).isInstanceOf(NotFound.class);
   }
 
   private static RagDocument indexRequest(String s3Path, Long dataSourceId) {

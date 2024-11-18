@@ -114,11 +114,17 @@ public class RagBackendClient {
     return createNull(new Tracker<>());
   }
 
-  public static RagBackendClient createNull(Tracker<TrackedRequest<?>> tracker) {
+  public static RagBackendClient createNull(Tracker<TrackedRequest<?>> tracker, Throwable... t) {
     return new RagBackendClient(SimpleHttpClient.createNull()) {
+      private final Throwable[] throwables = t;
+      private int throwableIndex = 0;
+
       @Override
       public void indexFile(
           Types.RagDocument ragDocument, String bucketName, IndexConfiguration configuration) {
+        if (throwableIndex < throwables.length) {
+            throw new RuntimeException(throwables[throwableIndex++]);
+        }
         super.indexFile(ragDocument, bucketName, configuration);
         tracker.track(
             new TrackedRequest<>(
@@ -128,12 +134,18 @@ public class RagBackendClient {
 
       @Override
       public void deleteDataSource(Long dataSourceId) {
+        if (throwableIndex < throwables.length) {
+          throw new RuntimeException(throwables[throwableIndex++]);
+        }
         super.deleteDataSource(dataSourceId);
         tracker.track(new TrackedRequest<>(new TrackedDeleteDataSourceRequest(dataSourceId)));
       }
 
       @Override
       public String createSummary(Types.RagDocument ragDocument, String bucketName) {
+        if (throwableIndex < throwables.length) {
+          throw new RuntimeException(throwables[throwableIndex++]);
+        }
         String result = super.createSummary(ragDocument, bucketName);
         tracker.track(new TrackedRequest<>(new SummaryRequest(bucketName, ragDocument.s3Path())));
         return result;
@@ -141,12 +153,18 @@ public class RagBackendClient {
 
       @Override
       public void deleteSession(Long sessionId) {
+        if (throwableIndex < throwables.length) {
+          throw new RuntimeException(throwables[throwableIndex++]);
+        }
         super.deleteSession(sessionId);
         tracker.track(new TrackedRequest<>(new TrackedDeleteSessionRequest(sessionId)));
       }
 
       @Override
       public void deleteDocument(long dataSourceId, String documentId) {
+        if (throwableIndex < throwables.length) {
+          throw new RuntimeException(throwables[throwableIndex++]);
+        }
         super.deleteDocument(dataSourceId, documentId);
         tracker.track(
             new TrackedRequest<>(new TrackedDeleteDocumentRequest(dataSourceId, documentId)));
