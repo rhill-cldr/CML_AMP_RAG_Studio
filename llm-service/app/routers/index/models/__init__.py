@@ -49,7 +49,7 @@ from ....services.models import (
     test_llm_model,
 )
 
-router = APIRouter(prefix="/models")
+router = APIRouter(prefix="/models", tags=["Models"])
 
 
 @router.get("/llm", summary="Get LLM Inference models.")

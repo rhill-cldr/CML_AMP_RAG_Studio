@@ -34,7 +34,7 @@ from pydantic import BaseModel
 from .... import exceptions
 from ....services import doc_summaries, qdrant
 
-router = APIRouter(prefix="/data_sources/{data_source_id}")
+router = APIRouter(prefix="/data_sources/{data_source_id}", tags=["Data Sources"])
 
 
 class SummarizeDocumentRequest(BaseModel):

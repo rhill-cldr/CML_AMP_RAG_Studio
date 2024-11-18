@@ -57,13 +57,20 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/index",
-    tags=["index"],
 )
 router.include_router(data_source.router)
 router.include_router(sessions.router)
 router.include_router(amp_update.router)
 router.include_router(models.router)
 
+
+class SuggestQuestionsRequest(BaseModel):
+    data_source_id: int
+    chat_history: list[RagContext]
+    configuration: qdrant.RagPredictConfiguration = qdrant.RagPredictConfiguration()
+
+class RagSuggestedQuestionsResponse(BaseModel):
+    suggested_questions: list[str]
 
 class RagIndexDocumentRequest(BaseModel):
     data_source_id: int
@@ -81,7 +88,7 @@ class RagIndexDocumentRequest(BaseModel):
 )
 @exceptions.propagates
 def download_and_index(
-    request: RagIndexDocumentRequest,
+        request: RagIndexDocumentRequest,
 ) -> str:
     with tempfile.TemporaryDirectory() as tmpdirname:
         logger.debug("created temporary directory %s", tmpdirname)
@@ -93,16 +100,6 @@ def download_and_index(
             request.s3_document_key
         )
         return http.HTTPStatus.OK.phrase
-
-
-class SuggestQuestionsRequest(BaseModel):
-    data_source_id: int
-    chat_history: list[RagContext]
-    configuration: qdrant.RagPredictConfiguration = qdrant.RagPredictConfiguration()
-
-class RagSuggestedQuestionsResponse(BaseModel):
-    suggested_questions: list[str]
-
 
 @router.post("/suggest-questions", summary="Suggest questions with context")
 @exceptions.propagates
