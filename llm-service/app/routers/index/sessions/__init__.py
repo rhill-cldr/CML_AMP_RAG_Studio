@@ -41,7 +41,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 from .... import exceptions
-from ....services.chat_store import RagStudioChatMessage, chat_store, RagContext
+from ....services.chat_store import RagStudioChatMessage, chat_store
 from ....services import qdrant
 from ....services.chat import (v2_chat, generate_suggested_questions)
 
@@ -82,7 +82,6 @@ def chat(
 
 class SuggestQuestionsRequest(BaseModel):
     data_source_id: int
-    chat_history: list[RagContext]
     configuration: qdrant.RagPredictConfiguration = qdrant.RagPredictConfiguration()
 
 class RagSuggestedQuestionsResponse(BaseModel):
