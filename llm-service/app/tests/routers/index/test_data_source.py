@@ -56,15 +56,15 @@ def get_vector_store_index(data_source_id) -> VectorStoreIndex:
 class TestDocumentIndexing:
 
     @staticmethod
-    def test_create_document(
+    def  test_create_document(
             client,
             index_document_request_body: dict[str, Any],
             document_id: str,
             data_source_id: int,
     ) -> None:
-        """Test POST /index/download-and-index."""
+        """Test POST /download-and-index."""
         response = client.post(
-            "/download-and-index",
+            f"/data_sources/{data_source_id}/documents/download-and-index",
             json=index_document_request_body,
         )
 
@@ -81,9 +81,9 @@ class TestDocumentIndexing:
             document_id: str,
             index_document_request_body: dict[str, Any],
     ) -> None:
-        """Test DELETE /index/data_sources/{data_source_id}."""
+        """Test DELETE /data_sources/{data_source_id}."""
         client.post(
-            "/download-and-index",
+            f"/data_sources/{data_source_id}/documents/download-and-index",
             json=index_document_request_body,
         )
 
@@ -106,9 +106,9 @@ class TestDocumentIndexing:
             document_id: str,
             index_document_request_body: dict[str, Any],
     ) -> None:
-        """Test DELETE /index/data_sources/{data_source_id}/documents/{document_id}."""
+        """Test DELETE /data_sources/{data_source_id}/documents/{document_id}."""
         client.post(
-            "/download-and-index",
+            f"/data_sources/{data_source_id}/documents/download-and-index",
             json=index_document_request_body,
         )
 
@@ -129,9 +129,9 @@ class TestDocumentIndexing:
             data_source_id: int,
             index_document_request_body: dict[str, Any],
     ) -> None:
-        """Test GET /index/data_sources/{data_source_id}/size."""
+        """Test GET /data_sources/{data_source_id}/size."""
         client.post(
-            "/download-and-index",
+            f"/data_sources/{data_source_id}/documents/download-and-index",
             json=index_document_request_body,
         )
 
