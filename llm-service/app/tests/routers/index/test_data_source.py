@@ -56,7 +56,7 @@ def get_vector_store_index(data_source_id) -> VectorStoreIndex:
 class TestDocumentIndexing:
 
     @staticmethod
-    def  test_create_document(
+    def test_create_document(
             client,
             index_document_request_body: dict[str, Any],
             document_id: str,
