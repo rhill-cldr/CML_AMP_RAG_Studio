@@ -72,7 +72,6 @@ jobs:
 
       - name: Test with pytest
         run: |
-          pip install pytest
-          pytest tests.py --doctest-modules --junitxml=junit/test-results.xml
+          python -m pytest -sxvvra
         working-directory: llm-service
 
