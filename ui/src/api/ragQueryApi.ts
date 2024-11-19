@@ -54,7 +54,7 @@ export interface RagMessage {
 export interface SuggestQuestionsRequest {
   data_source_id: string;
   configuration: QueryConfiguration;
-  chat_history: RagMessage[];
+  session_id: string;
 }
 
 export interface SuggestQuestionsResponse {
@@ -88,7 +88,10 @@ export const useSuggestQuestions = (request: SuggestQuestionsRequest) => {
 const suggestQuestionsQuery = async (
   request: SuggestQuestionsRequest,
 ): Promise<SuggestQuestionsResponse> => {
-  return await postRequest(`${llmServicePath}/suggest-questions`, request);
+  return await postRequest(
+    `${llmServicePath}/sessions/${request.session_id}/suggest-questions`,
+    request,
+  );
 };
 
 type ChunkContents = string;

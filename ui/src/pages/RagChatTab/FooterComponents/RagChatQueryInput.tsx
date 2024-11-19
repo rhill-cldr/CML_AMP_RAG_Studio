@@ -42,25 +42,10 @@ import { SendOutlined } from "@ant-design/icons";
 import { useContext, useState } from "react";
 import { RagChatContext } from "pages/RagChatTab/State/RagChatContext.tsx";
 import messageQueue from "src/utils/messageQueue.ts";
-import { ChatMessageType, useChatMutation } from "src/api/chatApi.ts";
-import { RagMessage, useSuggestQuestions } from "src/api/ragQueryApi.ts";
+import { useChatMutation } from "src/api/chatApi.ts";
+import { useSuggestQuestions } from "src/api/ragQueryApi.ts";
 import { useParams } from "@tanstack/react-router";
 import { cdlBlue600 } from "src/cuix/variables.ts";
-
-const convertedChatHistory = (chatHistory: ChatMessageType[]): RagMessage[] => {
-  return chatHistory.flatMap((message) => {
-    return [
-      {
-        role: "user",
-        content: message.rag_message.user,
-      },
-      {
-        role: "assistant",
-        content: message.rag_message.assistant,
-      },
-    ];
-  });
-};
 
 const RagChatQueryInput = () => {
   const {
@@ -82,7 +67,7 @@ const RagChatQueryInput = () => {
   } = useSuggestQuestions({
     data_source_id: dataSourceId?.toString() ?? "",
     configuration: queryConfiguration,
-    chat_history: convertedChatHistory(chatHistory),
+    session_id: sessionId ?? "",
   });
 
   const chatMutation = useChatMutation({

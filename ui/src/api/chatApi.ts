@@ -185,5 +185,8 @@ export const useChatMutation = ({
 const chatMutation = async (
   request: ChatMutationRequest,
 ): Promise<ChatMessageType> => {
-  return await postRequest(`${llmServicePath}/chat`, request);
+  return await postRequest(
+    `${llmServicePath}/sessions/${request.session_id}/chat`,
+    request,
+  );
 };

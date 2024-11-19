@@ -130,8 +130,9 @@ def format_source_nodes(response):
 
 
 def generate_suggested_questions(
-    configuration, data_source_id, chat_history, data_source_size
+    configuration, data_source_id, data_source_size, session_id
 ):
+    chat_history = retrieve_chat_history(session_id)
     if data_source_size == 0:
         suggested_questions = []
     else:
