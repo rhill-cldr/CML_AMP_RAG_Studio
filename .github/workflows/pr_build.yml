@@ -58,3 +58,21 @@ jobs:
         run: pnpm build
         working-directory: ui
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+          cache-dependency-path: 'llm-service/app/requirements.txt'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r app/requirements.txt
+        working-directory: llm-service
+
+      - name: Test with pytest
+        run: |
+          python -m pytest -sxvvra
+        working-directory: llm-service
+

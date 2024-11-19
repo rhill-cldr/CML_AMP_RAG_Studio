@@ -43,7 +43,7 @@ class TestDocumentSummaries:
     @staticmethod
     def test_generate_summary(client, index_document_request_body: dict[str, Any], data_source_id, document_id, s3_object) -> None:
         response = client.post(
-            "/download-and-index",
+            f"/data_sources/{data_source_id}/documents/download-and-index",
             json=index_document_request_body,
         )
 
@@ -70,7 +70,7 @@ class TestDocumentSummaries:
     @staticmethod
     def test_delete_document(client, index_document_request_body: dict[str, Any], data_source_id, document_id, s3_object) -> None:
         response = client.post(
-            "/download-and-index",
+            f"/data_sources/{data_source_id}/documents/download-and-index",
             json=index_document_request_body,
         )
 
