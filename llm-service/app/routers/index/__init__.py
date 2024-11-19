@@ -36,9 +36,7 @@
 #  DATA.
 # ##############################################################################
 
-import http
 import logging
-import tempfile
 
 from fastapi import APIRouter
 from pydantic import BaseModel
@@ -72,34 +70,7 @@ class SuggestQuestionsRequest(BaseModel):
 class RagSuggestedQuestionsResponse(BaseModel):
     suggested_questions: list[str]
 
-class RagIndexDocumentRequest(BaseModel):
-    data_source_id: int
-    s3_bucket_name: str
-    s3_document_key: str
-    configuration: qdrant.RagIndexDocumentConfiguration = (
-        qdrant.RagIndexDocumentConfiguration()
-    )
 
-
-@router.post(
-    "/download-and-index",
-    summary="Download and index document",
-    description="Download document from S3 and index in Pinecone",
-)
-@exceptions.propagates
-def download_and_index(
-        request: RagIndexDocumentRequest,
-) -> str:
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        logger.debug("created temporary directory %s", tmpdirname)
-        s3.download(tmpdirname, request.s3_bucket_name, request.s3_document_key)
-        qdrant.download_and_index(
-            tmpdirname,
-            request.data_source_id,
-            request.configuration,
-            request.s3_document_key
-        )
-        return http.HTTPStatus.OK.phrase
 
 @router.post("/suggest-questions", summary="Suggest questions with context")
 @exceptions.propagates

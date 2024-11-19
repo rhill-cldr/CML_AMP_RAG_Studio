@@ -64,9 +64,11 @@ public class RagBackendClient {
       Types.RagDocument ragDocument, String bucketName, IndexConfiguration configuration) {
     try {
       client.post(
-          indexUrl + "/download-and-index",
-          new IndexRequest(
-              bucketName, ragDocument.s3Path(), ragDocument.dataSourceId(), configuration));
+          indexUrl
+              + "/data_sources/"
+              + ragDocument.dataSourceId()
+              + "/documents/download-and-index",
+          new IndexRequest(bucketName, ragDocument.s3Path(), configuration));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -97,7 +99,6 @@ public class RagBackendClient {
   record IndexRequest(
       @JsonProperty("s3_bucket_name") String s3BucketName,
       @JsonProperty("s3_document_key") String s3DocumentKey,
-      @JsonProperty("data_source_id") long dataSourceId,
       IndexConfiguration configuration) {}
 
   public record SummaryRequest(

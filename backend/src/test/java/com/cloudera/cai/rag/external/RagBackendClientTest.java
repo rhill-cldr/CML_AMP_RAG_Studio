@@ -67,9 +67,8 @@ class RagBackendClientTest {
         .contains(
             new TrackedHttpRequest<>(
                 HttpMethod.POST,
-                "http://rag-backend:8000/download-and-index",
-                new RagBackendClient.IndexRequest(
-                    "bucketName", "s3Path", 1234L, indexConfiguration)));
+                "http://rag-backend:8000/data_sources/" + 1234L + "/documents/download-and-index",
+                new RagBackendClient.IndexRequest("bucketName", "s3Path", indexConfiguration)));
   }
 
   @Test
