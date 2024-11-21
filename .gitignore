@@ -6,3 +6,12 @@
 !.idea/google-java-format.xml
 chat_store.json
 databases/
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
