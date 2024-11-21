@@ -44,75 +44,14 @@ from llama_index.core.chat_engine import CondenseQuestionChatEngine
 from llama_index.core.chat_engine.types import AgentChatResponse
 from llama_index.core.indices import VectorStoreIndex
 from llama_index.core.indices.vector_store import VectorIndexRetriever
-from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.query_engine import RetrieverQueryEngine
-from llama_index.core.readers import SimpleDirectoryReader
 from llama_index.core.response_synthesizers import get_response_synthesizer
-from llama_index.core.storage import StorageContext
-from pydantic import BaseModel
 
 from ..rag_types import RagPredictConfiguration
 from . import models, rag_vector_store
 from .chat_store import RagContext
-from .utils import get_last_segment
 
 logger = logging.getLogger(__name__)
-
-
-class RagIndexDocumentConfiguration(BaseModel):
-    # TODO: Add more params
-    chunk_size: int = 512  # this is llama-index's default
-    chunk_overlap: int = 10  # percentage of tokens in a chunk (chunk_size)
-
-
-def download_and_index(
-    tmpdirname: str,
-    data_source_id: int,
-    configuration: RagIndexDocumentConfiguration,
-    s3_document_key: str,
-) -> None:
-    try:
-        documents = SimpleDirectoryReader(tmpdirname).load_data()
-        document_id = get_last_segment(s3_document_key)
-        for document in documents:
-            document.id_ = document_id  # this is a terrible way to assign the doc id...
-            document.metadata["document_id"] = document_id
-    except Exception as e:
-        logger.error(
-            "error loading document from temporary directory %s",
-            tmpdirname,
-        )
-        raise HTTPException(
-            status_code=422,
-            detail=f"error loading document from temporary directory {tmpdirname}",
-        ) from e
-
-    logger.info("instantiating vector store")
-    vector_store = rag_vector_store.create_rag_vector_store(
-        data_source_id
-    ).access_vector_store()
-    logger.info("instantiated vector store")
-
-    storage_context = StorageContext.from_defaults(vector_store=vector_store)
-
-    chunk_overlap_tokens = int(
-        configuration.chunk_overlap * 0.01 * configuration.chunk_size
-    )
-
-    logger.info("indexing document")
-    VectorStoreIndex.from_documents(
-        documents,
-        storage_context=storage_context,
-        embed_model=models.get_embedding_model(),
-        show_progress=False,
-        transformations=[
-            SentenceSplitter(
-                chunk_size=configuration.chunk_size,
-                chunk_overlap=chunk_overlap_tokens,
-            ),
-        ],
-    )
-    logger.info("indexed document")
 
 
 def check_data_source_exists(data_source_size: int) -> None:
