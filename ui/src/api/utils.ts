@@ -43,6 +43,7 @@ export const paths = {
   files: "files",
   dataSources: "dataSources",
   sessions: "sessions",
+  workspaces: "workspaces",
 };
 
 export interface UseMutationType<T> {
@@ -62,8 +63,11 @@ export enum MutationKeys {
   "deleteDataSource" = "deleteDataSource",
   "getChunkContents" = "getChunkContents",
   "createSession" = "createSession",
+  "createWorkspace" = "createWorkspace",
   "deleteChatHistory" = "deleteChatHistory",
+  "deleteWorkHistory" = "deleteWorkHistory",
   "deleteSession" = "deleteSession",
+  "deleteWorkspace" = "deleteWorkspace",
   "updateAmp" = "updateAmp",
   "testLlmModel" = "testLlmModel",
   "testEmbeddingModel" = "testEmbeddingModel",
@@ -76,6 +80,7 @@ export enum QueryKeys {
   "chatHistoryQuery" = "chatHistoryQuery",
   "suggestQuestionsQuery" = "suggestQuestionsQuery",
   "getSessions" = "getSessions",
+  "getWorkspaces" = "getWorkspaces",
   "getDocumentSummary" = "getDocumentSummary",
   "getAmpUpdateStatus" = "getAmpUpdateStatus",
   "getDataSourceSummary" = "getDataSourceSummary",

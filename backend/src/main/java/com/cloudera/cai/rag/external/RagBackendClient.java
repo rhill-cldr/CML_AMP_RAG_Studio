@@ -96,6 +96,10 @@ public class RagBackendClient {
     client.delete(indexUrl + "/sessions/" + sessionId);
   }
 
+  public void deleteWorkspace(Long workspaceId) {
+    client.delete(indexUrl + "/workspaces/" + workspaceId);
+  }
+
   record IndexRequest(
       @JsonProperty("s3_bucket_name") String s3BucketName,
       @JsonProperty("s3_document_key") String s3DocumentKey,
@@ -161,6 +165,13 @@ public class RagBackendClient {
       }
 
       @Override
+      public void deleteWorkspace(Long workspaceId) {
+        super.deleteWorkspace(workspaceId);
+        tracker.track(new TrackedRequest<>(new TrackedDeleteWorkspaceRequest(workspaceId)));
+        checkForException();
+      }
+
+      @Override
       public void deleteDocument(long dataSourceId, String documentId) {
         super.deleteDocument(dataSourceId, documentId);
         tracker.track(
@@ -174,6 +185,8 @@ public class RagBackendClient {
       String bucketName, String s3Path, long dataSourceId, IndexConfiguration configuration) {}
 
   public record TrackedDeleteSessionRequest(Long sessionId) {}
+
+  public record TrackedDeleteWorkspaceRequest(Long workspaceId) {}
 
   public record TrackedDeleteDataSourceRequest(long dataSourceId) {}
 

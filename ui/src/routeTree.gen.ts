@@ -15,7 +15,9 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as IndexImport } from './routes/index'
+import { Route as LayoutWorkspacesIndexImport } from './routes/_layout/workspaces/index'
 import { Route as LayoutSessionsIndexImport } from './routes/_layout/sessions/index'
+import { Route as LayoutWorkspacesWorkspaceIdImport } from './routes/_layout/workspaces/$workspaceId'
 import { Route as LayoutSessionsSessionIdImport } from './routes/_layout/sessions/$sessionId'
 import { Route as LayoutModelsLayoutModelsImport } from './routes/_layout/models/_layout-models'
 import { Route as LayoutDataLayoutDatasourcesImport } from './routes/_layout/data/_layout-datasources'
@@ -53,6 +55,14 @@ const LayoutDataRoute = LayoutDataImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
+const LayoutWorkspacesIndexRoute = LayoutWorkspacesIndexImport.update({
+  id: '/workspaces/',
+  path: '/workspaces/',
+  getParentRoute: () => LayoutRoute,
+} as any).lazy(() =>
+  import('./routes/_layout/workspaces/index.lazy').then((d) => d.Route),
+)
+
 const LayoutSessionsIndexRoute = LayoutSessionsIndexImport.update({
   id: '/sessions/',
   path: '/sessions/',
@@ -60,6 +70,17 @@ const LayoutSessionsIndexRoute = LayoutSessionsIndexImport.update({
 } as any).lazy(() =>
   import('./routes/_layout/sessions/index.lazy').then((d) => d.Route),
 )
+
+const LayoutWorkspacesWorkspaceIdRoute =
+  LayoutWorkspacesWorkspaceIdImport.update({
+    id: '/workspaces/$workspaceId',
+    path: '/workspaces/$workspaceId',
+    getParentRoute: () => LayoutRoute,
+  } as any).lazy(() =>
+    import('./routes/_layout/workspaces/$workspaceId.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const LayoutSessionsSessionIdRoute = LayoutSessionsSessionIdImport.update({
   id: '/sessions/$sessionId',
@@ -166,11 +187,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutSessionsSessionIdImport
       parentRoute: typeof LayoutImport
     }
+    '/_layout/workspaces/$workspaceId': {
+      id: '/_layout/workspaces/$workspaceId'
+      path: '/workspaces/$workspaceId'
+      fullPath: '/workspaces/$workspaceId'
+      preLoaderRoute: typeof LayoutWorkspacesWorkspaceIdImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/sessions/': {
       id: '/_layout/sessions/'
       path: '/sessions'
       fullPath: '/sessions'
       preLoaderRoute: typeof LayoutSessionsIndexImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/workspaces/': {
+      id: '/_layout/workspaces/'
+      path: '/workspaces'
+      fullPath: '/workspaces'
+      preLoaderRoute: typeof LayoutWorkspacesIndexImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/data/_layout-datasources/$dataSourceId': {
@@ -260,14 +295,18 @@ interface LayoutRouteChildren {
   LayoutDataRoute: typeof LayoutDataRouteWithChildren
   LayoutModelsRoute: typeof LayoutModelsRouteWithChildren
   LayoutSessionsSessionIdRoute: typeof LayoutSessionsSessionIdRoute
+  LayoutWorkspacesWorkspaceIdRoute: typeof LayoutWorkspacesWorkspaceIdRoute
   LayoutSessionsIndexRoute: typeof LayoutSessionsIndexRoute
+  LayoutWorkspacesIndexRoute: typeof LayoutWorkspacesIndexRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutDataRoute: LayoutDataRouteWithChildren,
   LayoutModelsRoute: LayoutModelsRouteWithChildren,
   LayoutSessionsSessionIdRoute: LayoutSessionsSessionIdRoute,
+  LayoutWorkspacesWorkspaceIdRoute: LayoutWorkspacesWorkspaceIdRoute,
   LayoutSessionsIndexRoute: LayoutSessionsIndexRoute,
+  LayoutWorkspacesIndexRoute: LayoutWorkspacesIndexRoute,
 }
 
 const LayoutRouteWithChildren =
@@ -279,7 +318,9 @@ export interface FileRoutesByFullPath {
   '/data': typeof LayoutDataLayoutDatasourcesRouteWithChildren
   '/models': typeof LayoutModelsLayoutModelsRouteWithChildren
   '/sessions/$sessionId': typeof LayoutSessionsSessionIdRoute
+  '/workspaces/$workspaceId': typeof LayoutWorkspacesWorkspaceIdRoute
   '/sessions': typeof LayoutSessionsIndexRoute
+  '/workspaces': typeof LayoutWorkspacesIndexRoute
   '/data/$dataSourceId': typeof LayoutDataLayoutDatasourcesDataSourceIdRoute
   '/data/': typeof LayoutDataLayoutDatasourcesIndexRoute
   '/models/': typeof LayoutModelsLayoutModelsIndexRoute
@@ -291,7 +332,9 @@ export interface FileRoutesByTo {
   '/data': typeof LayoutDataLayoutDatasourcesIndexRoute
   '/models': typeof LayoutModelsLayoutModelsIndexRoute
   '/sessions/$sessionId': typeof LayoutSessionsSessionIdRoute
+  '/workspaces/$workspaceId': typeof LayoutWorkspacesWorkspaceIdRoute
   '/sessions': typeof LayoutSessionsIndexRoute
+  '/workspaces': typeof LayoutWorkspacesIndexRoute
   '/data/$dataSourceId': typeof LayoutDataLayoutDatasourcesDataSourceIdRoute
 }
 
@@ -304,7 +347,9 @@ export interface FileRoutesById {
   '/_layout/models': typeof LayoutModelsRouteWithChildren
   '/_layout/models/_layout-models': typeof LayoutModelsLayoutModelsRouteWithChildren
   '/_layout/sessions/$sessionId': typeof LayoutSessionsSessionIdRoute
+  '/_layout/workspaces/$workspaceId': typeof LayoutWorkspacesWorkspaceIdRoute
   '/_layout/sessions/': typeof LayoutSessionsIndexRoute
+  '/_layout/workspaces/': typeof LayoutWorkspacesIndexRoute
   '/_layout/data/_layout-datasources/$dataSourceId': typeof LayoutDataLayoutDatasourcesDataSourceIdRoute
   '/_layout/data/_layout-datasources/': typeof LayoutDataLayoutDatasourcesIndexRoute
   '/_layout/models/_layout-models/': typeof LayoutModelsLayoutModelsIndexRoute
@@ -318,7 +363,9 @@ export interface FileRouteTypes {
     | '/data'
     | '/models'
     | '/sessions/$sessionId'
+    | '/workspaces/$workspaceId'
     | '/sessions'
+    | '/workspaces'
     | '/data/$dataSourceId'
     | '/data/'
     | '/models/'
@@ -329,7 +376,9 @@ export interface FileRouteTypes {
     | '/data'
     | '/models'
     | '/sessions/$sessionId'
+    | '/workspaces/$workspaceId'
     | '/sessions'
+    | '/workspaces'
     | '/data/$dataSourceId'
   id:
     | '__root__'
@@ -340,7 +389,9 @@ export interface FileRouteTypes {
     | '/_layout/models'
     | '/_layout/models/_layout-models'
     | '/_layout/sessions/$sessionId'
+    | '/_layout/workspaces/$workspaceId'
     | '/_layout/sessions/'
+    | '/_layout/workspaces/'
     | '/_layout/data/_layout-datasources/$dataSourceId'
     | '/_layout/data/_layout-datasources/'
     | '/_layout/models/_layout-models/'
@@ -380,7 +431,9 @@ export const routeTree = rootRoute
         "/_layout/data",
         "/_layout/models",
         "/_layout/sessions/$sessionId",
-        "/_layout/sessions/"
+        "/_layout/workspaces/$workspaceId",
+        "/_layout/sessions/",
+        "/_layout/workspaces/"
       ]
     },
     "/_layout/data": {
@@ -416,8 +469,16 @@ export const routeTree = rootRoute
       "filePath": "_layout/sessions/$sessionId.tsx",
       "parent": "/_layout"
     },
+    "/_layout/workspaces/$workspaceId": {
+      "filePath": "_layout/workspaces/$workspaceId.tsx",
+      "parent": "/_layout"
+    },
     "/_layout/sessions/": {
       "filePath": "_layout/sessions/index.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/workspaces/": {
+      "filePath": "_layout/workspaces/index.tsx",
       "parent": "/_layout"
     },
     "/_layout/data/_layout-datasources/$dataSourceId": {

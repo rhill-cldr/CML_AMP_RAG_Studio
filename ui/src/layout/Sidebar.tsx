@@ -88,6 +88,12 @@ const Sidebar: React.FC = () => {
     return;
   };
 
+  const navToWork = () => {
+    navigate({ to: "/workspaces" })
+      .then(() => null)
+      .catch(() => null);
+  };
+
   const navToModels = () => {
     navigate({ to: "/models" })
       .then(() => null)
@@ -128,15 +134,21 @@ const Sidebar: React.FC = () => {
       type: "group",
     },
     getItem(
-      <div data-testid="rag-apps-nav">Chats</div>,
+      <div data-testid="rag-apps-nav">Sessions</div>,
       "chat",
       navToRagApp,
       <DesktopOutlined />,
     ),
     getItem(
-      <div data-testid="data-management-nav">Knowledge Bases</div>,
+      <div data-testid="data-management-nav">Collections</div>,
       "data",
       navToData,
+      <DatabaseFilled />,
+    ),
+    getItem(
+      <div data-testid="data-management-nav">Workspaces</div>,
+      "work",
+      navToWork,
       <DatabaseFilled />,
     ),
   ];

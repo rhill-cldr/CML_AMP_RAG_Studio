@@ -1,4 +1,4 @@
-/*
+/*******************************************************************************
  * CLOUDERA APPLIED MACHINE LEARNING PROTOTYPE (AMP)
  * (C) Cloudera, Inc. 2024
  * All rights reserved.
@@ -34,83 +34,43 @@
  * RELATED TO LOST REVENUE, LOST PROFITS, LOSS OF INCOME, LOSS OF
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
- */
+ ******************************************************************************/
 
-package com.cloudera.cai.rag;
+import { Collapse, Flex, Typography } from "antd";
+import { CloseCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
-import jakarta.annotation.Nullable;
-import java.time.Instant;
-import java.util.List;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Singular;
-import lombok.With;
+const RequestConfigureOptions = () => (
+  <Collapse
+    expandIcon={({ isActive }) =>
+      isActive ? (
+        <CloseCircleOutlined style={{ fontSize: 16 }} />
+      ) : (
+        <PlusCircleOutlined style={{ fontSize: 16 }} />
+      )
+    }
+    style={{ marginBottom: 20, marginTop: 20 }}
+    items={[
+      {
+        key: "1",
+        label: (
+          <Flex align="center" gap={8}>
+            <Typography.Text>Request additional configurations</Typography.Text>
+          </Flex>
+        ),
+        children: (
+          <Flex style={{ marginTop: 10, marginBottom: 10 }}>
+            <iframe
+              src="https://docs.google.com/forms/d/e/1FAIpQLSfTM7MmpDw6UmJ6E8PyENKtlW3738Ow2WHA51wzkjz0pcUUhA/viewform?embedded=true"
+              width="640"
+              height="407"
+              style={{ border: "none" }}
+            />
+          </Flex>
+        ),
+      },
+    ]}
+    defaultActiveKey={[]}
+  />
+);
 
-public class Types {
-  /** Data returned from the file upload endpoint. */
-  public record RagDocumentMetadata(
-      String fileName, String documentId, String extension, long sizeInBytes) {}
-
-  /** Data representing the database table for RAG file metadata (llm_project_rag_document) */
-  @Builder(toBuilder = true)
-  public record RagDocument(
-      @With Long id,
-      String filename,
-      Long dataSourceId,
-      String documentId,
-      String s3Path,
-      Instant vectorUploadTimestamp,
-      Long sizeInBytes,
-      String extension,
-      Instant timeCreated,
-      Instant timeUpdated,
-      String createdById,
-      String updatedById,
-      @With Instant summaryCreationTimestamp) {}
-
-  @Getter
-  public enum ConnectionType {
-    MANUAL,
-    CDF,
-    API,
-    OTHER
-  }
-
-  @With
-  public record RagDataSource(
-      Long id,
-      String name,
-      Integer chunkSize,
-      int chunkOverlapPercent,
-      Instant timeCreated,
-      Instant timeUpdated,
-      String createdById,
-      String updatedById,
-      ConnectionType connectionType,
-      @Nullable Integer documentCount,
-      @Nullable Long totalDocSize) {}
-
-  @With
-  @Builder
-  public record Session(
-      Long id,
-      String name,
-      @Singular List<Long> dataSourceIds,
-      Instant timeCreated,
-      Instant timeUpdated,
-      String createdById,
-      String updatedById,
-      Instant lastInteractionTime) {}
-
-  @With
-  @Builder
-  public record Workspace(
-      Long id,
-      String name,
-      @Singular List<Long> dataSourceIds,
-      Instant timeCreated,
-      Instant timeUpdated,
-      String createdById,
-      String updatedById,
-      Instant lastInteractionTime) {}
-}
+export default RequestConfigureOptions;
