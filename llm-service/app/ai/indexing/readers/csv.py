@@ -80,6 +80,7 @@ class CSVReader(BaseReader):
             row.metadata["document_id"] = document.metadata["document_id"]
             row.metadata["data_source_id"] = document.metadata["data_source_id"]
             row.metadata["chunk_number"] = i
+            row.metadata["row_number"] = i + 1
 
         converted_rows: List[TextNode] = []
         for row in rows:
