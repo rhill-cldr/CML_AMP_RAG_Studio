@@ -1,4 +1,4 @@
-# ##############################################################################
+#
 #  CLOUDERA APPLIED MACHINE LEARNING PROTOTYPE (AMP)
 #  (C) Cloudera, Inc. 2024
 #  All rights reserved.
@@ -20,7 +20,7 @@
 #  with an authorized and properly licensed third party, you do not
 #  have any rights to access nor to use this code.
 #
-#  Absent a written agreement with Cloudera, Inc. (“Cloudera”) to the
+#  Absent a written agreement with Cloudera, Inc. ("Cloudera") to the
 #  contrary, A) CLOUDERA PROVIDES THIS CODE TO YOU WITHOUT WARRANTIES OF ANY
 #  KIND; (B) CLOUDERA DISCLAIMS ANY AND ALL EXPRESS AND IMPLIED
 #  WARRANTIES WITH RESPECT TO THIS CODE, INCLUDING BUT NOT LIMITED TO
@@ -34,33 +34,22 @@
 #  RELATED TO LOST REVENUE, LOST PROFITS, LOSS OF INCOME, LOSS OF
 #  BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
 #  DATA.
-# ##############################################################################
+#
 
-from llama_index.core.base.response.schema import Response
-from llama_index.core.chat_engine.types import AgentChatResponse
-from llama_index.core.evaluation import FaithfulnessEvaluator, RelevancyEvaluator
-from llama_index.llms.bedrock import Bedrock
+import json
+from pathlib import Path
+from typing import List
 
-from .llama_utils import completion_to_prompt, messages_to_prompt
+from llama_index.core.schema import Document, TextNode
+
+from .base_reader import BaseReader
 
 
-def evaluate_response(
-    query: str,
-    chat_response: AgentChatResponse,
-) -> tuple[float, float]:
-    evaluator_llm = Bedrock(
-        model="meta.llama3-8b-instruct-v1:0",
-        context_size=128000,
-        messages_to_prompt=messages_to_prompt,
-        completion_to_prompt=completion_to_prompt,
-    )
-
-    relevancy_evaluator = RelevancyEvaluator(llm=evaluator_llm)
-    relevance = relevancy_evaluator.evaluate_response(
-        query=query, response=Response(response=chat_response.response)
-    )
-    faithfulness_evaluator = FaithfulnessEvaluator(llm=evaluator_llm)
-    faithfulness = faithfulness_evaluator.evaluate_response(
-        query=query, response=Response(response=chat_response.response)
-    )
-    return relevance.score or 0, faithfulness.score or 0
+class JSONReader(BaseReader):
+    def load_chunks(self, file_path: Path) -> List[TextNode]:
+        with open(file_path, "r") as f:
+            content = json.load(f)
+        document = Document(text=json.dumps(content, sort_keys=True))
+        document.id_ = self.document_id
+        self._add_document_metadata(document, file_path)
+        return [document]

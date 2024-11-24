@@ -1,4 +1,4 @@
-# ##############################################################################
+#
 #  CLOUDERA APPLIED MACHINE LEARNING PROTOTYPE (AMP)
 #  (C) Cloudera, Inc. 2024
 #  All rights reserved.
@@ -20,7 +20,7 @@
 #  with an authorized and properly licensed third party, you do not
 #  have any rights to access nor to use this code.
 #
-#  Absent a written agreement with Cloudera, Inc. (“Cloudera”) to the
+#  Absent a written agreement with Cloudera, Inc. ("Cloudera") to the
 #  contrary, A) CLOUDERA PROVIDES THIS CODE TO YOU WITHOUT WARRANTIES OF ANY
 #  KIND; (B) CLOUDERA DISCLAIMS ANY AND ALL EXPRESS AND IMPLIED
 #  WARRANTIES WITH RESPECT TO THIS CODE, INCLUDING BUT NOT LIMITED TO
@@ -34,33 +34,31 @@
 #  RELATED TO LOST REVENUE, LOST PROFITS, LOSS OF INCOME, LOSS OF
 #  BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
 #  DATA.
-# ##############################################################################
+#
+import itertools
 
-from llama_index.core.base.response.schema import Response
-from llama_index.core.chat_engine.types import AgentChatResponse
-from llama_index.core.evaluation import FaithfulnessEvaluator, RelevancyEvaluator
-from llama_index.llms.bedrock import Bedrock
+from llama_index.core.base.llms.types import ChatMessage, ChatResponse
 
-from .llama_utils import completion_to_prompt, messages_to_prompt
+from ..rag_types import RagPredictConfiguration
+from .chat_store import RagStudioChatMessage, chat_store
+from .models import get_llm
 
 
-def evaluate_response(
-    query: str,
-    chat_response: AgentChatResponse,
-) -> tuple[float, float]:
-    evaluator_llm = Bedrock(
-        model="meta.llama3-8b-instruct-v1:0",
-        context_size=128000,
-        messages_to_prompt=messages_to_prompt,
-        completion_to_prompt=completion_to_prompt,
+def make_chat_messages(x: RagStudioChatMessage) -> list[ChatMessage]:
+    user = ChatMessage.from_str(x.rag_message["user"], role="user")
+    assistant = ChatMessage.from_str(x.rag_message["assistant"], role="assistant")
+    return [user, assistant]
+
+
+def completion(
+    session_id: int, question: str, configuration: RagPredictConfiguration
+) -> ChatResponse:
+    model = get_llm(configuration.model_name)
+    chat_history = chat_store.retrieve_chat_history(session_id)[:10]
+    messages = list(
+        itertools.chain.from_iterable(
+            map(lambda x: make_chat_messages(x), chat_history)
+        )
     )
-
-    relevancy_evaluator = RelevancyEvaluator(llm=evaluator_llm)
-    relevance = relevancy_evaluator.evaluate_response(
-        query=query, response=Response(response=chat_response.response)
-    )
-    faithfulness_evaluator = FaithfulnessEvaluator(llm=evaluator_llm)
-    faithfulness = faithfulness_evaluator.evaluate_response(
-        query=query, response=Response(response=chat_response.response)
-    )
-    return relevance.score or 0, faithfulness.score or 0
+    messages.append(ChatMessage.from_str(question, role="user"))
+    return model.chat(messages)

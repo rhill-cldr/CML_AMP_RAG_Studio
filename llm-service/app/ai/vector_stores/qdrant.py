@@ -37,51 +37,71 @@
 #
 
 import os
+from typing import Optional
 
 import qdrant_client
+from llama_index.core.indices import VectorStoreIndex
 from llama_index.core.vector_stores.types import BasePydanticVectorStore
-from llama_index.vector_stores.qdrant import QdrantVectorStore
+from llama_index.vector_stores.qdrant import (
+    QdrantVectorStore as LlamaIndexQdrantVectorStore,
+)
 from qdrant_client.http.models import CountResult
 
+from ...services import models
 from .vector_store import VectorStore
 
 
-class RagQdrantVectorStore(VectorStore):
+def new_qdrant_client() -> qdrant_client.QdrantClient:
     host = os.environ.get("QDRANT_HOST", "localhost")
     port = 6333
-    async_port = 6334
+    return qdrant_client.QdrantClient(host=host, port=port)
 
-    def __init__(self, table_name: str, memory_store=False):
-        self.client, self.aclient = self._create_qdrant_clients(memory_store)
+
+class QdrantVectorStore(VectorStore):
+    @staticmethod
+    def for_chunks(
+        data_source_id: int, client: Optional[qdrant_client.QdrantClient] = None
+    ) -> "QdrantVectorStore":
+        return QdrantVectorStore(table_name=f"index_{data_source_id}", client=client)
+
+    @staticmethod
+    def for_summaries(
+        data_source_id: int, client: Optional[qdrant_client.QdrantClient] = None
+    ) -> "QdrantVectorStore":
+        return QdrantVectorStore(
+            table_name=f"summary_index_{data_source_id}", client=client
+        )
+
+    def __init__(
+        self, table_name: str, client: Optional[qdrant_client.QdrantClient] = None
+    ):
+        self.client = client or new_qdrant_client()
         self.table_name = table_name
 
-    def size(self) -> int:
+    def size(self) -> Optional[int]:
         """
         If the collection does not exist, return -1
         """
         if not self.client.collection_exists(self.table_name):
-            return -1
+            return None
         document_count: CountResult = self.client.count(self.table_name)
         return document_count.count
 
-    def delete(self):
+    def delete(self) -> None:
         if self.exists():
             self.client.delete_collection(self.table_name)
+
+    def delete_document(self, document_id: str) -> None:
+        if self.exists():
+            index = VectorStoreIndex.from_vector_store(
+                vector_store=self.llama_vector_store(),
+                embed_model=models.get_embedding_model(),
+            )
+            index.delete_ref_doc(document_id)
 
     def exists(self) -> bool:
         return self.client.collection_exists(self.table_name)
 
-    def _create_qdrant_clients(self, memory_store) -> tuple[qdrant_client.QdrantClient, qdrant_client.AsyncQdrantClient]:
-        if memory_store:
-            client = qdrant_client.QdrantClient(":memory:")
-            aclient = qdrant_client.AsyncQdrantClient(":memory:")
-        else:
-            client = qdrant_client.QdrantClient(host=self.host, port=self.port)
-            aclient = qdrant_client.AsyncQdrantClient(host=self.host, port=self.async_port)
-        return client, aclient
-
-    def access_vector_store(self) -> BasePydanticVectorStore:
-        vector_store = QdrantVectorStore(
-            self.table_name, self.client, self.aclient
-        )
+    def llama_vector_store(self) -> BasePydanticVectorStore:
+        vector_store = LlamaIndexQdrantVectorStore(self.table_name, self.client)
         return vector_store
