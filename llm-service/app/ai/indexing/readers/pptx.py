@@ -1,4 +1,4 @@
-# ##############################################################################
+#
 #  CLOUDERA APPLIED MACHINE LEARNING PROTOTYPE (AMP)
 #  (C) Cloudera, Inc. 2024
 #  All rights reserved.
@@ -20,7 +20,7 @@
 #  with an authorized and properly licensed third party, you do not
 #  have any rights to access nor to use this code.
 #
-#  Absent a written agreement with Cloudera, Inc. (“Cloudera”) to the
+#  Absent a written agreement with Cloudera, Inc. ("Cloudera") to the
 #  contrary, A) CLOUDERA PROVIDES THIS CODE TO YOU WITHOUT WARRANTIES OF ANY
 #  KIND; (B) CLOUDERA DISCLAIMS ANY AND ALL EXPRESS AND IMPLIED
 #  WARRANTIES WITH RESPECT TO THIS CODE, INCLUDING BUT NOT LIMITED TO
@@ -34,27 +34,26 @@
 #  RELATED TO LOST REVENUE, LOST PROFITS, LOSS OF INCOME, LOSS OF
 #  BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
 #  DATA.
-# ##############################################################################
+#
 
-from llama_index.core.base.response.schema import Response
-from llama_index.core.chat_engine.types import AgentChatResponse
-from llama_index.core.evaluation import FaithfulnessEvaluator, RelevancyEvaluator
+from pathlib import Path
+from typing import Any, List
 
-from ..services import models
+from llama_index.core.schema import TextNode
+from llama_index.readers.file import PptxReader as LlamaIndexPptxReader
+
+from .base_reader import BaseReader
 
 
-def evaluate_response(
-        query: str,
-        chat_response: AgentChatResponse,
-) -> tuple[float, float]:
-    evaluator_llm = models.get_llm("meta.llama3-8b-instruct-v1:0")
+class PptxReader(BaseReader):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.inner = LlamaIndexPptxReader()
 
-    relevancy_evaluator = RelevancyEvaluator(llm=evaluator_llm)
-    relevance = relevancy_evaluator.evaluate_response(
-        query=query, response=Response(response=chat_response.response)
-    )
-    faithfulness_evaluator = FaithfulnessEvaluator(llm=evaluator_llm)
-    faithfulness = faithfulness_evaluator.evaluate_response(
-        query=query, response=Response(response=chat_response.response)
-    )
-    return relevance.score or 0, faithfulness.score or 0
+    def load_chunks(self, file_path: Path) -> List[TextNode]:
+        documents = self.inner.load_data(file_path)
+        assert len(documents) == 1
+        document = documents[0]
+        document.id_ = self.document_id
+        self._add_document_metadata(document, file_path)
+        return self._chunks_in_document(document)

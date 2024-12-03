@@ -55,6 +55,7 @@ from .readers.docx import DocxReader
 from .readers.json import JSONReader
 from .readers.simple_file import SimpleFileReader
 from .readers.pdf import PDFReader
+from .readers.pptx import PptxReader
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +64,9 @@ READERS: Dict[str, Type[BaseReader]] = {
     ".txt": SimpleFileReader,
     ".md": SimpleFileReader,
     ".docx": DocxReader,
+    ".pptx": PptxReader,
+    ".pptm": PptxReader,
+    ".ppt": PptxReader,
     ".csv": CSVReader,
     ".json": JSONReader,
 }

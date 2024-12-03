@@ -37,7 +37,8 @@
 #
 
 import os
-from typing import Optional
+from typing import Optional, Any
+import umap
 
 import qdrant_client
 from llama_index.core.indices import VectorStoreIndex
@@ -45,10 +46,10 @@ from llama_index.core.vector_stores.types import BasePydanticVectorStore
 from llama_index.vector_stores.qdrant import (
     QdrantVectorStore as LlamaIndexQdrantVectorStore,
 )
-from qdrant_client.http.models import CountResult
+from qdrant_client.http.models import CountResult, Record
 
-from ...services import models
 from .vector_store import VectorStore
+from ...services import models
 
 
 def new_qdrant_client() -> qdrant_client.QdrantClient:
@@ -60,20 +61,20 @@ def new_qdrant_client() -> qdrant_client.QdrantClient:
 class QdrantVectorStore(VectorStore):
     @staticmethod
     def for_chunks(
-        data_source_id: int, client: Optional[qdrant_client.QdrantClient] = None
+            data_source_id: int, client: Optional[qdrant_client.QdrantClient] = None
     ) -> "QdrantVectorStore":
         return QdrantVectorStore(table_name=f"index_{data_source_id}", client=client)
 
     @staticmethod
     def for_summaries(
-        data_source_id: int, client: Optional[qdrant_client.QdrantClient] = None
+            data_source_id: int, client: Optional[qdrant_client.QdrantClient] = None
     ) -> "QdrantVectorStore":
         return QdrantVectorStore(
             table_name=f"summary_index_{data_source_id}", client=client
         )
 
     def __init__(
-        self, table_name: str, client: Optional[qdrant_client.QdrantClient] = None
+            self, table_name: str, client: Optional[qdrant_client.QdrantClient] = None
     ):
         self.client = client or new_qdrant_client()
         self.table_name = table_name
@@ -105,3 +106,26 @@ class QdrantVectorStore(VectorStore):
     def llama_vector_store(self) -> BasePydanticVectorStore:
         vector_store = LlamaIndexQdrantVectorStore(self.table_name, self.client)
         return vector_store
+
+    def visualize(self, user_query: Optional[str] = None) -> list[tuple[tuple[float, float], str]]:
+        records: list[Record]
+        records, _ = self.client.scroll(self.table_name, limit=5000, with_vectors=True)
+
+        if user_query:
+            embedding_model = models.get_embedding_model()
+            user_query_vector = embedding_model.get_query_embedding(user_query)
+            records.append(Record(vector=user_query_vector, id="abc123", payload={"file_name": "USER_QUERY"}))
+
+        record: Record
+        filenames = []
+        for record in records:
+            payload: dict[str, Any] | None = record.payload
+            if payload:
+                filenames.append(payload.get("file_name"))
+
+        reducer = umap.UMAP()
+        embeddings = [record.vector for record in records]
+        reduced_embeddings = reducer.fit_transform(embeddings)
+
+        # todo: figure out how to satisfy mypy on this line
+        return [(tuple(coordinate), filenames[i]) for i, coordinate in enumerate(reduced_embeddings.tolist())] # type: ignore

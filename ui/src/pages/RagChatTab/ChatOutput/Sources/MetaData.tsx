@@ -20,7 +20,7 @@
  * with an authorized and properly licensed third party, you do not
  * have any rights to access nor to use this code.
  *
- * Absent a written agreement with Cloudera, Inc. (“Cloudera”) to the
+ * Absent a written agreement with Cloudera, Inc. ("Cloudera") to the
  * contrary, A) CLOUDERA PROVIDES THIS CODE TO YOU WITHOUT WARRANTIES OF ANY
  * KIND; (B) CLOUDERA DISCLAIMS ANY AND ALL EXPRESS AND IMPLIED
  * WARRANTIES WITH RESPECT TO THIS CODE, INCLUDING BUT NOT LIMITED TO
@@ -35,74 +35,47 @@
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
  ******************************************************************************/
+import { Typography } from "antd";
+import { ChunkContentsResponse } from "src/api/ragQueryApi.ts";
 
-import { Flex, Tabs, TabsProps } from "antd";
-import FileManagement from "pages/DataSources/ManageTab/FileManagement.tsx";
-import IndexSettings from "pages/DataSources/IndexSettingsTab/IndexSettings.tsx";
-import DataSourceConnections from "pages/DataSources/DataSourceConnectionsTab/DataSourceConnections.tsx";
-import "chart.js/auto";
-import DataSourceVisualization from "pages/DataSources/VisualizationTab/DataSourceVisualization.tsx";
-import { useLocation, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+const MetaData = ({
+  metadata,
+}: {
+  metadata: ChunkContentsResponse["metadata"];
+}) => {
+  const MetaDataItem = ({
+    label,
+    value,
+  }: {
+    label: string;
+    value: string | number | undefined;
+  }) => (
+    <>
+      {value && (
+        <Typography.Text>
+          {label}: {value}
+        </Typography.Text>
+      )}
+    </>
+  );
 
-export const tabItems: TabsProps["items"] = [
-  {
-    key: "manage",
-    label: "Manage",
-    children: <FileManagement />,
-  },
-  {
-    key: "settings",
-    label: "Index Settings",
-    children: <IndexSettings />,
-  },
-  {
-    key: "connections",
-    label: "Connections",
-    children: <DataSourceConnections />,
-  },
-  {
-    key: "visualize",
-    label: "Visualize",
-    children: <DataSourceVisualization />,
-  },
-];
-
-const DataSourcesTabs = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const handleNav = (key: string) => {
-    navigate({ hash: key }).catch((reason: unknown) => {
-      console.error(reason);
-    });
-  };
-
-  useEffect(() => {
-    if (location.hash) {
-      const tabsIncludeHash = tabItems.find(
-        (item) => item.key === location.hash,
-      );
-
-      if (!tabsIncludeHash) {
-        handleNav("manage");
-      }
-    }
-  }, [location.hash, tabItems, navigate]);
+  const hasMetadata = metadata.row_number ?? metadata.page_label;
 
   return (
-    <Flex vertical style={{ width: "80%", maxWidth: 1000 }} gap={20}>
-      <Tabs
-        defaultActiveKey="manage"
-        activeKey={location.hash || "manage"}
-        items={tabItems}
-        centered
-        onChange={(key) => {
-          handleNav(key);
-        }}
-      />
-    </Flex>
+    <>
+      <Typography.Title level={5} style={{ marginTop: 0 }}>
+        Metadata
+      </Typography.Title>
+      {hasMetadata ? (
+        <>
+          <MetaDataItem label="Row number" value={metadata.row_number} />
+          <MetaDataItem label="Page label" value={metadata.page_label} />
+        </>
+      ) : (
+        <Typography.Text type={"secondary"}>N/A</Typography.Text>
+      )}
+    </>
   );
 };
 
-export default DataSourcesTabs;
+export default MetaData;
