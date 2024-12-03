@@ -74,6 +74,7 @@ dependencies {
     // swagger UI available at http://localhost:8080/swagger-ui/index.html
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 
+    implementation("io.minio:minio:8.5.13")
     implementation("software.amazon.awssdk:s3")
     implementation("software.amazon.awssdk:sts")
     implementation("software.amazon.awssdk:apache-client")

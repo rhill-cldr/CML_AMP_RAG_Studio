@@ -75,7 +75,7 @@ public class AppConfiguration {
         .endpointUrl(System.getenv("AWS_ENDPOINT_URL_S3"))
         .accessKey(System.getenv("AWS_ACCESS_KEY_ID"))
         .secretKey(System.getenv("AWS_SECRET_ACCESS_KEY"))
-        .awsRegion(System.getenv("AWS_DEFAULT_REGION"))
+        .s3Region(System.getenv("AWS_DEFAULT_REGION"))
         .bucketName(
             Optional.ofNullable(System.getenv("S3_RAG_DOCUMENT_BUCKET")).orElse("rag-files"))
         .bucketPrefix(Optional.ofNullable(System.getenv("S3_RAG_BUCKET_PREFIX")).orElse(""))

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * CLOUDERA APPLIED MACHINE LEARNING PROTOTYPE (AMP)
  * (C) Cloudera, Inc. 2024
  * All rights reserved.
@@ -34,29 +34,35 @@
  * RELATED TO LOST REVENUE, LOST PROFITS, LOSS OF INCOME, LOSS OF
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
- ******************************************************************************/
+ */
 
-package com.cloudera.cai.util.s3;
+SET MODE MYSQL;
 
-import lombok.*;
+BEGIN;
 
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter(AccessLevel.NONE)
-@SuppressWarnings({"squid:S100"})
-public class S3Config {
-  private String bucketName;
-  private String bucketPrefix;
-  private String accessKey;
-  private String secretKey;
-  @Builder.Default private String endpointUrl = "http://localhost:9090"; // FIXME(rch)
-  @Builder.Default private String s3Region = "us-east-1";
-  @Builder.Default private Boolean s3presignedURLEnabled = true;
-  @Builder.Default private Integer requestTimeoutMs = 30 * 1000;
-  @Builder.Default private Integer clientExecutionTimeout = 40 * 1000;
-  @Builder.Default private Integer connectionPoolSize = 75;
-  @Builder.Default private Integer refreshIntervalSeconds = 300;
-}
+DROP TABLE workspace;
+
+CREATE TABLE workspace
+(
+    id                    BIGINT auto_increment NOT NULL,
+    name                  VARCHAR(1024)         NOT NULL,
+    time_created          TIMESTAMP             NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    time_updated          TIMESTAMP             NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by_id         VARCHAR(255)                NOT NULL,
+    updated_by_id         VARCHAR(255)                NOT NULL,
+    last_interaction_time BIGINT                NULL,
+    CONSTRAINT PK_workspace PRIMARY KEY (id)
+);
+
+DROP TABLE workspace_data_source;
+
+CREATE TABLE workspace_data_source
+(
+    id              BIGINT auto_increment NOT NULL,
+    workspace_id BIGINT                   NOT NULL,
+    data_source_id  BIGINT                NOT NULL,
+    CONSTRAINT PK_workspace_ds PRIMARY KEY (id)
+);
+
+
+COMMIT;

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * CLOUDERA APPLIED MACHINE LEARNING PROTOTYPE (AMP)
  * (C) Cloudera, Inc. 2024
  * All rights reserved.
@@ -20,7 +20,7 @@
  * with an authorized and properly licensed third party, you do not
  * have any rights to access nor to use this code.
  *
- * Absent a written agreement with Cloudera, Inc. (“Cloudera”) to the
+ * Absent a written agreement with Cloudera, Inc. ("Cloudera") to the
  * contrary, A) CLOUDERA PROVIDES THIS CODE TO YOU WITHOUT WARRANTIES OF ANY
  * KIND; (B) CLOUDERA DISCLAIMS ANY AND ALL EXPRESS AND IMPLIED
  * WARRANTIES WITH RESPECT TO THIS CODE, INCLUDING BUT NOT LIMITED TO
@@ -34,29 +34,12 @@
  * RELATED TO LOST REVENUE, LOST PROFITS, LOSS OF INCOME, LOSS OF
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
- ******************************************************************************/
+ */
 
 package com.cloudera.cai.util.s3;
 
-import lombok.*;
-
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter(AccessLevel.NONE)
-@SuppressWarnings({"squid:S100"})
-public class S3Config {
-  private String bucketName;
-  private String bucketPrefix;
-  private String accessKey;
-  private String secretKey;
-  @Builder.Default private String endpointUrl = "http://localhost:9090"; // FIXME(rch)
-  @Builder.Default private String s3Region = "us-east-1";
-  @Builder.Default private Boolean s3presignedURLEnabled = true;
-  @Builder.Default private Integer requestTimeoutMs = 30 * 1000;
-  @Builder.Default private Integer clientExecutionTimeout = 40 * 1000;
-  @Builder.Default private Integer connectionPoolSize = 75;
-  @Builder.Default private Integer refreshIntervalSeconds = 300;
+public class OzoneS3Client extends BaseS3Client {
+  public OzoneS3Client(S3Config s3Config) {
+    super(s3Config);
+  }
 }

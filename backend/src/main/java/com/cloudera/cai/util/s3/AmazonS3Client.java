@@ -83,7 +83,7 @@ public class AmazonS3Client {
     this.s3Config = s3Config;
     String cloudAccessKey = s3Config.getAccessKey();
     String cloudSecretKey = s3Config.getSecretKey();
-    Region awsRegion = Region.of(s3Config.getAwsRegion());
+    Region awsRegion = Region.of(s3Config.getS3Region());
     this.bucketName = s3Config.getBucketName();
     this.defaultClientConfig = ClientOverrideConfiguration.builder().build();
 
@@ -179,7 +179,7 @@ public class AmazonS3Client {
     var s3AsyncClient =
         S3AsyncClient.builder()
             .credentialsProvider(() -> v2Credentials)
-            .region(Region.of(s3Config.getAwsRegion()))
+            .region(Region.of(s3Config.getS3Region()))
             .build();
     // Once we get to this point, we know that we have a good new s3 client, so it's time to swap
     // it. No fail can happen now

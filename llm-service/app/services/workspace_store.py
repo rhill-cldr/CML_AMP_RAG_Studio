@@ -126,7 +126,7 @@ class ChatHistoryManager:
     def append_to_history(
         self, workspace_id: int, messages: list[RagStudioWorkspaceEvent]
     ):
-        store = self.store_for_session(workspace_id)
+        store = self.store_for_workspace(workspace_id)
 
         for message in messages:
             store.add_message(
@@ -156,7 +156,7 @@ class ChatHistoryManager:
 
     @staticmethod
     def build_chat_key(workspace_id: int):
-        return "session_" + str(workspace_id)
+        return "workspace_" + str(workspace_id)
 
 
 chat_store = ChatHistoryManager(store_path=settings.rag_databases_dir)

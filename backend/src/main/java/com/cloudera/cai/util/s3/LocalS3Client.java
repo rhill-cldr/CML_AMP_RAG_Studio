@@ -38,25 +38,16 @@
 
 package com.cloudera.cai.util.s3;
 
-import lombok.*;
+import io.minio.MinioClient;
 
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter(AccessLevel.NONE)
-@SuppressWarnings({"squid:S100"})
-public class S3Config {
-  private String bucketName;
-  private String bucketPrefix;
-  private String accessKey;
-  private String secretKey;
-  @Builder.Default private String endpointUrl = "http://localhost:9090"; // FIXME(rch)
-  @Builder.Default private String s3Region = "us-east-1";
-  @Builder.Default private Boolean s3presignedURLEnabled = true;
-  @Builder.Default private Integer requestTimeoutMs = 30 * 1000;
-  @Builder.Default private Integer clientExecutionTimeout = 40 * 1000;
-  @Builder.Default private Integer connectionPoolSize = 75;
-  @Builder.Default private Integer refreshIntervalSeconds = 300;
+public class LocalS3Client extends BaseS3Client {
+
+  public LocalS3Client(S3Config s3Config) {
+    super(s3Config);
+    MinioClient minioClient =
+        MinioClient.builder()
+            .endpoint(s3Config.getEndpointUrl())
+            .credentials(s3Config.getAccessKey(), s3Config.getSecretKey())
+            .build();
+  }
 }

@@ -38,25 +38,37 @@
 
 package com.cloudera.cai.util.s3;
 
-import lombok.*;
+import static com.cloudera.cai.util.s3.CommonUtils.*;
 
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter(AccessLevel.NONE)
-@SuppressWarnings({"squid:S100"})
-public class S3Config {
-  private String bucketName;
-  private String bucketPrefix;
-  private String accessKey;
-  private String secretKey;
-  @Builder.Default private String endpointUrl = "http://localhost:9090"; // FIXME(rch)
-  @Builder.Default private String s3Region = "us-east-1";
-  @Builder.Default private Boolean s3presignedURLEnabled = true;
-  @Builder.Default private Integer requestTimeoutMs = 30 * 1000;
-  @Builder.Default private Integer clientExecutionTimeout = 40 * 1000;
-  @Builder.Default private Integer connectionPoolSize = 75;
-  @Builder.Default private Integer refreshIntervalSeconds = 300;
+import java.util.concurrent.atomic.AtomicInteger;
+import lombok.extern.slf4j.Slf4j;
+
+// BaseS3Client provides a wrapper to the underlying S3 object. The goal is to ensure that the
+// S3 client object is
+// _always_ valid when performing operations. If it is not, then that's a bug. This simplifies the
+// handling of the API
+// calls so that we don't have to keep worrying about refreshing the credentials on every call.
+// We use a reference counter to keep track of when we have to shutdown a previous client that
+// should not be used anymore.
+@Slf4j
+public class BaseS3Client {
+  private final String bucketName;
+  private final S3Config s3Config;
+
+  private volatile AtomicInteger referenceCounter;
+
+  public BaseS3Client(S3Config s3Config) {
+    this.s3Config = s3Config;
+    String s3AccessKey = s3Config.getAccessKey();
+    String s3SecretKey = s3Config.getSecretKey();
+    String s3Region = s3Config.getS3Region(); // FIXME(rch)
+    this.bucketName = s3Config.getBucketName();
+
+    // Start the counter with one because this class has a reference to it
+    referenceCounter = new AtomicInteger(1);
+  }
+
+  private static boolean overrideUrlIsSet(S3Config s3Config) {
+    return s3Config.getEndpointUrl() != null && !s3Config.getEndpointUrl().isEmpty();
+  }
 }

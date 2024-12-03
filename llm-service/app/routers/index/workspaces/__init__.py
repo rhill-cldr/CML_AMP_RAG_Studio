@@ -41,16 +41,16 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 from .... import exceptions
-from ....services.chat_store import RagStudioChatMessage, chat_store
+from ....services.workspace_store import RagStudioWorkspaceEvent, chat_store
 from ....services import qdrant
 from ....services.chat import (v2_chat, generate_suggested_questions)
 
-router = APIRouter(prefix="/sessions/{session_id}", tags=["Sessions"])
+router = APIRouter(prefix="/workspaces/{workspace_id}", tags=["Workspace"])
 
-@router.get("/chat-history", summary="Returns an array of chat messages for the provided session.")
+@router.get("/work-history", summary="Returns an array of events for the provided workspace.")
 @exceptions.propagates
-def chat_history(session_id: int) -> list[RagStudioChatMessage]:
-    return chat_store.retrieve_chat_history(session_id=session_id)
+def work_history(workspace_id: int) -> list[RagStudioWorkspaceEvent]:
+    return workspace_store.retrieve_work_history(workspace_id=workspace_id)
 
 @router.delete("/chat-history", summary="Deletes the chat history for the provided session.")
 @exceptions.propagates
