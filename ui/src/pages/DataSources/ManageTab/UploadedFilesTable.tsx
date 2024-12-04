@@ -46,7 +46,6 @@ import {
   Tooltip,
   Typography,
 } from "antd";
-import { useParams } from "@tanstack/react-router";
 import Icon, {
   CheckCircleOutlined,
   DeleteOutlined,
@@ -68,6 +67,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "src/api/utils.ts";
 import useModal from "src/utils/useModal.ts";
 import { cdlWhite } from "src/cuix/variables.ts";
+import { Route } from "src/routes/_layout/data/_layout-datasources/$dataSourceId";
 
 function SummaryPopover({
   dataSourceId,
@@ -188,9 +188,7 @@ const columns = (
 ];
 
 const UploadedFilesTable = () => {
-  const dataSourceId = useParams({
-    from: "/_layout/data/_layout-datasources/$dataSourceId",
-  }).dataSourceId;
+  const { dataSourceId } = Route.useParams();
   const [selectedDocument, setSelectedDocument] =
     useState<RagDocumentResponseType>();
   const deleteConfirmationModal = useModal();
