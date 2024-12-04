@@ -41,10 +41,10 @@ from typing import Any, Dict, List, Literal
 
 from fastapi import HTTPException
 from llama_index.core.base.embeddings.base import BaseEmbedding
+from llama_index.core.base.llms.types import ChatMessage, MessageRole
 from llama_index.core.llms import LLM
 from llama_index.embeddings.bedrock import BedrockEmbedding
-from llama_index.llms.bedrock import Bedrock
-from llama_index.llms.bedrock.utils import BEDROCK_FOUNDATION_LLMS
+from llama_index.llms.bedrock_converse import BedrockConverse
 
 from .caii import get_caii_embedding_models, get_caii_llm_models
 from .caii import get_embedding_model as caii_embedding
@@ -66,9 +66,9 @@ def get_llm(model_name: str = None) -> LLM:
             messages_to_prompt=messages_to_prompt,
             completion_to_prompt=completion_to_prompt,
         )
-    return Bedrock(
+    return BedrockConverse(
         model=model_name,
-        context_size=BEDROCK_FOUNDATION_LLMS.get(model_name, 8192),
+        # context_size=BEDROCK_MODELS.get(model_name, 8192),
         messages_to_prompt=messages_to_prompt,
         completion_to_prompt=completion_to_prompt,
     )
@@ -105,6 +105,10 @@ def _get_bedrock_llm_models() -> List[Dict[str, Any]]:
             "model_id": "meta.llama3-1-405b-instruct-v1:0",
             "name": "Llama3.1 405B Instruct v1",
         },
+        {
+            "model_id": "cohere.command-r-plus-v1:0",
+            "name": "Cohere Command R Plus v1",
+        }
     ]
 
 
@@ -133,7 +137,7 @@ def test_llm_model(model_name: str) -> Literal["ok"]:
     for model in models:
         if model["model_id"] == model_name:
             if not is_caii_enabled() or model["available"]:
-                get_llm(model_name).complete("Are you available to answer questions?")
+                get_llm(model_name).chat(messages=[ChatMessage(role=MessageRole.USER, content="Are you available to answer questions?")])
                 return "ok"
             else:
                 raise HTTPException(status_code=503, detail="Model not ready")
