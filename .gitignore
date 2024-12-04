@@ -6,6 +6,7 @@
 !.idea/google-java-format.xml
 chat_store.json
 databases/
+
 # Devenv
 .devenv*
 devenv.local.nix
@@ -16,3 +17,6 @@ devenv.local.nix
 # pre-commit
 .pre-commit-config.yaml
 *.log
+
+**/docling-output.txt
+

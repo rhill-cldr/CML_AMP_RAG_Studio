@@ -54,6 +54,7 @@ import { useGetChunkContents } from "src/api/ragQueryApi.ts";
 import { useGetDocumentSummary } from "src/api/summaryApi.ts";
 import DocumentationIcon from "src/cuix/icons/DocumentationIcon";
 import { cdlGray600 } from "src/cuix/variables.ts";
+import MetaData from "pages/RagChatTab/ChatOutput/Sources/MetaData.tsx";
 
 export const SourceCard = ({ source }: { source: SourceNode }) => {
   const { dataSourceId } = useContext(RagChatContext);
@@ -99,7 +100,7 @@ export const SourceCard = ({ source }: { source: SourceNode }) => {
           <Flex justify="center" vertical>
             <Flex vertical>
               <Typography.Title level={5} style={{ marginTop: 10 }}>
-                Generated document summary:
+                Generated document summary
               </Typography.Title>
               <Typography.Text>
                 {documentSummary.data ?? "No summary available"}
@@ -132,19 +133,7 @@ export const SourceCard = ({ source }: { source: SourceNode }) => {
                   >
                     {chunkContents.data.text}
                   </Typography.Paragraph>
-                  <Typography.Title level={5} style={{ marginTop: 0 }}>
-                    Metadata
-                  </Typography.Title>
-                  {chunkContents.data.metadata.row_number && (
-                    <Typography.Text>
-                      Row number: {chunkContents.data.metadata.row_number}
-                    </Typography.Text>
-                  )}
-                  {chunkContents.data.metadata.page_label && (
-                    <Typography.Text>
-                      Page label: {chunkContents.data.metadata.page_label}
-                    </Typography.Text>
-                  )}
+                  <MetaData metadata={chunkContents.data.metadata} />
                 </Flex>
               )
             )}
