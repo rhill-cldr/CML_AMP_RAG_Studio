@@ -130,8 +130,8 @@ def index_document_request_body(
 
 
 class DummyLlm(LLM):
-    completion_response = Field("this is a completion response")
-    chat_response = Field("this is a chat response")
+    completion_response: str = Field("this is a completion response")
+    chat_response: str = Field("this is a chat response")
 
     def __init__(
         self,

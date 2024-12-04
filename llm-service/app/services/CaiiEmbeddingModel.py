@@ -45,7 +45,7 @@ from pydantic import Field
 
 
 class CaiiEmbeddingModel(BaseEmbedding):
-    endpoint = Field(any, description="The endpoint to use for embeddings")
+    endpoint: Any = Field(Any, description="The endpoint to use for embeddings")
 
     def __init__(self, endpoint: Dict[str, Any]):
         super().__init__()
