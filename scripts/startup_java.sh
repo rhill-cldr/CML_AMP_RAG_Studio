@@ -35,6 +35,7 @@
 # BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
 # DATA.
 #
+set -eox pipefail
 
 export JAVA_ROOT=`ls /home/cdsw/java-home`
 export JAVA_HOME="/home/cdsw/java-home/${JAVA_ROOT}"
