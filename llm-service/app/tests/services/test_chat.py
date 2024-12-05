@@ -36,8 +36,63 @@
 #  DATA.
 # ##############################################################################
 
-import subprocess
+import lipsum
+from hypothesis import example, given
+from hypothesis import strategies as st
 
-while True:
-    print(subprocess.run(["bash /home/cdsw/scripts/startup_app.sh"], shell=True))
-    print("Application Restarting")
+from app.services.chat import process_response
+
+
+@st.composite
+def suggested_questions_responses(
+    draw: st.DrawFn,
+    min_questions: int = 0,
+    max_questions: int = 10,
+    min_length: int = 0,
+    max_length: int = 20,
+    generate_bold: bool = True,
+    generate_empty: bool = True,
+    response_can_be_empty: bool = True,
+) -> str:
+    """Generate mocked suggested questions as if returned from an LLM."""
+    if response_can_be_empty and draw(st.booleans()):
+        return "Empty Response"
+
+    suggested_questions: list[str] = []
+    num_questions: int = draw(st.integers(min_questions, max_questions))
+    for _ in range(num_questions):
+        if generate_empty and draw(st.booleans()):
+            suggested_questions.append("")
+            continue
+
+        bullet: str = draw(st.sampled_from(["*", "-"]))
+
+        question_length: int = draw(st.integers(min_length, max_length))
+        question: str = lipsum.generate_words(question_length).replace(" - ", " ")
+
+        if generate_bold and draw(st.booleans()):
+            question = f"*{question}*"
+
+        suggested_questions.append(f"{bullet} {question}")
+
+    return "\n".join(suggested_questions)
+
+
+class TestProcessResponse:
+    @given(response=suggested_questions_responses())
+    @example(response="Empty Response")
+    def test_process_response(self, response: str) -> None:
+        """Verify process_response() cleans and filters an LLM's suggested questions."""
+        processed_response: str = process_response(response)
+        assert len(processed_response) <= 5
+
+        for suggested_question in processed_response:
+            assert not suggested_question.startswith("*")
+            assert not suggested_question.startswith("-")
+
+            assert not suggested_question.endswith("*")
+
+            assert len(suggested_question.split()) <= 15
+
+            assert suggested_question != "Empty Response"
+            assert suggested_question != ""

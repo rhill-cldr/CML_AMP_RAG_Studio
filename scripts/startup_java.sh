@@ -20,7 +20,7 @@
 # with an authorized and properly licensed third party, you do not
 # have any rights to access nor to use this code.
 #
-# Absent a written agreement with Cloudera, Inc. (“Cloudera”) to the
+# Absent a written agreement with Cloudera, Inc. ("Cloudera") to the
 # contrary, A) CLOUDERA PROVIDES THIS CODE TO YOU WITHOUT WARRANTIES OF ANY
 # KIND; (B) CLOUDERA DISCLAIMS ANY AND ALL EXPRESS AND IMPLIED
 # WARRANTIES WITH RESPECT TO THIS CODE, INCLUDING BUT NOT LIMITED TO
@@ -35,49 +35,18 @@
 # BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
 # DATA.
 #
+set -ox pipefail
 
-set -exo pipefail
-set -a && source .env && set +a
+export JAVA_ROOT=`ls /home/cdsw/java-home`
+export JAVA_HOME="/home/cdsw/java-home/${JAVA_ROOT}"
 
-cleanup() {
-    # kill all processes whose parent is this process
-    pkill -P $$
-    docker stop qdrant_dev
-}
-
-for sig in INT QUIT HUP TERM; do
-  trap "
-    cleanup
-    trap - $sig EXIT
-    kill -s $sig "'"$$"' "$sig"
+for i in {1..3}; do
+  echo "Starting Java application..."
+  "$JAVA_HOME"/bin/java -jar artifacts/rag-api.jar
+  echo "Java application crashed, retrying ($i/3)..."
+  sleep 5
 done
-trap cleanup EXIT
-
-mkdir -p databases
-docker run --name qdrant_dev --rm -d -p 6333:6333 -p 6334:6334 -v $(pwd)/databases/qdrant_storage:/qdrant/storage:z qdrant/qdrant
-
-cd llm-service
-if [ -z "$USE_SYSTEM_UV" ]; then
-  python3.10 -m venv venv
-  source venv/bin/activate
-  python -m pip install uv
-fi
-uv sync
-uv run pytest -sxvvra app
-
-uv run fastapi dev &
-
-# wait for the python backend to be ready
-while ! curl --output /dev/null --silent --fail http://localhost:8000/amp-update; do
-    echo "Waiting for the Python backend to be ready..."
-    sleep 4
-done
-
-# start up the jarva
-cd ../backend
-./gradlew --console=plain bootRun &
-
-# start frontend development server
-cd ../ui
-pnpm install
-pnpm dev
+#while ! curl --output /dev/null --silent --fail http://localhost:8080/api/v1/rag/dataSources; do
+#    echo "Waiting for the Java backend to be ready..."
+#    sleep 4
+#done

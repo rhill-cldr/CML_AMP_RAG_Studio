@@ -38,6 +38,7 @@
 
 import time
 import uuid
+from collections.abc import Iterator
 from typing import List
 
 from llama_index.core.base.llms.types import MessageRole
@@ -144,6 +145,7 @@ def generate_suggested_questions(
     else:
         query_str = (
             "Give me a list of questions that you can answer."
+            " Each question should be on a new line."
             " There should be no more than four (4) questions."
             " Each question should be no longer than fifteen (15) words."
             " The response should be a bulleted list, using an asterisk (*) to denote the bullet item."
@@ -177,9 +179,12 @@ def process_response(response: str | None) -> list[str]:
     if response is None:
         return []
 
-    sentences = response.split("*")
-    sentences = filter(lambda x: len(x.split()) <= 15, sentences)
+    sentences: Iterator[str] = response.splitlines()
     sentences = map(lambda x: x.strip(), sentences)
+    sentences = map(lambda x: x.removeprefix("*").strip(), sentences)
+    sentences = map(lambda x: x.removeprefix("-").strip(), sentences)
+    sentences = map(lambda x: x.strip("*"), sentences)
+    sentences = filter(lambda x: len(x.split()) <= 15, sentences)
     sentences = filter(lambda x: x != "Empty Response", sentences)
     sentences = filter(lambda x: x != "", sentences)
     return list(sentences)[:5]
