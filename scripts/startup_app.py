@@ -39,5 +39,5 @@
 import subprocess
 
 while True:
-    print(subprocess.run(["bash /home/cdsw/scripts/startup_app.sh"], shell=True, check=True))
+    print(subprocess.run(["bash /home/cdsw/scripts/startup_app.sh"], shell=True))
     print("Application Restarting")

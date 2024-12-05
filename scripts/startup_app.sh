@@ -52,11 +52,9 @@ done
 trap cleanup EXIT
 
 # start Qdrant vector DB
-cd ..
 qdrant/qdrant & 2>&1
 
 # start up the jarva
-cd ..
 export JAVA_ROOT=`ls /home/cdsw/java-home`
 export JAVA_HOME="/home/cdsw/java-home/${JAVA_ROOT}"
 "$JAVA_HOME"/bin/java -jar artifacts/rag-api.jar & 2>&1
