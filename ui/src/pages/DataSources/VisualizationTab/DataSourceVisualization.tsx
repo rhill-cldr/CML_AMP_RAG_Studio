@@ -98,7 +98,7 @@ const DataSourceVisualization = () => {
         </Tooltip>
       </Flex>
       <Flex align="center" justify="center" style={{ width: "100%" }}>
-        {vectorData.length === 0 ? (
+        {!isGetVisualizationIsLoading && vectorData.length === 0 ? (
           <Typography.Text type="secondary" style={{ height: 400 }}>
             No visualization available
           </Typography.Text>
