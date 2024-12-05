@@ -53,12 +53,6 @@ for sig in INT QUIT HUP TERM; do
 done
 trap cleanup EXIT
 
-# start frontend development server
-cd ui
-pnpm install
-pnpm dev &
-
-cd ..
 mkdir -p databases
 docker run --name qdrant_dev --rm -d -p 6333:6333 -p 6334:6334 -v $(pwd)/databases/qdrant_storage:/qdrant/storage:z qdrant/qdrant
 
@@ -73,6 +67,17 @@ uv run pytest -sxvvra app
 
 uv run fastapi dev &
 
+# wait for the python backend to be ready
+while ! curl --output /dev/null --silent --fail http://localhost:8000/amp-update; do
+    echo "Waiting for the Python backend to be ready..."
+    sleep 4
+done
+
 # start up the jarva
 cd ../backend
-./gradlew --console=plain bootRun
+./gradlew --console=plain bootRun &
+
+# start frontend development server
+cd ../ui
+pnpm install
+pnpm dev
