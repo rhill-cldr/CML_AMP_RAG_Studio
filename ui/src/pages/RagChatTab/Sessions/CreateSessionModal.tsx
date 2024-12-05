@@ -111,6 +111,7 @@ const CreateSessionModal = ({
     <Modal
       title="Create New Chat"
       open={isModalOpen}
+      width={600}
       onOk={() => {
         setIsModalOpen(false);
       }}

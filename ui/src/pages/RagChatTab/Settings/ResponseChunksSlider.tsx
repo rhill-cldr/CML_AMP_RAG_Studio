@@ -35,15 +35,9 @@
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
  ******************************************************************************/
-import { Slider, SliderSingleProps } from "antd";
+import { SliderSingleProps } from "antd";
 
-const marks: SliderSingleProps["marks"] = {
+export const ResponseChunksRange: SliderSingleProps["marks"] = {
   1: "1",
   10: "10",
 };
-
-const ResponseChunksSlider = () => {
-  return <Slider marks={marks} min={1} max={10} />;
-};
-
-export default ResponseChunksSlider;

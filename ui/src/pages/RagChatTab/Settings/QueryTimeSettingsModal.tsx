@@ -36,17 +36,19 @@
  * DATA.
  ******************************************************************************/
 
-import { Flex, Form, Modal, Select } from "antd";
+import { Flex, Form, Input, Modal, Select, Slider } from "antd";
 import { QueryConfiguration } from "src/api/chatApi.ts";
 import RequestModels from "pages/RagChatTab/Settings/RequestModels.tsx";
 import { useGetLlmModels } from "src/api/modelsApi.ts";
 import { transformModelOptions } from "src/utils/modelUtils.ts";
-import ResponseChunksSlider from "pages/RagChatTab/Settings/ResponseChunksSlider.tsx";
+import { ResponseChunksRange } from "pages/RagChatTab/Settings/ResponseChunksSlider.tsx";
+import { useContext } from "react";
+import { RagChatContext } from "pages/RagChatTab/State/RagChatContext.tsx";
+import { Session } from "src/api/sessionApi.ts";
 
 const QueryTimeSettingsModal = ({
   open,
   closeModal,
-  queryConfiguration,
   handleUpdateConfiguration,
 }: {
   open: boolean;
@@ -54,12 +56,17 @@ const QueryTimeSettingsModal = ({
   queryConfiguration: QueryConfiguration;
   handleUpdateConfiguration: (queryConfiguration: QueryConfiguration) => void;
 }) => {
-  const [form] = Form.useForm<QueryConfiguration>();
+  const [form] = Form.useForm<Session>();
   const { data } = useGetLlmModels();
+  const { activeSession } = useContext(RagChatContext);
+
+  if (!activeSession) {
+    return null;
+  }
 
   return (
     <Modal
-      title="Query-Time Settings"
+      title={`Chat Settings: ${activeSession.name}`}
       open={open}
       onCancel={closeModal}
       onOk={() => {
@@ -70,20 +77,28 @@ const QueryTimeSettingsModal = ({
     >
       <Flex vertical gap={10}>
         <Form autoCorrect="off" form={form}>
-          <Form.Item<QueryConfiguration>
-            initialValue={queryConfiguration.model_name}
-            name="model_name"
+          <Form.Item<Session>
+            name="name"
+            label="Name"
+            rules={[{ required: true }]}
+            initialValue={activeSession.name}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item<Session>
+            initialValue={activeSession.inferenceModel}
+            name="inferenceModel"
             label="Response synthesizer model"
           >
             <Select options={transformModelOptions(data)} />
           </Form.Item>
           <RequestModels />
-          <Form.Item<QueryConfiguration>
-            name="top_k"
-            initialValue={queryConfiguration.top_k}
+          <Form.Item<Session>
+            name="responseChunks"
+            initialValue={activeSession.responseChunks}
             label="Maximum number of documents"
           >
-            <ResponseChunksSlider />
+            <Slider marks={ResponseChunksRange} min={1} max={10} />
           </Form.Item>
         </Form>
       </Flex>

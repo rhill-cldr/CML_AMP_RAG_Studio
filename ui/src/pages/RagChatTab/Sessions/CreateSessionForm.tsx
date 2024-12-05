@@ -36,11 +36,11 @@
  * DATA.
  ******************************************************************************/
 
-import { Form, FormInstance, Input, Select } from "antd";
+import { Form, FormInstance, Input, Select, Slider } from "antd";
 import { DataSourceType } from "src/api/dataSourceApi.ts";
 import { CreateSessionType } from "pages/RagChatTab/Sessions/CreateSessionModal.tsx";
 import { transformModelOptions } from "src/utils/modelUtils.ts";
-import ResponseChunksSlider from "pages/RagChatTab/Settings/ResponseChunksSlider.tsx";
+import { ResponseChunksRange } from "pages/RagChatTab/Settings/ResponseChunksSlider.tsx";
 import { useGetLlmModels } from "src/api/modelsApi.ts";
 
 export interface CreateSessionFormProps {
@@ -49,8 +49,8 @@ export interface CreateSessionFormProps {
 }
 
 const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
+  labelCol: { span: 12 },
+  wrapperCol: { span: 12 },
 };
 
 const CreateSessionForm = ({ form, dataSources }: CreateSessionFormProps) => {
@@ -109,7 +109,7 @@ const CreateSessionForm = ({ form, dataSources }: CreateSessionFormProps) => {
         initialValue={5}
         label="Maximum number of documents"
       >
-        <ResponseChunksSlider />
+        <Slider marks={ResponseChunksRange} min={1} max={10} />
       </Form.Item>
     </Form>
   );
