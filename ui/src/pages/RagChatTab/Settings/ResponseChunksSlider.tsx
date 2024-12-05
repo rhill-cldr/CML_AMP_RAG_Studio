@@ -20,7 +20,7 @@
  * with an authorized and properly licensed third party, you do not
  * have any rights to access nor to use this code.
  *
- * Absent a written agreement with Cloudera, Inc. (“Cloudera”) to the
+ * Absent a written agreement with Cloudera, Inc. ("Cloudera") to the
  * contrary, A) CLOUDERA PROVIDES THIS CODE TO YOU WITHOUT WARRANTIES OF ANY
  * KIND; (B) CLOUDERA DISCLAIMS ANY AND ALL EXPRESS AND IMPLIED
  * WARRANTIES WITH RESPECT TO THIS CODE, INCLUDING BUT NOT LIMITED TO
@@ -35,60 +35,15 @@
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
  ******************************************************************************/
+import { Slider, SliderSingleProps } from "antd";
 
-import { Flex, Form, Modal, Select } from "antd";
-import { QueryConfiguration } from "src/api/chatApi.ts";
-import RequestModels from "pages/RagChatTab/Settings/RequestModels.tsx";
-import { useGetLlmModels } from "src/api/modelsApi.ts";
-import { transformModelOptions } from "src/utils/modelUtils.ts";
-import ResponseChunksSlider from "pages/RagChatTab/Settings/ResponseChunksSlider.tsx";
-
-const QueryTimeSettingsModal = ({
-  open,
-  closeModal,
-  queryConfiguration,
-  handleUpdateConfiguration,
-}: {
-  open: boolean;
-  closeModal: () => void;
-  queryConfiguration: QueryConfiguration;
-  handleUpdateConfiguration: (queryConfiguration: QueryConfiguration) => void;
-}) => {
-  const [form] = Form.useForm<QueryConfiguration>();
-  const { data } = useGetLlmModels();
-
-  return (
-    <Modal
-      title="Query-Time Settings"
-      open={open}
-      onCancel={closeModal}
-      onOk={() => {
-        handleUpdateConfiguration(form.getFieldsValue());
-      }}
-      maskClosable={false}
-      width={600}
-    >
-      <Flex vertical gap={10}>
-        <Form autoCorrect="off" form={form}>
-          <Form.Item<QueryConfiguration>
-            initialValue={queryConfiguration.model_name}
-            name="model_name"
-            label="Response synthesizer model"
-          >
-            <Select options={transformModelOptions(data)} />
-          </Form.Item>
-          <RequestModels />
-          <Form.Item<QueryConfiguration>
-            name="top_k"
-            initialValue={queryConfiguration.top_k}
-            label="Maximum number of documents"
-          >
-            <ResponseChunksSlider />
-          </Form.Item>
-        </Form>
-      </Flex>
-    </Modal>
-  );
+const marks: SliderSingleProps["marks"] = {
+  1: "1",
+  10: "10",
 };
 
-export default QueryTimeSettingsModal;
+const ResponseChunksSlider = () => {
+  return <Slider marks={marks} min={1} max={10} />;
+};
+
+export default ResponseChunksSlider;

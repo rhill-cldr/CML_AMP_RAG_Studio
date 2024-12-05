@@ -53,6 +53,8 @@ export interface Session {
   id: number;
   name: string;
   dataSourceIds: number[];
+  inferenceModel?: string;
+  responseChunks: number;
   timeCreated: number;
   timeUpdated: number;
   createdById: string;
@@ -72,6 +74,8 @@ export const getSessionsQuery = async (): Promise<Session[]> => {
 export interface CreateSessionRequest {
   name: string;
   dataSourceIds: number[];
+  inferenceModel: string;
+  responseChunks: number;
 }
 
 export const useCreateSessionMutation = ({
