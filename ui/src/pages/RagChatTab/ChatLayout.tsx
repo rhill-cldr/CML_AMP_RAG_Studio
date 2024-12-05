@@ -64,10 +64,12 @@ const getDataSourceIdForSession = (session?: Session) => {
 function ChatLayout() {
   const { data: sessions } = useSuspenseQuery(getSessionsQueryOptions);
   const { data: llmModels } = useSuspenseQuery(getLlmModelsQueryOptions);
+
   const { sessionId } = useParams({ strict: false });
   const activeSession = getSessionForSessionId(sessionId, sessions);
   const dataSourceId = getDataSourceIdForSession(activeSession);
   const [currentQuestion, setCurrentQuestion] = useState("");
+
   const { data: dataSources, status: dataSourcesStatus } =
     useGetDataSourcesQuery();
   const [queryConfiguration, setQueryConfiguration] =
@@ -75,6 +77,7 @@ function ChatLayout() {
   const { status: chatHistoryStatus, data: chatHistory } = useChatHistoryQuery(
     sessionId?.toString() ?? "",
   );
+
   const dataSourceSize = useMemo(() => {
     return (
       dataSources?.find((ds) => ds.id === dataSourceId)?.totalDocSize ?? null

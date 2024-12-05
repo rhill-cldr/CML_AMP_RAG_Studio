@@ -62,6 +62,16 @@ export interface Session {
   lastInteractionTime: number;
 }
 
+export type CreateSessionRequest = Pick<
+  Session,
+  "name" | "dataSourceIds" | "inferenceModel" | "responseChunks"
+>;
+
+export type UpdateSessionRequest = Pick<
+  Session,
+  "responseChunks" | "inferenceModel" | "name" | "id"
+>;
+
 export const getSessionsQueryOptions = queryOptions({
   queryKey: [QueryKeys.getSessions],
   queryFn: async () => await getSessionsQuery(),
@@ -70,13 +80,6 @@ export const getSessionsQueryOptions = queryOptions({
 export const getSessionsQuery = async (): Promise<Session[]> => {
   return await getRequest(`${ragPath}/${paths.sessions}`);
 };
-
-export interface CreateSessionRequest {
-  name: string;
-  dataSourceIds: number[];
-  inferenceModel: string;
-  responseChunks: number;
-}
 
 export const useCreateSessionMutation = ({
   onSuccess,
@@ -94,6 +97,27 @@ const createSessionMutation = async (
   request: CreateSessionRequest,
 ): Promise<Session> => {
   return await postRequest(`${ragPath}/${paths.sessions}`, request);
+};
+
+export const useUpdateSessionMutation = ({
+  onSuccess,
+  onError,
+}: UseMutationType<UpdateSessionRequest>) => {
+  return useMutation({
+    mutationKey: [MutationKeys.updateSession],
+    mutationFn: updateSessionMutation,
+    onSuccess,
+    onError,
+  });
+};
+
+const updateSessionMutation = async (
+  request: UpdateSessionRequest,
+): Promise<Session> => {
+  return await postRequest(
+    `${ragPath}/${paths.sessions}/${request.id.toString()}`,
+    request,
+  );
 };
 
 export const useDeleteSessionMutation = ({

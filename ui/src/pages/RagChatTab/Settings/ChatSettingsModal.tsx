@@ -43,7 +43,11 @@ import { transformModelOptions } from "src/utils/modelUtils.ts";
 import { ResponseChunksRange } from "pages/RagChatTab/Settings/ResponseChunksSlider.tsx";
 import { useContext } from "react";
 import { RagChatContext } from "pages/RagChatTab/State/RagChatContext.tsx";
-import { Session } from "src/api/sessionApi.ts";
+import {
+  UpdateSessionRequest,
+  useUpdateSessionMutation,
+} from "src/api/sessionApi.ts";
+import messageQueue from "src/utils/messageQueue.ts";
 
 const ChatSettingsModal = ({
   open,
@@ -54,15 +58,35 @@ const ChatSettingsModal = ({
 }) => {
   const { data } = useGetLlmModels();
   const { activeSession } = useContext(RagChatContext);
-  const [form] = Form.useForm<Session>();
+  const [form] = Form.useForm<Omit<UpdateSessionRequest, "id">>();
+  const updateSession = useUpdateSessionMutation({
+    onError: (error) => {
+      console.error(error);
+      messageQueue.error("Failed to update session");
+    },
+    onSuccess: () => {
+      messageQueue.success("Session updated successfully");
+      closeModal();
+    },
+  });
 
   if (!activeSession) {
     return null;
   }
 
-  const handleUpdateSession = (session: Session) => {
-    console.log("TODO Updating session", session);
-    closeModal();
+  const handleUpdateSession = () => {
+    form
+      .validateFields()
+      .then((values) => {
+        const request: UpdateSessionRequest = {
+          ...values,
+          id: activeSession.id,
+        };
+        updateSession.mutate(request);
+      })
+      .catch(() => {
+        messageQueue.error("Please fill all the required fields.");
+      });
   };
 
   return (
@@ -70,29 +94,31 @@ const ChatSettingsModal = ({
       title={`Chat Settings: ${activeSession.name}`}
       open={open}
       onCancel={closeModal}
-      onOk={() => {
-        handleUpdateSession(form.getFieldsValue());
-      }}
+      destroyOnClose={true}
+      onOk={handleUpdateSession}
       maskClosable={false}
       width={600}
     >
       <Flex vertical gap={10}>
-        <Form autoCorrect="off" form={form} initialValues={activeSession}>
-          <Form.Item<Session>
+        <Form autoCorrect="off" form={form} clearOnDestroy={true}>
+          <Form.Item
             name="name"
             label="Name"
+            initialValue={activeSession.name}
             rules={[{ required: true }]}
           >
             <Input />
           </Form.Item>
-          <Form.Item<Session>
+          <Form.Item
             name="inferenceModel"
             label="Response synthesizer model"
+            initialValue={activeSession.inferenceModel}
+            rules={[{ required: true, message: "Please select a model" }]}
           >
             <Select options={transformModelOptions(data)} />
           </Form.Item>
           <RequestModels />
-          <Form.Item<Session>
+          <Form.Item
             name="responseChunks"
             initialValue={activeSession.responseChunks}
             label="Maximum number of documents"
