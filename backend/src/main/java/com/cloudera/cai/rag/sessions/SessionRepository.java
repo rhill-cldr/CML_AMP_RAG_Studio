@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * CLOUDERA APPLIED MACHINE LEARNING PROTOTYPE (AMP)
  * (C) Cloudera, Inc. 2024
  * All rights reserved.
@@ -65,8 +65,8 @@ public class SessionRepository {
         handle -> {
           var sql =
               """
-            INSERT INTO CHAT_SESSION (name, created_by_id, updated_by_id)
-            VALUES (:name, :createdById, :updatedById)
+            INSERT INTO CHAT_SESSION (name, created_by_id, updated_by_id, inference_model, response_chunks)
+            VALUES (:name, :createdById, :updatedById, :inferenceModel, :responseChunks)
           """;
           Long id = insertSession(input, handle, sql);
           insertSessionDataSources(handle, id, input.dataSourceIds());
@@ -123,6 +123,8 @@ public class SessionRepository {
                         Types.Session.builder()
                             .id(sessionId)
                             .name(rowView.getColumn("name", String.class))
+                            .inferenceModel(rowView.getColumn("inference_model", String.class))
+                            .responseChunks(rowView.getColumn("response_chunks", Integer.class))
                             .createdById(rowView.getColumn("created_by_id", String.class))
                             .timeCreated(rowView.getColumn("time_created", Instant.class))
                             .updatedById(rowView.getColumn("updated_by_id", String.class))

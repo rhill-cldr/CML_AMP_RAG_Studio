@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * CLOUDERA APPLIED MACHINE LEARNING PROTOTYPE (AMP)
  * (C) Cloudera, Inc. 2024
  * All rights reserved.
@@ -62,6 +62,8 @@ class SessionControllerTest {
     Types.Session result = sessionController.create(input, request);
     assertThat(result.id()).isNotNull();
     assertThat(result.name()).isEqualTo(sessionName);
+    assertThat(result.inferenceModel()).isEqualTo(input.inferenceModel());
+    assertThat(result.responseChunks()).isEqualTo(input.responseChunks());
     assertThat(result.dataSourceIds()).containsExactlyInAnyOrder(1L, 2L, 3L);
     assertThat(result.timeCreated()).isNotNull();
     assertThat(result.timeUpdated()).isNotNull();

@@ -23,3 +23,5 @@
 11_add_session_deleted.up.sql
 12_add_doc_deleted.down.sql
 12_add_doc_deleted.up.sql
+13_add_chat_configuration.down.sql
+13_add_chat_configuration.up.sql
