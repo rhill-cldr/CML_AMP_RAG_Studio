@@ -37,7 +37,7 @@
 # ##############################################################################
 
 import lipsum
-from hypothesis import given
+from hypothesis import example, given
 from hypothesis import strategies as st
 
 from app.services.chat import process_response
@@ -54,6 +54,7 @@ def suggested_questions_responses(
     generate_empty: bool = True,
     response_can_be_empty: bool = True,
 ) -> str:
+    """Generate mocked suggested questions as if returned from an LLM."""
     if response_can_be_empty and draw(st.booleans()):
         return "Empty Response"
 
@@ -78,8 +79,10 @@ def suggested_questions_responses(
 
 
 class TestProcessResponse:
-    @given(suggested_questions_responses())
+    @given(response=suggested_questions_responses())
+    @example(response="Empty Response")
     def test_process_response(self, response: str) -> None:
+        """Verify process_response() cleans and filters an LLM's suggested questions."""
         processed_response: str = process_response(response)
         assert len(processed_response) <= 5
 
