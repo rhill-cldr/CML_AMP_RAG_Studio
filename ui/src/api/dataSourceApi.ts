@@ -148,6 +148,7 @@ export const getDataSourceById = (dataSourceId: string) => {
   return queryOptions({
     queryKey: [QueryKeys.getDataSourceById, { dataSourceId }],
     queryFn: () => getDataSourceByIdQuery(dataSourceId),
+    staleTime: 1000 * 5,
   });
 };
 

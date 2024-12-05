@@ -42,19 +42,20 @@ import { DataSourceContext } from "pages/DataSources/Layout.tsx";
 import DataSourcesForm, {
   DataSourcesFormProps,
 } from "pages/DataSources/DataSourcesManagement/DataSourcesForm.tsx";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { MutationKeys, QueryKeys } from "src/api/utils.ts";
 import {
   DataSourceBaseType,
   deleteDataSourceMutation,
+  getDataSourceById,
   useUpdateDataSourceMutation,
 } from "src/api/dataSourceApi.ts";
 import { useNavigate } from "@tanstack/react-router";
 import messageQueue from "src/utils/messageQueue.ts";
 
 const IndexSettings = () => {
-  const dataSourceResponse = useContext(DataSourceContext);
-  const { data } = dataSourceResponse;
+  const { dataSourceId } = useContext(DataSourceContext);
+  const { data } = useQuery(getDataSourceById(dataSourceId));
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const navigate = useNavigate();
   const [confirmationText, setConfirmationText] = useState("");

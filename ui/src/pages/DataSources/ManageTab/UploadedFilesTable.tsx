@@ -46,7 +46,6 @@ import {
   Tooltip,
   Typography,
 } from "antd";
-import { useParams } from "@tanstack/react-router";
 import Icon, {
   CheckCircleOutlined,
   DeleteOutlined,
@@ -62,12 +61,13 @@ import StatsWidget from "pages/DataSources/ManageTab/StatsWidget.tsx";
 import AiAssistantIcon from "src/cuix/icons/AiAssistantIcon";
 import DocumentationIcon from "src/cuix/icons/DocumentationIcon";
 import { useGetDocumentSummary } from "src/api/summaryApi.ts";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import messageQueue from "src/utils/messageQueue.ts";
 import { useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "src/api/utils.ts";
 import useModal from "src/utils/useModal.ts";
 import { cdlWhite } from "src/cuix/variables.ts";
+import { DataSourceContext } from "pages/DataSources/Layout.tsx";
 
 function SummaryPopover({
   dataSourceId,
@@ -188,9 +188,7 @@ const columns = (
 ];
 
 const UploadedFilesTable = () => {
-  const dataSourceId = useParams({
-    from: "/_layout/data/_layout-datasources/$dataSourceId",
-  }).dataSourceId;
+  const { dataSourceId } = useContext(DataSourceContext);
   const [selectedDocument, setSelectedDocument] =
     useState<RagDocumentResponseType>();
   const deleteConfirmationModal = useModal();
