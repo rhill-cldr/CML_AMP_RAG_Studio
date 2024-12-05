@@ -20,7 +20,7 @@
 # with an authorized and properly licensed third party, you do not
 # have any rights to access nor to use this code.
 #
-# Absent a written agreement with Cloudera, Inc. (“Cloudera”) to the
+# Absent a written agreement with Cloudera, Inc. ("Cloudera") to the
 # contrary, A) CLOUDERA PROVIDES THIS CODE TO YOU WITHOUT WARRANTIES OF ANY
 # KIND; (B) CLOUDERA DISCLAIMS ANY AND ALL EXPRESS AND IMPLIED
 # WARRANTIES WITH RESPECT TO THIS CODE, INCLUDING BUT NOT LIMITED TO
@@ -36,37 +36,15 @@
 # DATA.
 #
 
-set -eox pipefail
+export JAVA_ROOT=`ls /home/cdsw/java-home`
+export JAVA_HOME="/home/cdsw/java-home/${JAVA_ROOT}"
 
-cleanup() {
-    # kill all processes whose parent is this process
-    pkill -P $$
-}
-
-for sig in INT QUIT HUP TERM; do
-  trap "
-    cleanup
-    trap - $sig EXIT
-    kill -s $sig "'"$$"' "$sig"
+for i in {1..3}; do
+  "$JAVA_HOME"/bin/java -jar artifacts/rag-api.jar && break
+  echo "Java application crashed, retrying ($i/3)..."
+  sleep 5
 done
-trap cleanup EXIT
-
-# start Qdrant vector DB
-qdrant/qdrant & 2>&1
-
-# start up the jarva
-scripts/startup_java.sh & 2>&1
-
-# start Python backend
-cd llm-service
-uv run fastapi run --host 127.0.0.1 --port 8081 & 2>&1
-
-# wait for the python backend to be ready
-while ! curl --output /dev/null --silent --fail http://localhost:8081/amp-update; do
-    echo "Waiting for the Python backend to be ready..."
-    sleep 4
-done
-
-# start Node production server
-cd ../ui
-node express/index.js
+#while ! curl --output /dev/null --silent --fail http://localhost:8080/api/v1/rag/dataSources; do
+#    echo "Waiting for the Java backend to be ready..."
+#    sleep 4
+#done
