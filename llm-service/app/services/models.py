@@ -51,6 +51,7 @@ from .caii import get_embedding_model as caii_embedding
 from .caii import get_llm as caii_llm
 from .llama_utils import completion_to_prompt, messages_to_prompt
 
+DEFAULT_BEDROCK_LLM_MODEL = "meta.llama3-1-8b-instruct-v1:0"
 
 def get_embedding_model() -> BaseEmbedding:
     if is_caii_enabled():
@@ -58,7 +59,7 @@ def get_embedding_model() -> BaseEmbedding:
     return BedrockEmbedding(model_name="cohere.embed-english-v3")
 
 
-def get_llm(model_name: str = None) -> LLM:
+def get_llm(model_name: str = DEFAULT_BEDROCK_LLM_MODEL) -> LLM:
     if is_caii_enabled():
         return caii_llm(
             domain=os.environ["CAII_DOMAIN"],
@@ -90,20 +91,15 @@ def is_caii_enabled() -> bool:
     domain: str = os.environ.get("CAII_DOMAIN", "")
     return len(domain) > 0
 
-
 def _get_bedrock_llm_models() -> List[Dict[str, Any]]:
     return [
         {
-            "model_id": "meta.llama3-1-8b-instruct-v1:0",
+            "model_id": DEFAULT_BEDROCK_LLM_MODEL,
             "name": "Llama3.1 8B Instruct v1",
         },
         {
             "model_id": "meta.llama3-1-70b-instruct-v1:0",
             "name": "Llama3.1 70B Instruct v1",
-        },
-        {
-            "model_id": "meta.llama3-1-405b-instruct-v1:0",
-            "name": "Llama3.1 405B Instruct v1",
         },
         {
             "model_id": "cohere.command-r-plus-v1:0",

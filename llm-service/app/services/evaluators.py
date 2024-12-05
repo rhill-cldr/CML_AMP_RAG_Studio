@@ -47,7 +47,7 @@ def evaluate_response(
         query: str,
         chat_response: AgentChatResponse,
 ) -> tuple[float, float]:
-    evaluator_llm = models.get_llm("meta.llama3-8b-instruct-v1:0")
+    evaluator_llm = models.get_llm()
 
     relevancy_evaluator = RelevancyEvaluator(llm=evaluator_llm)
     relevance = relevancy_evaluator.evaluate_response(
