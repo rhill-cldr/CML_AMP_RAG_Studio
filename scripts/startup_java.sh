@@ -41,7 +41,8 @@ export JAVA_ROOT=`ls /home/cdsw/java-home`
 export JAVA_HOME="/home/cdsw/java-home/${JAVA_ROOT}"
 
 for i in {1..3}; do
-  "$JAVA_HOME"/bin/java -jar artifacts/rag-api.jar && break
+  echo "Starting Java application..."
+  "$JAVA_HOME"/bin/java -jar artifacts/rag-api.jar
   echo "Java application crashed, retrying ($i/3)..."
   sleep 5
 done
