@@ -36,7 +36,7 @@
  * DATA.
  ******************************************************************************/
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, Divider, Flex, Upload, UploadFile, UploadProps } from "antd";
 import { QueryKeys } from "src/api/utils.ts";
 import { InboxOutlined } from "@ant-design/icons";
@@ -44,7 +44,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import UploadedFilesTable from "pages/DataSources/ManageTab/UploadedFilesTable.tsx";
 import { useCreateRagDocumentsMutation } from "src/api/ragDocumentsApi.ts";
 import messageQueue from "src/utils/messageQueue.ts";
-import { Route } from "src/routes/_layout/data/_layout-datasources/$dataSourceId";
+import { DataSourceContext } from "pages/DataSources/Layout.tsx";
 
 const DragAndDrop = () => {
   return (
@@ -71,7 +71,7 @@ interface RejectReasonType {
 const FileManagement: React.FC = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const queryClient = useQueryClient();
-  const { dataSourceId } = Route.useParams();
+  const { dataSourceId } = useContext(DataSourceContext);
   const ragDocumentMutation = useCreateRagDocumentsMutation({
     onSuccess: (settledPromises) => {
       const fulfilledValues = settledPromises

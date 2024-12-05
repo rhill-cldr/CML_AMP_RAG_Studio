@@ -61,13 +61,13 @@ import StatsWidget from "pages/DataSources/ManageTab/StatsWidget.tsx";
 import AiAssistantIcon from "src/cuix/icons/AiAssistantIcon";
 import DocumentationIcon from "src/cuix/icons/DocumentationIcon";
 import { useGetDocumentSummary } from "src/api/summaryApi.ts";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import messageQueue from "src/utils/messageQueue.ts";
 import { useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "src/api/utils.ts";
 import useModal from "src/utils/useModal.ts";
 import { cdlWhite } from "src/cuix/variables.ts";
-import { Route } from "src/routes/_layout/data/_layout-datasources/$dataSourceId";
+import { DataSourceContext } from "pages/DataSources/Layout.tsx";
 
 function SummaryPopover({
   dataSourceId,
@@ -188,7 +188,7 @@ const columns = (
 ];
 
 const UploadedFilesTable = () => {
-  const { dataSourceId } = Route.useParams();
+  const { dataSourceId } = useContext(DataSourceContext);
   const [selectedDocument, setSelectedDocument] =
     useState<RagDocumentResponseType>();
   const deleteConfirmationModal = useModal();

@@ -36,7 +36,7 @@
  * DATA.
  ******************************************************************************/
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   getVisualizeDataSource,
   Point2d,
@@ -46,10 +46,10 @@ import messageQueue from "src/utils/messageQueue.ts";
 import { Flex, Input, Tooltip, Typography } from "antd";
 import VectorGraph from "pages/DataSources/VisualizationTab/VectorGraph.tsx";
 import { QuestionCircleOutlined } from "@ant-design/icons";
-import { Route } from "src/routes/_layout/data/_layout-datasources/$dataSourceId";
+import { DataSourceContext } from "pages/DataSources/Layout.tsx";
 
 const DataSourceVisualization = () => {
-  const { dataSourceId } = Route.useParams();
+  const { dataSourceId } = useContext(DataSourceContext);
   const [userInput, setUserInput] = useState("");
   const [vectorData, setVectorData] = useState<Point2d[]>([]);
 
