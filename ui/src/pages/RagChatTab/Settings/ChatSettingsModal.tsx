@@ -37,7 +37,6 @@
  ******************************************************************************/
 
 import { Flex, Form, Input, Modal, Select, Slider } from "antd";
-import { QueryConfiguration } from "src/api/chatApi.ts";
 import RequestModels from "pages/RagChatTab/Settings/RequestModels.tsx";
 import { useGetLlmModels } from "src/api/modelsApi.ts";
 import { transformModelOptions } from "src/utils/modelUtils.ts";
@@ -46,23 +45,25 @@ import { useContext } from "react";
 import { RagChatContext } from "pages/RagChatTab/State/RagChatContext.tsx";
 import { Session } from "src/api/sessionApi.ts";
 
-const QueryTimeSettingsModal = ({
+const ChatSettingsModal = ({
   open,
   closeModal,
-  handleUpdateConfiguration,
 }: {
   open: boolean;
   closeModal: () => void;
-  queryConfiguration: QueryConfiguration;
-  handleUpdateConfiguration: (queryConfiguration: QueryConfiguration) => void;
 }) => {
-  const [form] = Form.useForm<Session>();
   const { data } = useGetLlmModels();
   const { activeSession } = useContext(RagChatContext);
+  const [form] = Form.useForm<Session>();
 
   if (!activeSession) {
     return null;
   }
+
+  const handleUpdateSession = (session: Session) => {
+    console.log("TODO Updating session", session);
+    closeModal();
+  };
 
   return (
     <Modal
@@ -70,23 +71,21 @@ const QueryTimeSettingsModal = ({
       open={open}
       onCancel={closeModal}
       onOk={() => {
-        handleUpdateConfiguration(form.getFieldsValue());
+        handleUpdateSession(form.getFieldsValue());
       }}
       maskClosable={false}
       width={600}
     >
       <Flex vertical gap={10}>
-        <Form autoCorrect="off" form={form}>
+        <Form autoCorrect="off" form={form} initialValues={activeSession}>
           <Form.Item<Session>
             name="name"
             label="Name"
             rules={[{ required: true }]}
-            initialValue={activeSession.name}
           >
             <Input />
           </Form.Item>
           <Form.Item<Session>
-            initialValue={activeSession.inferenceModel}
             name="inferenceModel"
             label="Response synthesizer model"
           >
@@ -106,4 +105,4 @@ const QueryTimeSettingsModal = ({
   );
 };
 
-export default QueryTimeSettingsModal;
+export default ChatSettingsModal;

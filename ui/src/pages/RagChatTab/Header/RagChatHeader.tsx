@@ -39,10 +39,7 @@
 import { Session } from "src/api/sessionApi.ts";
 import { DataSourceType } from "src/api/dataSourceApi.ts";
 import { Button, Flex, Layout, Typography } from "antd";
-import QueryTimeSettingsModal from "pages/RagChatTab/Settings/QueryTimeSettingsModal.tsx";
-import { useContext } from "react";
-import { QueryConfiguration } from "src/api/chatApi.ts";
-import { RagChatContext } from "pages/RagChatTab/State/RagChatContext.tsx";
+import ChatSettingsModal from "pages/RagChatTab/Settings/ChatSettingsModal.tsx";
 import useModal from "src/utils/useModal.ts";
 import SettingsIcon from "src/cuix/icons/SettingsIcon";
 import { cdlBlue600, cdlGray600 } from "src/cuix/variables.ts";
@@ -69,18 +66,12 @@ export const RagChatHeader = ({
   activeSession?: Session;
   currentDataSource?: DataSourceType;
 }) => {
-  const { queryConfiguration, setQueryConfiguration } =
-    useContext(RagChatContext);
   const settingsModal = useModal();
 
   const handleOpenModal = () => {
     settingsModal.setIsModalOpen(!settingsModal.isModalOpen);
   };
 
-  const handleUpdateConfiguration = (formValues: QueryConfiguration) => {
-    setQueryConfiguration(formValues);
-    settingsModal.setIsModalOpen(false);
-  };
   return (
     <Header style={{ padding: 0, margin: 0, width: "100%" }}>
       <Flex justify="space-between">
@@ -118,13 +109,11 @@ export const RagChatHeader = ({
           </Flex>
         </Button>
       </Flex>{" "}
-      <QueryTimeSettingsModal
+      <ChatSettingsModal
         open={settingsModal.isModalOpen}
         closeModal={() => {
           settingsModal.setIsModalOpen(false);
         }}
-        queryConfiguration={queryConfiguration}
-        handleUpdateConfiguration={handleUpdateConfiguration}
       />
     </Header>
   );
