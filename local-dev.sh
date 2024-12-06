@@ -53,6 +53,8 @@ for sig in INT QUIT HUP TERM; do
 done
 trap cleanup EXIT
 
+docker stop qdrant_dev || true
+
 mkdir -p databases
 docker run --name qdrant_dev --rm -d -p 6333:6333 -p 6334:6334 -v $(pwd)/databases/qdrant_storage:/qdrant/storage:z qdrant/qdrant
 

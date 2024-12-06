@@ -100,5 +100,7 @@ public class Types {
       Instant timeUpdated,
       String createdById,
       String updatedById,
-      Instant lastInteractionTime) {}
+      Instant lastInteractionTime,
+      String inferenceModel,
+      Integer responseChunks) {}
 }

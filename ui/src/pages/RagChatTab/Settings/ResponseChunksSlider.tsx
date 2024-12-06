@@ -20,7 +20,7 @@
  * with an authorized and properly licensed third party, you do not
  * have any rights to access nor to use this code.
  *
- * Absent a written agreement with Cloudera, Inc. (“Cloudera”) to the
+ * Absent a written agreement with Cloudera, Inc. ("Cloudera") to the
  * contrary, A) CLOUDERA PROVIDES THIS CODE TO YOU WITHOUT WARRANTIES OF ANY
  * KIND; (B) CLOUDERA DISCLAIMS ANY AND ALL EXPRESS AND IMPLIED
  * WARRANTIES WITH RESPECT TO THIS CODE, INCLUDING BUT NOT LIMITED TO
@@ -35,32 +35,9 @@
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
  ******************************************************************************/
+import { SliderSingleProps } from "antd";
 
-import { createContext, Dispatch, SetStateAction } from "react";
-import { ChatMessageType } from "src/api/chatApi.ts";
-import { Session } from "src/api/sessionApi.ts";
-import { DataSourceType } from "src/api/dataSourceApi.ts";
-
-export interface RagChatContextType {
-  activeSession?: Session;
-  currentQuestionState: [string, Dispatch<SetStateAction<string>>];
-  chatHistoryQuery: {
-    chatHistory: ChatMessageType[];
-    chatHistoryStatus?: "error" | "success" | "pending";
-  };
-  dataSourcesQuery: {
-    dataSources: DataSourceType[];
-    dataSourcesStatus?: "error" | "success" | "pending";
-  };
-  dataSourceSize: number | null;
-  excludeKnowledgeBaseState: [boolean, Dispatch<SetStateAction<boolean>>];
-}
-
-export const RagChatContext = createContext<RagChatContextType>({
-  activeSession: undefined,
-  currentQuestionState: ["", () => null],
-  chatHistoryQuery: { chatHistory: [], chatHistoryStatus: undefined },
-  dataSourcesQuery: { dataSources: [], dataSourcesStatus: undefined },
-  dataSourceSize: null,
-  excludeKnowledgeBaseState: [false, () => null],
-});
+export const ResponseChunksRange: SliderSingleProps["marks"] = {
+  1: "1",
+  10: "10",
+};

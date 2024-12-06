@@ -234,7 +234,7 @@ def llm(monkeypatch: pytest.MonkeyPatch) -> LLM:
     model = DummyLlm()
 
     # Requires that the app usages import the file and not the function directly as python creates a copy when importing the function
-    monkeypatch.setattr(models, "get_llm", lambda model_name: model)
+    monkeypatch.setattr(models, "get_llm", lambda : model)
     return model
 
 

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * CLOUDERA APPLIED MACHINE LEARNING PROTOTYPE (AMP)
  * (C) Cloudera, Inc. 2024
  * All rights reserved.
@@ -34,33 +34,14 @@
  * RELATED TO LOST REVENUE, LOST PROFITS, LOSS OF INCOME, LOSS OF
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
- ******************************************************************************/
+ */
 
-import { createContext, Dispatch, SetStateAction } from "react";
-import { ChatMessageType } from "src/api/chatApi.ts";
-import { Session } from "src/api/sessionApi.ts";
-import { DataSourceType } from "src/api/dataSourceApi.ts";
+SET MODE MYSQL;
 
-export interface RagChatContextType {
-  activeSession?: Session;
-  currentQuestionState: [string, Dispatch<SetStateAction<string>>];
-  chatHistoryQuery: {
-    chatHistory: ChatMessageType[];
-    chatHistoryStatus?: "error" | "success" | "pending";
-  };
-  dataSourcesQuery: {
-    dataSources: DataSourceType[];
-    dataSourcesStatus?: "error" | "success" | "pending";
-  };
-  dataSourceSize: number | null;
-  excludeKnowledgeBaseState: [boolean, Dispatch<SetStateAction<boolean>>];
-}
+BEGIN;
 
-export const RagChatContext = createContext<RagChatContextType>({
-  activeSession: undefined,
-  currentQuestionState: ["", () => null],
-  chatHistoryQuery: { chatHistory: [], chatHistoryStatus: undefined },
-  dataSourcesQuery: { dataSources: [], dataSourcesStatus: undefined },
-  dataSourceSize: null,
-  excludeKnowledgeBaseState: [false, () => null],
-});
+ALTER TABLE CHAT_SESSION ADD COLUMN inference_model VARCHAR(255);
+ALTER TABLE CHAT_SESSION ADD COLUMN response_chunks INTEGER DEFAULT 5;
+
+
+COMMIT;

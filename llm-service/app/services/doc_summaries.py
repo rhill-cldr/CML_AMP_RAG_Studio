@@ -115,7 +115,7 @@ def generate_summary(
 
 ## todo: move to somewhere better; these are defaults to use when none are explicitly provided
 def set_settings_globals() -> None:
-    Settings.llm = models.get_llm("meta.llama3-8b-instruct-v1:0")
+    Settings.llm = models.get_llm()
     Settings.embed_model = models.get_embedding_model()
     Settings.text_splitter = SentenceSplitter(chunk_size=1024)
 
