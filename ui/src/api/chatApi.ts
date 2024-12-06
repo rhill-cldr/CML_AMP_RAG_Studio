@@ -46,6 +46,7 @@ import {
 } from "src/api/utils.ts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { suggestedQuestionKey } from "src/api/ragQueryApi.ts";
+import { Session } from "src/api/sessionApi.ts";
 
 export interface SourceNode {
   node_id: string;
@@ -190,4 +191,18 @@ const chatMutation = async (
     `${llmServicePath}/sessions/${request.session_id}/chat`,
     request,
   );
+};
+
+export const createQueryConfiguration = (
+  queryConfiguration: QueryConfiguration,
+  activeSession?: Session,
+): QueryConfiguration => {
+  if (!activeSession) {
+    return queryConfiguration;
+  }
+  return {
+    ...queryConfiguration,
+    top_k: activeSession.responseChunks,
+    model_name: activeSession.inferenceModel ?? queryConfiguration.model_name,
+  };
 };

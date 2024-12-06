@@ -42,7 +42,7 @@ import { DatabaseFilled, SendOutlined } from "@ant-design/icons";
 import { useContext, useState } from "react";
 import { RagChatContext } from "pages/RagChatTab/State/RagChatContext.tsx";
 import messageQueue from "src/utils/messageQueue.ts";
-import { useChatMutation } from "src/api/chatApi.ts";
+import { createQueryConfiguration, useChatMutation } from "src/api/chatApi.ts";
 import { useSuggestQuestions } from "src/api/ragQueryApi.ts";
 import { useParams } from "@tanstack/react-router";
 import { cdlBlue600 } from "src/cuix/variables.ts";
@@ -58,18 +58,18 @@ const RagChatQueryInput = () => {
     dataSourceSize,
     dataSourcesStatus,
     setQueryConfiguration,
+    activeSession,
   } = useContext(RagChatContext);
 
   const [userInput, setUserInput] = useState("");
   const { sessionId } = useParams({ strict: false });
-
   const {
     data: sampleQuestions,
     isPending: sampleQuestionsIsPending,
     isFetching: sampleQuestionsIsFetching,
   } = useSuggestQuestions({
     data_source_id: dataSourceId?.toString() ?? "",
-    configuration: queryConfiguration,
+    configuration: createQueryConfiguration(queryConfiguration, activeSession),
     session_id: sessionId ?? "",
   });
 
@@ -90,7 +90,10 @@ const RagChatQueryInput = () => {
         query: userInput,
         data_source_id: dataSourceId.toString(),
         session_id: sessionId,
-        configuration: queryConfiguration,
+        configuration: createQueryConfiguration(
+          queryConfiguration,
+          activeSession,
+        ),
       });
     }
   };

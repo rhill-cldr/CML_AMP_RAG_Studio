@@ -48,6 +48,8 @@ import {
   useUpdateSessionMutation,
 } from "src/api/sessionApi.ts";
 import messageQueue from "src/utils/messageQueue.ts";
+import { QueryKeys } from "src/api/utils.ts";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ChatSettingsModal = ({
   open,
@@ -59,13 +61,17 @@ const ChatSettingsModal = ({
   const { data: llmModels } = useGetLlmModels();
   const { activeSession } = useContext(RagChatContext);
   const [form] = Form.useForm<Omit<UpdateSessionRequest, "id">>();
+  const queryClient = useQueryClient();
   const updateSession = useUpdateSessionMutation({
     onError: (error) => {
       console.error(error);
       messageQueue.error("Failed to update session");
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       messageQueue.success("Session updated successfully");
+      await queryClient.invalidateQueries({
+        queryKey: [QueryKeys.getSessions],
+      });
       closeModal();
     },
   });
