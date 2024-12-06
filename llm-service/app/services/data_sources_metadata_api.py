@@ -35,43 +35,47 @@
 #  BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
 #  DATA.
 #
-
-from abc import abstractmethod, ABCMeta
+import os
+from dataclasses import dataclass
+from datetime import datetime
 from typing import Optional
 
-from llama_index.core.base.embeddings.base import BaseEmbedding
-from llama_index.core.vector_stores.types import BasePydanticVectorStore
+import requests
+
+@dataclass
+class RagDataSource:
+    id: int
+    name: str
+    embedding_model: str
+    chunk_size: int
+    chunk_overlap_percent: int
+    time_created: datetime
+    time_updated: datetime
+    created_by_id: str
+    updated_by_id: str
+    connection_type: str
+    document_count: Optional[int] = None
+    total_doc_size: Optional[int] = None
 
 
-class VectorStore(metaclass=ABCMeta):
-    """RAG Studio Vector Store functionality. Implementations of this should house the vectors for a single document collection."""
+BACKEND_BASE_URL = os.getenv("API_URL", "http://localhost:8080")
+url_template = BACKEND_BASE_URL + "/api/v1/rag/dataSources/{}"
 
-    @abstractmethod
-    def size(self) -> Optional[int]:
-        """
-        If the collection does not exist, return None
-        """
-
-    @abstractmethod
-    def delete(self) -> None:
-        """Delete the vector store"""
-
-    @abstractmethod
-    def delete_document(self, document_id: str) -> None:
-        """Delete a single document from the vector store"""
-
-    @abstractmethod
-    def llama_vector_store(self) -> BasePydanticVectorStore:
-        """Access the underlying llama-index vector store implementation"""
-
-    @abstractmethod
-    def exists(self) -> bool:
-        """Does the vector store exist?"""
-
-    @abstractmethod
-    def visualize(self, user_query: Optional[str] = None) -> list[tuple[tuple[float,float], str]]:
-        """get a 2-d visualization of the vectors in the store"""
-
-    @abstractmethod
-    def get_embedding_model(self) -> BaseEmbedding:
-        """get the embedding model used for this vector store"""
+def get_metadata(data_source_id: int) -> RagDataSource:
+    response = requests.get(url_template.format(data_source_id))
+    response.raise_for_status()
+    data = response.json()
+    return RagDataSource(
+        id=data["id"],
+        name=data["name"],
+        embedding_model=data["embeddingModel"],
+        chunk_size=data["chunkSize"],
+        chunk_overlap_percent=data["chunkOverlapPercent"],
+        time_created=datetime.fromtimestamp(data["timeCreated"]),
+        time_updated=datetime.fromtimestamp(data["timeUpdated"]),
+        created_by_id=data["createdById"],
+        updated_by_id=data["updatedById"],
+        connection_type=data["connectionType"],
+        document_count=data.get("documentCount"),
+        total_doc_size=data.get("totalDocSize")
+    )
