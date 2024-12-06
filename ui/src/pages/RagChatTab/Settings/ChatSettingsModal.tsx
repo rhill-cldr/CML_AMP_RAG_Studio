@@ -56,7 +56,7 @@ const ChatSettingsModal = ({
   open: boolean;
   closeModal: () => void;
 }) => {
-  const { data } = useGetLlmModels();
+  const { data: llmModels } = useGetLlmModels();
   const { activeSession } = useContext(RagChatContext);
   const [form] = Form.useForm<Omit<UpdateSessionRequest, "id">>();
   const updateSession = useUpdateSessionMutation({
@@ -112,10 +112,13 @@ const ChatSettingsModal = ({
           <Form.Item
             name="inferenceModel"
             label="Response synthesizer model"
-            initialValue={activeSession.inferenceModel}
+            initialValue={
+              activeSession.inferenceModel ??
+              (llmModels ? llmModels[0].model_id : "")
+            }
             rules={[{ required: true, message: "Please select a model" }]}
           >
-            <Select options={transformModelOptions(data)} />
+            <Select options={transformModelOptions(llmModels)} />
           </Form.Item>
           <RequestModels />
           <Form.Item

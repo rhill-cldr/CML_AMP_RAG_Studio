@@ -160,8 +160,19 @@ public class SessionRepository {
 
   public void delete(Long id) {
     jdbi.useHandle(
+        handle -> handle.execute("UPDATE CHAT_SESSION SET DELETED = ? WHERE ID = ?", true, id));
+  }
+
+  public void update(Types.Session input) {
+    jdbi.useHandle(
         handle -> {
-          handle.execute("UPDATE CHAT_SESSION SET DELETED = ? WHERE ID = ?", true, id);
+          var sql =
+              """
+            UPDATE CHAT_SESSION
+            SET name = :name, updated_by_id = :updatedById, inference_model = :inferenceModel, response_chunks = :responseChunks
+            WHERE id = :id
+          """;
+          handle.createUpdate(sql).bindMethods(input).execute();
         });
   }
 }

@@ -73,6 +73,45 @@ class SessionControllerTest {
   }
 
   @Test
+  void update() throws JsonProcessingException {
+    SessionController sessionController = new SessionController(SessionService.createNull());
+    var request = new MockHttpServletRequest();
+    request.setCookies(
+        new MockCookie("_basusertoken", UserTokenCookieDecoderTest.encodeCookie("test-user")));
+    var sessionName = "test";
+    Types.Session input = TestData.createTestSessionInstance(sessionName);
+    Types.Session result = sessionController.create(input, request);
+
+    var updatedResponseChunks = 1;
+    var updatedInferenceModel = "new-model-name";
+    var updatedName = "new-name";
+
+    request = new MockHttpServletRequest();
+    request.setCookies(
+        new MockCookie(
+            "_basusertoken", UserTokenCookieDecoderTest.encodeCookie("update-test-user")));
+
+    var updatedSession =
+        sessionController.update(
+            result
+                .withInferenceModel(updatedInferenceModel)
+                .withResponseChunks(updatedResponseChunks)
+                .withName(updatedName),
+            request);
+
+    assertThat(updatedSession.id()).isNotNull();
+    assertThat(updatedSession.name()).isEqualTo(updatedName);
+    assertThat(updatedSession.inferenceModel()).isEqualTo(updatedInferenceModel);
+    assertThat(updatedSession.responseChunks()).isEqualTo(updatedResponseChunks);
+    assertThat(updatedSession.dataSourceIds()).containsExactlyInAnyOrder(1L, 2L, 3L);
+    assertThat(updatedSession.timeCreated()).isNotNull();
+    assertThat(updatedSession.timeUpdated()).isNotNull();
+    assertThat(updatedSession.createdById()).isEqualTo("test-user");
+    assertThat(updatedSession.updatedById()).isEqualTo("update-test-user");
+    assertThat(updatedSession.lastInteractionTime()).isNull();
+  }
+
+  @Test
   void delete() {
     SessionService sessionService = SessionService.createNull();
     SessionController sessionController = new SessionController(sessionService);
