@@ -67,6 +67,9 @@ def get_llm(model_name: str = DEFAULT_BEDROCK_LLM_MODEL) -> LLM:
             messages_to_prompt=messages_to_prompt,
             completion_to_prompt=completion_to_prompt,
         )
+    if not model_name:
+        model_name = DEFAULT_BEDROCK_LLM_MODEL
+
     return BedrockConverse(
         model=model_name,
         # context_size=BEDROCK_MODELS.get(model_name, 8192),

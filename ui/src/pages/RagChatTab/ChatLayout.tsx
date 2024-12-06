@@ -91,16 +91,18 @@ function ChatLayout() {
     <RagChatContext.Provider
       value={{
         dataSourceId,
-        excludeKnowledgeBase,
-        setExcludeKnowledgeBase,
-        setCurrentQuestion,
-        currentQuestion,
-        chatHistory,
+        excludeKnowledgeBaseState: [
+          excludeKnowledgeBase,
+          setExcludeKnowledgeBase,
+        ],
+        currentQuestionState: [currentQuestion, setCurrentQuestion],
+        chatHistoryQuery: { chatHistory, chatHistoryStatus },
         dataSourceSize,
-        chatHistoryStatus,
-        dataSourcesStatus,
+        dataSourcesQuery: {
+          dataSources: dataSources ?? [],
+          dataSourcesStatus: dataSourcesStatus,
+        },
         activeSession,
-        dataSources: dataSources ?? [],
       }}
     >
       <Layout

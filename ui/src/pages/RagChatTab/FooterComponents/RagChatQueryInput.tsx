@@ -52,27 +52,28 @@ import type { SwitchChangeEventHandler } from "antd/lib/switch";
 const RagChatQueryInput = () => {
   const {
     dataSourceId,
-    excludeKnowledgeBase,
-    setExcludeKnowledgeBase,
-    setCurrentQuestion,
-    chatHistory,
+    excludeKnowledgeBaseState: [excludeKnowledgeBase, setExcludeKnowledgeBase],
+    currentQuestionState: [, setCurrentQuestion],
+    chatHistoryQuery: { chatHistory },
     dataSourceSize,
-    dataSourcesStatus,
+    dataSourcesQuery: { dataSourcesStatus },
     activeSession,
   } = useContext(RagChatContext);
 
   const [userInput, setUserInput] = useState("");
   const { sessionId } = useParams({ strict: false });
+
+  const configuration = createQueryConfiguration(
+    excludeKnowledgeBase,
+    activeSession,
+  );
   const {
     data: sampleQuestions,
     isPending: sampleQuestionsIsPending,
     isFetching: sampleQuestionsIsFetching,
   } = useSuggestQuestions({
     data_source_id: dataSourceId?.toString() ?? "",
-    configuration: createQueryConfiguration(
-      excludeKnowledgeBase,
-      activeSession,
-    ),
+    configuration,
     session_id: sessionId ?? "",
   });
 

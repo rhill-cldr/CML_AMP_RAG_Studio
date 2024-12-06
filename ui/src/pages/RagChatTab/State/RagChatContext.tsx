@@ -42,29 +42,27 @@ import { Session } from "src/api/sessionApi.ts";
 import { DataSourceType } from "src/api/dataSourceApi.ts";
 
 export interface RagChatContextType {
-  dataSourceId?: number;
-  excludeKnowledgeBase: boolean;
-  setExcludeKnowledgeBase: Dispatch<SetStateAction<boolean>>;
-  setCurrentQuestion: Dispatch<SetStateAction<string>>;
-  currentQuestion: string;
-  chatHistory: ChatMessageType[];
-  chatHistoryStatus?: "error" | "success" | "pending";
-  dataSourceSize: number | null;
-  dataSourcesStatus?: "error" | "success" | "pending";
   activeSession?: Session;
-  dataSources: DataSourceType[];
+  currentQuestionState: [string, Dispatch<SetStateAction<string>>];
+  chatHistoryQuery: {
+    chatHistory: ChatMessageType[];
+    chatHistoryStatus?: "error" | "success" | "pending";
+  };
+  dataSourcesQuery: {
+    dataSources: DataSourceType[];
+    dataSourcesStatus?: "error" | "success" | "pending";
+  };
+  dataSourceId?: number;
+  dataSourceSize: number | null;
+  excludeKnowledgeBaseState: [boolean, Dispatch<SetStateAction<boolean>>];
 }
 
 export const RagChatContext = createContext<RagChatContextType>({
-  dataSourceId: undefined, // TODO: remove this and have it pulled from active session
   activeSession: undefined,
-  dataSources: [],
-  excludeKnowledgeBase: false,
-  setExcludeKnowledgeBase: () => null,
-  setCurrentQuestion: () => null,
-  currentQuestion: "",
-  chatHistory: [],
+  currentQuestionState: ["", () => null],
+  chatHistoryQuery: { chatHistory: [], chatHistoryStatus: undefined },
+  dataSourcesQuery: { dataSources: [], dataSourcesStatus: undefined },
+  dataSourceId: undefined, // TODO: remove this and have it pulled from active session
   dataSourceSize: null,
-  chatHistoryStatus: undefined,
-  dataSourcesStatus: undefined,
+  excludeKnowledgeBaseState: [false, () => null],
 });

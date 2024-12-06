@@ -67,7 +67,9 @@ const CreateSessionModal = ({
 }) => {
   const [form] = Form.useForm<CreateSessionType>();
   const queryClient = useQueryClient();
-  const { dataSources } = useContext(RagChatContext);
+  const {
+    dataSourcesQuery: { dataSources },
+  } = useContext(RagChatContext);
   const navigate = useNavigate();
   const { mutate: createSessionMutation } = useCreateSessionMutation({
     onSuccess: async (data) => {
