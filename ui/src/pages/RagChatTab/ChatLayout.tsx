@@ -53,24 +53,20 @@ const getSessionForSessionId = (sessionId?: string, sessions?: Session[]) => {
   return sessions?.find((session) => session.id.toString() === sessionId);
 };
 
-const getDataSourceIdForSession = (session?: Session) => {
-  return session?.dataSourceIds[0];
-};
-
 function ChatLayout() {
   const { data: sessions } = useSuspenseQuery(getSessionsQueryOptions);
 
   const { sessionId } = useParams({ strict: false });
-  const activeSession = getSessionForSessionId(sessionId, sessions);
-  const dataSourceId = getDataSourceIdForSession(activeSession);
   const [currentQuestion, setCurrentQuestion] = useState("");
-
   const { data: dataSources, status: dataSourcesStatus } =
     useGetDataSourcesQuery();
   const [excludeKnowledgeBase, setExcludeKnowledgeBase] = useState(false);
   const { status: chatHistoryStatus, data: chatHistory } = useChatHistoryQuery(
     sessionId?.toString() ?? "",
   );
+
+  const activeSession = getSessionForSessionId(sessionId, sessions);
+  const dataSourceId = activeSession?.dataSourceIds[0];
 
   const dataSourceSize = useMemo(() => {
     return (
@@ -90,7 +86,6 @@ function ChatLayout() {
   return (
     <RagChatContext.Provider
       value={{
-        dataSourceId,
         excludeKnowledgeBaseState: [
           excludeKnowledgeBase,
           setExcludeKnowledgeBase,

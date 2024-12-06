@@ -52,7 +52,6 @@ export interface RagChatContextType {
     dataSources: DataSourceType[];
     dataSourcesStatus?: "error" | "success" | "pending";
   };
-  dataSourceId?: number;
   dataSourceSize: number | null;
   excludeKnowledgeBaseState: [boolean, Dispatch<SetStateAction<boolean>>];
 }
@@ -62,7 +61,6 @@ export const RagChatContext = createContext<RagChatContextType>({
   currentQuestionState: ["", () => null],
   chatHistoryQuery: { chatHistory: [], chatHistoryStatus: undefined },
   dataSourcesQuery: { dataSources: [], dataSourcesStatus: undefined },
-  dataSourceId: undefined, // TODO: remove this and have it pulled from active session
   dataSourceSize: null,
   excludeKnowledgeBaseState: [false, () => null],
 });

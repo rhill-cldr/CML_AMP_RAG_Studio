@@ -96,7 +96,6 @@ describe("ChatBodyController", () => {
     const defaultContextValue: RagChatContextType = {
       chatHistoryQuery: { chatHistoryStatus: undefined, chatHistory: [] },
       currentQuestionState: ["", () => null],
-      dataSourceId: undefined,
       dataSourcesQuery: { dataSourcesStatus: undefined, dataSources: [] },
       excludeKnowledgeBaseState: [false, () => null],
       dataSourceSize: null,
@@ -125,7 +124,6 @@ describe("ChatBodyController", () => {
 
   it("renders NoSessionState when no sessionId and dataSources are available", () => {
     renderWithContext({
-      dataSourceId: undefined,
       dataSourcesQuery: { dataSourcesStatus: undefined, dataSources: [] },
       dataSourceSize: null,
       activeSession: undefined,
@@ -188,7 +186,6 @@ describe("ChatBodyController", () => {
   it("renders NoDataSourceForSession when no currentDataSource is found", () => {
     renderWithContext({
       dataSourcesQuery: { dataSources: [testDataSource] },
-      dataSourceId: undefined,
       activeSession: { ...testSession, dataSourceIds: [2] },
     });
 

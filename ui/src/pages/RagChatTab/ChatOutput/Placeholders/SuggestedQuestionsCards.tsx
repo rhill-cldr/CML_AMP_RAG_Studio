@@ -45,12 +45,11 @@ import { createQueryConfiguration, useChatMutation } from "src/api/chatApi.ts";
 
 const SuggestedQuestionsCards = () => {
   const {
-    dataSourceId,
     currentQuestionState: [, setCurrentQuestion],
     activeSession,
     excludeKnowledgeBaseState: [excludeKnowledgeBase],
   } = useContext(RagChatContext);
-
+  const dataSourceId = activeSession?.dataSourceIds[0];
   const sessionId = activeSession?.id.toString();
   const {
     data,

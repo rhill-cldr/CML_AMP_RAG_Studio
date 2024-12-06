@@ -43,9 +43,10 @@ import { RagChatContext } from "pages/RagChatTab/State/RagChatContext.tsx";
 const ChatMessageController = () => {
   const {
     chatHistoryQuery: { chatHistory },
-    dataSourceId,
+    activeSession,
   } = useContext(RagChatContext);
   const scrollEl = useRef<HTMLDivElement>(null);
+  const dataSourceId = activeSession?.dataSourceIds[0];
 
   useEffect(() => {
     setTimeout(() => {
