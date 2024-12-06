@@ -47,8 +47,8 @@ const SuggestedQuestionsCards = () => {
   const {
     dataSourceId,
     setCurrentQuestion,
-    queryConfiguration,
     activeSession,
+    excludeKnowledgeBase,
   } = useContext(RagChatContext);
 
   const sessionId = activeSession?.id.toString();
@@ -58,7 +58,10 @@ const SuggestedQuestionsCards = () => {
     isFetching: suggestedQuestionsIsFetching,
   } = useSuggestQuestions({
     data_source_id: dataSourceId?.toString() ?? "",
-    configuration: createQueryConfiguration(queryConfiguration, activeSession),
+    configuration: createQueryConfiguration(
+      excludeKnowledgeBase,
+      activeSession,
+    ),
     session_id: sessionId ?? "",
   });
 
@@ -84,7 +87,7 @@ const SuggestedQuestionsCards = () => {
         data_source_id: dataSourceId.toString(),
         session_id: sessionId,
         configuration: createQueryConfiguration(
-          queryConfiguration,
+          excludeKnowledgeBase,
           activeSession,
         ),
       });

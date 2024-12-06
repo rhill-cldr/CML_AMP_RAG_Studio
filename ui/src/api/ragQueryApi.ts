@@ -46,11 +46,6 @@ import {
   QueryKeys,
 } from "src/api/utils.ts";
 
-export interface RagMessage {
-  role: "user" | "assistant";
-  content: string;
-}
-
 export interface SuggestQuestionsRequest {
   data_source_id: string;
   configuration: QueryConfiguration;

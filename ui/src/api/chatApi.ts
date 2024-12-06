@@ -194,15 +194,20 @@ const chatMutation = async (
 };
 
 export const createQueryConfiguration = (
-  queryConfiguration: QueryConfiguration,
+  excludeKnowledgeBase: boolean,
   activeSession?: Session,
 ): QueryConfiguration => {
+  // todo: maybe we should just throw an exception here?
   if (!activeSession) {
-    return queryConfiguration;
+    return {
+      top_k: 5,
+      model_name: "",
+      exclude_knowledge_base: false,
+    };
   }
   return {
-    ...queryConfiguration,
     top_k: activeSession.responseChunks,
-    model_name: activeSession.inferenceModel ?? queryConfiguration.model_name,
+    model_name: activeSession.inferenceModel ?? "",
+    exclude_knowledge_base: excludeKnowledgeBase,
   };
 };

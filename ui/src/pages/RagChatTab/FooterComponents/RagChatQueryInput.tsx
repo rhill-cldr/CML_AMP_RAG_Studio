@@ -52,12 +52,12 @@ import type { SwitchChangeEventHandler } from "antd/lib/switch";
 const RagChatQueryInput = () => {
   const {
     dataSourceId,
-    queryConfiguration,
+    excludeKnowledgeBase,
+    setExcludeKnowledgeBase,
     setCurrentQuestion,
     chatHistory,
     dataSourceSize,
     dataSourcesStatus,
-    setQueryConfiguration,
     activeSession,
   } = useContext(RagChatContext);
 
@@ -69,7 +69,10 @@ const RagChatQueryInput = () => {
     isFetching: sampleQuestionsIsFetching,
   } = useSuggestQuestions({
     data_source_id: dataSourceId?.toString() ?? "",
-    configuration: createQueryConfiguration(queryConfiguration, activeSession),
+    configuration: createQueryConfiguration(
+      excludeKnowledgeBase,
+      activeSession,
+    ),
     session_id: sessionId ?? "",
   });
 
@@ -91,7 +94,7 @@ const RagChatQueryInput = () => {
         data_source_id: dataSourceId.toString(),
         session_id: sessionId,
         configuration: createQueryConfiguration(
-          queryConfiguration,
+          excludeKnowledgeBase,
           activeSession,
         ),
       });
@@ -99,10 +102,7 @@ const RagChatQueryInput = () => {
   };
 
   const handleExcludeKnowledgeBase: SwitchChangeEventHandler = (checked) => {
-    setQueryConfiguration((prev) => ({
-      ...prev,
-      exclude_knowledge_base: !checked,
-    }));
+    setExcludeKnowledgeBase(() => !checked);
   };
 
   return (
@@ -136,7 +136,7 @@ const RagChatQueryInput = () => {
               <Tooltip title="Whether to query against the knowledge base.  Disabling will query only against the model's training data.">
                 <Switch
                   checkedChildren={<DatabaseFilled />}
-                  value={!queryConfiguration.exclude_knowledge_base}
+                  value={!excludeKnowledgeBase}
                   onChange={handleExcludeKnowledgeBase}
                 />
               </Tooltip>

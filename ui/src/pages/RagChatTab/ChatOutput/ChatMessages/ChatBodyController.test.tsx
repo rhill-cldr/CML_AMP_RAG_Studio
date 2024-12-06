@@ -37,7 +37,7 @@
  ******************************************************************************/
 
 import { cleanup, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi, afterEach } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   RagChatContext,
   RagChatContextType,
@@ -64,6 +64,8 @@ const testSession = {
   createdById: "1",
   updatedById: "1",
   lastInteractionTime: 123,
+  responseChunks: 5,
+  inferenceModel: "",
 };
 
 describe("ChatBodyController", () => {
@@ -96,16 +98,23 @@ describe("ChatBodyController", () => {
       chatHistory: [],
       dataSourceId: undefined,
       dataSourcesStatus: undefined,
-      queryConfiguration: {
-        top_k: 5,
-        model_name: "",
-        exclude_knowledge_base: false,
-      },
-      setQueryConfiguration: () => null,
       setCurrentQuestion: () => null,
+      excludeKnowledgeBase: false,
+      setExcludeKnowledgeBase: () => null,
       dataSourceSize: null,
       dataSources: [],
-      activeSession: undefined,
+      activeSession: {
+        dataSourceIds: [],
+        id: 0,
+        name: "",
+        timeCreated: 0,
+        timeUpdated: 0,
+        createdById: "",
+        updatedById: "",
+        lastInteractionTime: 0,
+        responseChunks: 5,
+        inferenceModel: "",
+      },
     };
 
     return render(

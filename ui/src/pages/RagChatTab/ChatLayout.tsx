@@ -43,15 +43,11 @@ import { getSessionsQueryOptions, Session } from "src/api/sessionApi.ts";
 import { groupBy } from "lodash";
 import { format } from "date-fns";
 import { useParams } from "@tanstack/react-router";
-import { useEffect, useState, useMemo } from "react";
-import { QueryConfiguration, useChatHistoryQuery } from "src/api/chatApi.ts";
-import {
-  defaultQueryConfig,
-  RagChatContext,
-} from "pages/RagChatTab/State/RagChatContext.tsx";
+import { useEffect, useMemo, useState } from "react";
+import { useChatHistoryQuery } from "src/api/chatApi.ts";
+import { RagChatContext } from "pages/RagChatTab/State/RagChatContext.tsx";
 import { useGetDataSourcesQuery } from "src/api/dataSourceApi.ts";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { getLlmModelsQueryOptions } from "src/api/modelsApi.ts";
 
 const getSessionForSessionId = (sessionId?: string, sessions?: Session[]) => {
   return sessions?.find((session) => session.id.toString() === sessionId);
@@ -63,7 +59,6 @@ const getDataSourceIdForSession = (session?: Session) => {
 
 function ChatLayout() {
   const { data: sessions } = useSuspenseQuery(getSessionsQueryOptions);
-  const { data: llmModels } = useSuspenseQuery(getLlmModelsQueryOptions);
 
   const { sessionId } = useParams({ strict: false });
   const activeSession = getSessionForSessionId(sessionId, sessions);
@@ -72,8 +67,7 @@ function ChatLayout() {
 
   const { data: dataSources, status: dataSourcesStatus } =
     useGetDataSourcesQuery();
-  const [queryConfiguration, setQueryConfiguration] =
-    useState<QueryConfiguration>(defaultQueryConfig);
+  const [excludeKnowledgeBase, setExcludeKnowledgeBase] = useState(false);
   const { status: chatHistoryStatus, data: chatHistory } = useChatHistoryQuery(
     sessionId?.toString() ?? "",
   );
@@ -88,15 +82,6 @@ function ChatLayout() {
     setCurrentQuestion("");
   }, [sessionId]);
 
-  useEffect(() => {
-    if (llmModels.length) {
-      setQueryConfiguration((prev) => ({
-        ...prev,
-        model_name: llmModels[0].model_id,
-      }));
-    }
-  }, [llmModels, setQueryConfiguration]);
-
   const sessionsByDate = groupBy(sessions, (session) => {
     const relevantTime = session.lastInteractionTime || session.timeUpdated;
     return format(relevantTime * 1000, "yyyyMMdd");
@@ -106,8 +91,8 @@ function ChatLayout() {
     <RagChatContext.Provider
       value={{
         dataSourceId,
-        queryConfiguration,
-        setQueryConfiguration,
+        excludeKnowledgeBase,
+        setExcludeKnowledgeBase,
         setCurrentQuestion,
         currentQuestion,
         chatHistory,

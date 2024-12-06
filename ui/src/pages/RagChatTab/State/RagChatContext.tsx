@@ -37,14 +37,14 @@
  ******************************************************************************/
 
 import { createContext, Dispatch, SetStateAction } from "react";
-import { ChatMessageType, QueryConfiguration } from "src/api/chatApi.ts";
+import { ChatMessageType } from "src/api/chatApi.ts";
 import { Session } from "src/api/sessionApi.ts";
 import { DataSourceType } from "src/api/dataSourceApi.ts";
 
 export interface RagChatContextType {
   dataSourceId?: number;
-  queryConfiguration: QueryConfiguration;
-  setQueryConfiguration: Dispatch<SetStateAction<QueryConfiguration>>;
+  excludeKnowledgeBase: boolean;
+  setExcludeKnowledgeBase: Dispatch<SetStateAction<boolean>>;
   setCurrentQuestion: Dispatch<SetStateAction<string>>;
   currentQuestion: string;
   chatHistory: ChatMessageType[];
@@ -55,18 +55,12 @@ export interface RagChatContextType {
   dataSources: DataSourceType[];
 }
 
-export const defaultQueryConfig = {
-  top_k: 5,
-  model_name: "",
-  exclude_knowledge_base: false,
-};
-
 export const RagChatContext = createContext<RagChatContextType>({
   dataSourceId: undefined, // TODO: remove this and have it pulled from active session
   activeSession: undefined,
   dataSources: [],
-  queryConfiguration: defaultQueryConfig,
-  setQueryConfiguration: () => null,
+  excludeKnowledgeBase: false,
+  setExcludeKnowledgeBase: () => null,
   setCurrentQuestion: () => null,
   currentQuestion: "",
   chatHistory: [],
