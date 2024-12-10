@@ -82,16 +82,13 @@ def read_summary(data_source_id: int, document_id: str) -> str:
     return doc_summary_index.get_document_summary(doc_id=document_id)
 
 
-def generate_summary(
-        data_source_id: int,
-        s3_bucket_name: str,
-        s3_document_key: str,
-) -> str:
-    """Generate, persist, and return a summary for `s3_document_key`."""
+def generate_summary(data_source_id: int, s3_bucket_name: str, s3_document_key: str, original_filename: str) -> str:
+    """Generate, persist, and return a summary for `s3_document_key`.
+    """
     with tempfile.TemporaryDirectory() as tmpdirname:
         # load document(s)
-        download(tmpdirname, s3_bucket_name, s3_document_key)
-        documents = SimpleDirectoryReader(tmpdirname).load_data()
+        downloaded_path = download(tmpdirname, s3_bucket_name, s3_document_key, original_filename)
+        documents = SimpleDirectoryReader(input_files=[downloaded_path]).load_data()
         document_id = get_last_segment(s3_document_key)
         for document in documents:
             document.id_ = document_id

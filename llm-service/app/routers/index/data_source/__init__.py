@@ -51,7 +51,7 @@ router = APIRouter(prefix="/data_sources/{data_source_id}", tags=["Data Sources"
 class SummarizeDocumentRequest(BaseModel):
     s3_bucket_name: str
     s3_document_key: str
-
+    original_filename: str
 
 class RagIndexDocumentConfiguration(BaseModel):
     # TODO: Add more params
@@ -63,6 +63,7 @@ class RagIndexDocumentRequest(BaseModel):
     document_id: str
     s3_bucket_name: str
     s3_document_key: str
+    original_filename: str
     configuration: RagIndexDocumentConfiguration = RagIndexDocumentConfiguration()
 
 
@@ -151,7 +152,7 @@ class DataSourceController:
         request: SummarizeDocumentRequest,
     ) -> str:
         return doc_summaries.generate_summary(
-            data_source_id, request.s3_bucket_name, request.s3_document_key
+            data_source_id, request.s3_bucket_name, request.s3_document_key, request.original_filename
         )
 
     @router.delete(
@@ -177,9 +178,7 @@ class DataSourceController:
         datasource = data_sources_metadata_api.get_metadata(data_source_id)
         with tempfile.TemporaryDirectory() as tmpdirname:
             logger.debug("created temporary directory %s", tmpdirname)
-            file_path = s3.download(
-                tmpdirname, request.s3_bucket_name, request.s3_document_key
-            )
+            file_path = s3.download(tmpdirname, request.s3_bucket_name, request.s3_document_key, request.original_filename)
 
             indexer = Indexer(
                 data_source_id,

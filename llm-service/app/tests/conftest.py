@@ -114,6 +114,7 @@ def index_document_request_body(
         "data_source_id": data_source_id,
         "s3_bucket_name": s3_object.bucket_name,
         "s3_document_key": s3_object.key,
+        "original_filename": "test.txt",
         "configuration": {
             "chunk_size": 512,
             "chunk_overlap": 10,
@@ -221,8 +222,7 @@ def s3_object(
     bucket.put_object(
         Key=key,
         # TODO: fixturize file
-        Body=body.encode("utf-8"),
-        Metadata={"originalfilename": "test.txt"},
+        Body=body.encode("utf-8")
     )
     return BotoObject(bucket_name=bucket_name, key=key)
 

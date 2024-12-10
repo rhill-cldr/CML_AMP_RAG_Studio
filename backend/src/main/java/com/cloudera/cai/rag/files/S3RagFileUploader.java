@@ -1,4 +1,4 @@
-/*
+/*******************************************************************************
  * CLOUDERA APPLIED MACHINE LEARNING PROTOTYPE (AMP)
  * (C) Cloudera, Inc. 2024
  * All rights reserved.
@@ -20,7 +20,7 @@
  * with an authorized and properly licensed third party, you do not
  * have any rights to access nor to use this code.
  *
- * Absent a written agreement with Cloudera, Inc. ("Cloudera") to the
+ * Absent a written agreement with Cloudera, Inc. (“Cloudera”) to the
  * contrary, A) CLOUDERA PROVIDES THIS CODE TO YOU WITHOUT WARRANTIES OF ANY
  * KIND; (B) CLOUDERA DISCLAIMS ANY AND ALL EXPRESS AND IMPLIED
  * WARRANTIES WITH RESPECT TO THIS CODE, INCLUDING BUT NOT LIMITED TO
@@ -34,39 +34,43 @@
  * RELATED TO LOST REVENUE, LOST PROFITS, LOSS OF INCOME, LOSS OF
  * BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
  * DATA.
- */
+ ******************************************************************************/
 
 package com.cloudera.cai.rag.files;
 
-import com.cloudera.cai.util.Tracker;
+import com.cloudera.cai.util.s3.AmazonS3Client;
+import com.cloudera.cai.util.s3.RefCountedS3Client;
+import java.io.IOException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-public interface RagFileUploader {
-  void uploadFile(MultipartFile file, String path);
+@Component
+public class S3RagFileUploader implements RagFileUploader {
+  private final AmazonS3Client s3Client;
+  private final String bucketName;
 
-  record UploadRequest(MultipartFile file, String documentId) {}
-
-  // nullables below here
-
-  static RagFileUploader createNull(Tracker<UploadRequest> tracker) {
-    return new UploaderStub(tracker);
+  @Autowired
+  public S3RagFileUploader(
+      AmazonS3Client s3Client, @Qualifier("s3BucketName") String s3BucketName) {
+    this.s3Client = s3Client;
+    this.bucketName = s3BucketName;
   }
 
-  static RagFileUploader createNull() {
-    return createNull(new Tracker<>());
-  }
-
-  class UploaderStub implements RagFileUploader {
-
-    private final Tracker<UploadRequest> tracker;
-
-    public UploaderStub(Tracker<UploadRequest> tracker) {
-      this.tracker = tracker;
-    }
-
-    @Override
-    public void uploadFile(MultipartFile file, String s3Path) {
-      tracker.track(new UploadRequest(file, s3Path));
+  @Override
+  public void uploadFile(MultipartFile file, String s3Path) {
+    PutObjectRequest objectRequest =
+        PutObjectRequest.builder().bucket(bucketName).key(s3Path).build();
+    try (RefCountedS3Client refCountedS3Client = s3Client.getRefCountedClient()) {
+      refCountedS3Client
+          .getClient()
+          .putObject(
+              objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
   }
 }
