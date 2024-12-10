@@ -64,6 +64,7 @@ class TestDocumentSummaries:
             json={
                 "s3_bucket_name": s3_object.bucket_name,
                 "s3_document_key": s3_object.key,
+                "original_filename": "test.txt",
             },
         )
 
@@ -103,6 +104,7 @@ class TestDocumentSummaries:
             json={
                 "s3_bucket_name": s3_object.bucket_name,
                 "s3_document_key": s3_object.key,
+                "original_filename": "test.txt",
             },
         )
 

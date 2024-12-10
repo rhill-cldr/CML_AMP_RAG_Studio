@@ -117,7 +117,8 @@ class RagFileSummaryReconcilerTest {
                   .hasSize(1)
                   .contains(
                       new RagBackendClient.TrackedRequest<>(
-                          new RagBackendClient.SummaryRequest("rag-files", "path_in_s3")));
+                          new RagBackendClient.SummaryRequest(
+                              "rag-files", "path_in_s3", "myfile.pdf")));
             });
   }
 
@@ -171,7 +172,8 @@ class RagFileSummaryReconcilerTest {
                   .hasSize(1)
                   .contains(
                       new RagBackendClient.TrackedRequest<>(
-                          new RagBackendClient.SummaryRequest("rag-files", "path_in_s3")));
+                          new RagBackendClient.SummaryRequest(
+                              "rag-files", "path_in_s3", "myfile.pdf")));
             });
   }
 

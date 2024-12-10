@@ -46,7 +46,7 @@ from fastapi import HTTPException
 logger = logging.getLogger(__name__)
 
 
-def download(tmpdirname: str, bucket_name: str, document_key: str) -> Path:
+def download(tmpdirname: str, bucket_name: str, document_key: str, original_filename: str) -> Path:
     """
     Download document from S3
     """
@@ -59,10 +59,7 @@ def download(tmpdirname: str, bucket_name: str, document_key: str) -> Path:
     session = boto3.session.Session()
     s3 = session.client("s3")
     try:
-        # Extract the file name from the object key and construct local file path
-        metadata = s3.head_object(Bucket=bucket_name, Key=document_key)
-        original_file_name = metadata["Metadata"]["originalfilename"]
-        final_filename = os.path.join(tmpdirname, original_file_name)
+        final_filename = os.path.join(tmpdirname, original_filename)
         s3.download_file(bucket_name, document_key, final_filename)
         logger.info(
             "S3 file %s/%s downloaded successfully to local filepath %s",
