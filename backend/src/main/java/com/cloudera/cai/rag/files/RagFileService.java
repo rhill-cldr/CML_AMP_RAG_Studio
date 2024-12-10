@@ -83,7 +83,7 @@ public class RagFileService {
     String documentId = idGenerator.generateId();
     var s3Path = buildS3Path(dataSourceId, documentId);
 
-    ragFileUploader.uploadFile(file, s3Path, removeDirectories(file.getOriginalFilename()));
+    ragFileUploader.uploadFile(file, s3Path);
     var ragDocument = createUnsavedDocument(file, documentId, s3Path, dataSourceId, actorCrn);
     Long id = ragFileRepository.saveDocumentMetadata(ragDocument);
     log.info("Saved document with id: {}", id);

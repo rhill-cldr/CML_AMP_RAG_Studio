@@ -84,7 +84,7 @@ class RagFileServiceTest {
     assertThat(savedDocument.extension()).isEqualTo("pdf");
     assertThat(savedDocument.dataSourceId()).isEqualTo(dataSourceId);
     assertThat(requestTracker.getValues())
-        .containsExactly(new UploadRequest(mockMultipartFile, expectedS3Path, "real-filename.pdf"));
+        .containsExactly(new UploadRequest(mockMultipartFile, expectedS3Path));
   }
 
   @Test
@@ -145,7 +145,7 @@ class RagFileServiceTest {
         new Types.RagDocumentMetadata("real-filename.pdf", documentId, "pdf", 11);
     assertThat(result).isEqualTo(expected);
     assertThat(requestTracker.getValues())
-        .containsExactly(new UploadRequest(mockMultipartFile, expectedS3Path, "real-filename.pdf"));
+        .containsExactly(new UploadRequest(mockMultipartFile, expectedS3Path));
   }
 
   @Test

@@ -1,0 +1,4 @@
+      56
+	raft:join"G{"name":"192.168.0.183:9333","connectionString":"192.168.0.183:19333"}
+       c
+raft:nop
