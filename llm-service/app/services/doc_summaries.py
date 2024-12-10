@@ -87,8 +87,8 @@ def generate_summary(data_source_id: int, s3_bucket_name: str, s3_document_key: 
     """
     with tempfile.TemporaryDirectory() as tmpdirname:
         # load document(s)
-        download(tmpdirname, s3_bucket_name, s3_document_key, original_filename)
-        documents = SimpleDirectoryReader(tmpdirname).load_data()
+        downloaded_path = download(tmpdirname, s3_bucket_name, s3_document_key, original_filename)
+        documents = SimpleDirectoryReader(input_files=[downloaded_path]).load_data()
         document_id = get_last_segment(s3_document_key)
         for document in documents:
             document.id_ = document_id
