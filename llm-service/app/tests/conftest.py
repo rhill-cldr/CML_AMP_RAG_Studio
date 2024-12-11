@@ -217,7 +217,6 @@ def s3_object(s3_client: ServiceResource, aws_region: str) -> BotoObject:
     bucket.create(CreateBucketConfiguration={"LocationConstraint": aws_region})
     bucket.put_object(
         Key=key,
-        # TODO: fixturize file
         Body=body.encode("utf-8"),
     )
     return BotoObject(bucket_name=bucket_name, key=key)
