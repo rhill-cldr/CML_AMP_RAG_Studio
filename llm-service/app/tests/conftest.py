@@ -55,10 +55,16 @@ from llama_index.core.llms import LLM
 from moto import mock_aws
 
 from app.ai.vector_stores.qdrant import QdrantVectorStore
+from app.config import settings
 from app.main import app
 from app.services import data_sources_metadata_api, models
 from app.services.data_sources_metadata_api import RagDataSource
 from app.services.noop_models import DummyLlm
+
+
+# This is a hook to configure the pytest session
+def pytest_configure(config):
+    settings.rag_databases_dir = "/tmp/databases"
 
 
 @dataclass
