@@ -35,37 +35,12 @@
 #  BUSINESS ADVANTAGE OR UNAVAILABILITY, OR LOSS OR CORRUPTION OF
 #  DATA.
 #
-import os
+
 import shutil
-from abc import abstractmethod, ABC
 from pathlib import Path
 
-from . import s3
-from ..config import settings
-
-
-class DocumentStorage(ABC):
-    @abstractmethod
-    def download(self, temp_dir: str, bucket_name: str, document_key: str, original_filename: str) -> Path:
-        """
-        Copy file from storage into the temp directory
-        """
-
-    @staticmethod
-    def from_environment() -> "DocumentStorage":
-        # todo: move this to config, remove bucket_name from download api signature
-        bucket = os.environ.get("S3_RAG_DOCUMENT_BUCKET")
-        if bucket:
-            return S3DocumentStorage()
-        else:
-            return FileSystemDocumentStorage()
-
-class S3DocumentStorage(DocumentStorage):
-    def download(self, temp_dir: str, bucket_name: str, document_key: str, original_filename: str) -> Path:
-        """
-        Download document from S3
-        """
-        return s3.download(temp_dir, bucket_name, document_key, original_filename)
+from app.config import settings
+from .base import DocumentStorage
 
 
 class FileSystemDocumentStorage(DocumentStorage):
