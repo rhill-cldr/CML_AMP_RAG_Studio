@@ -61,7 +61,6 @@ public class S3RagFileUploader implements RagFileUploader {
   @Override
   public void uploadFile(MultipartFile file, String s3Path) {
     log.info("Uploading file to S3: {}", s3Path);
-    System.out.println("Uploading file to S3: " + s3Path);
     PutObjectRequest objectRequest =
         PutObjectRequest.builder().bucket(bucketName).key(s3Path).build();
     try (RefCountedS3Client refCountedS3Client = s3Client.getRefCountedClient()) {

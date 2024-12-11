@@ -84,7 +84,7 @@ public class RagDataSourceRepository {
 
   public void updateRagDataSource(RagDataSource input) {
 
-      RagDataSource cleanedInputs = cleanInputs(input);
+    RagDataSource cleanedInputs = cleanInputs(input);
     jdbi.inTransaction(
         handle -> {
           var sql =

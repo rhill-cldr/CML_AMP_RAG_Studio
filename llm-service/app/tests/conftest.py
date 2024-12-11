@@ -38,21 +38,19 @@
 
 import os
 import pathlib
+import shutil
 import uuid
 from collections.abc import Iterator
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Dict, cast
 
-import boto3
 import lipsum
 import pytest
 import qdrant_client as q_client
-from boto3.resources.base import ServiceResource
 from fastapi.testclient import TestClient
 from llama_index.core.base.embeddings.base import BaseEmbedding, Embedding
 from llama_index.core.llms import LLM
-from moto import mock_aws
 
 from app.ai.vector_stores.qdrant import QdrantVectorStore
 from app.config import settings
@@ -62,10 +60,13 @@ from app.services.data_sources_metadata_api import RagDataSource
 from app.services.noop_models import DummyLlm
 
 
-# This is a hook to configure the pytest session
-def pytest_configure(config: Any) -> None:
+def pytest_configure() -> None:
+    ## todo: don't hardcode, but use test facilities to get a temp dir
     settings.rag_databases_dir = "/tmp/databases"
 
+def pytest_sessionfinish() -> None:
+    if os.path.exists(settings.rag_databases_dir):
+        shutil.rmtree(settings.rag_databases_dir)
 
 @dataclass
 class BotoObject:
@@ -78,26 +79,11 @@ def qdrant_client() -> q_client.QdrantClient:
     return q_client.QdrantClient(":memory:")
 
 
-@pytest.fixture
-def aws_region() -> str:
-    return os.environ.get("AWS_DEFAULT_REGION", "us-west-2")
-
-
 @pytest.fixture(autouse=True)
 def databases_dir(monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path) -> str:
     databases_dir: str = str(tmp_path / "databases")
     monkeypatch.setenv("RAG_DATABASES_DIR", databases_dir)
     return databases_dir
-
-
-@pytest.fixture
-def s3_client(
-    monkeypatch: pytest.MonkeyPatch,
-) -> Iterator[ServiceResource]:
-    """Mock all S3 interactions."""
-
-    with mock_aws():
-        yield boto3.resource("s3")
 
 
 @pytest.fixture
@@ -223,26 +209,15 @@ def test_file(data_source_id: int, s3_object: BotoObject) -> pathlib.Path:
 
 
 @pytest.fixture
-def s3_object(s3_client: ServiceResource, aws_region: str) -> BotoObject:
-    """Put and return a mocked S3 object"""
+def s3_object() -> BotoObject:
+    """Return a mocked S3 object"""
     bucket_name = "test_bucket"
     key = "test/" + str(uuid.uuid4())
-
-    body = lipsum.generate_words(1000)
-
-    bucket = s3_client.Bucket(bucket_name)
-    bucket.create(CreateBucketConfiguration={"LocationConstraint": aws_region})
-    bucket.put_object(
-        Key=key,
-        Body=body.encode("utf-8"),
-    )
     return BotoObject(bucket_name=bucket_name, key=key)
 
 
 @pytest.fixture
-def client(
-    s3_client: ServiceResource,
-) -> Iterator[TestClient]:
+def client() -> Iterator[TestClient]:
     """Return a test client for making calls to the service.
 
     https://www.starlette.io/testclient/

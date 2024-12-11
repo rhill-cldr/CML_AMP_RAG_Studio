@@ -46,10 +46,6 @@ from llama_index.core import (
 )
 from llama_index.core.node_parser import SentenceSplitter
 
-from . import data_sources_metadata_api
-from . import models
-from .document_storage import DocumentStorage
-from .utils import get_last_segment
 from ..ai.vector_stores.qdrant import QdrantVectorStore
 from ..config import settings
 from . import data_sources_metadata_api, models

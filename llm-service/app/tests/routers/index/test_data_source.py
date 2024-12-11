@@ -84,6 +84,7 @@ class TestDocumentIndexing:
         index_document_request_body: dict[str, Any],
         document_id: str,
         data_source_id: int,
+        test_file: Path,
     ) -> None:
         response = client.post(
             f"/data_sources/{data_source_id}/documents/{document_id}/index",
@@ -117,6 +118,7 @@ class TestDocumentIndexing:
         data_source_id: int,
         document_id: str,
         index_document_request_body: dict[str, Any],
+        test_file: Path,
     ) -> None:
         """Test DELETE /data_sources/{data_source_id}."""
         client.post(
@@ -147,6 +149,7 @@ class TestDocumentIndexing:
         data_source_id: int,
         document_id: str,
         index_document_request_body: dict[str, Any],
+        test_file: Path,
     ) -> None:
         """Test DELETE /data_sources/{data_source_id}/documents/{document_id}."""
         client.post(
@@ -177,6 +180,7 @@ class TestDocumentIndexing:
         data_source_id: int,
         document_id: str,
         index_document_request_body: dict[str, Any],
+        test_file: Path,
     ) -> None:
         """Test GET /data_sources/{data_source_id}/size."""
         client.post(
