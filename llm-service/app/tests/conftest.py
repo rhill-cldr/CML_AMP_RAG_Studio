@@ -63,7 +63,7 @@ from app.services.noop_models import DummyLlm
 
 
 # This is a hook to configure the pytest session
-def pytest_configure(config):
+def pytest_configure(config: Any) -> None:
     settings.rag_databases_dir = "/tmp/databases"
 
 
@@ -209,6 +209,17 @@ def llm(monkeypatch: pytest.MonkeyPatch) -> LLM:
     # Requires that the app usages import the file and not the function directly as python creates a copy when importing the function
     monkeypatch.setattr(models, "get_llm", get_llm)
     return model
+
+
+@pytest.fixture
+def test_file(data_source_id: int, s3_object: BotoObject) -> pathlib.Path:
+    body = lipsum.generate_words(1000)
+    target_path = f"/tmp/databases/file_storage/{s3_object.key}"
+    path = pathlib.Path(target_path)
+    os.makedirs(path.parent, exist_ok=True)
+    with open(target_path, "w") as f:
+        f.write(body)
+    return path
 
 
 @pytest.fixture
