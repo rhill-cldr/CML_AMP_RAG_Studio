@@ -36,37 +36,45 @@
  * DATA.
  ******************************************************************************/
 
-import { Layout, Typography } from "antd";
-import DataSourcesTabs from "pages/DataSources/Tabs.tsx";
-import { useQuery } from "@tanstack/react-query";
-import { DataSourceType, getDataSourceById } from "src/api/dataSourceApi.ts";
-import { createContext } from "react";
-import { Route } from "src/routes/_layout/data/_layout-datasources/$dataSourceId";
+import { RagDocumentResponseType } from "src/api/ragDocumentsApi.ts";
+import { Flex, Typography } from "antd";
+import { bytesConversion } from "src/utils/bytesConversion.ts";
+import { CheckCircleOutlined, LoadingOutlined } from "@ant-design/icons";
+import KnowledgeBaseSummary from "pages/DataSources/ManageTab/KnowledgeBaseSummary.tsx";
 
-export const DataSourceContext = createContext<{
-  dataSourceId: string;
-  dataSourceMetaData?: DataSourceType;
-}>({ dataSourceId: "" });
-
-function DataSourceLayout() {
-  const { dataSourceId } = Route.useParams();
-  const { data } = useQuery(getDataSourceById(dataSourceId));
+const UploadedFilesHeader = ({
+  ragDocuments,
+  docsLoading,
+}: {
+  ragDocuments: RagDocumentResponseType[];
+  docsLoading: boolean;
+}) => {
+  const completedIndexing = ragDocuments.filter(
+    (doc) => doc.vectorUploadTimestamp !== null,
+  ).length;
+  const totalSize = ragDocuments.reduce((acc, doc) => acc + doc.sizeInBytes, 0);
 
   return (
-    <Layout
-      style={{
-        alignItems: "center",
-        width: "100%",
-      }}
-    >
-      <Typography.Title level={1}>{data?.name}</Typography.Title>
-      <DataSourceContext.Provider
-        value={{ dataSourceId, dataSourceMetaData: data }}
-      >
-        <DataSourcesTabs />
-      </DataSourceContext.Provider>
-    </Layout>
+    <Flex style={{ width: "100%", marginBottom: 10 }} vertical gap={10}>
+      <Flex flex={1} style={{ width: "100%" }}>
+        <KnowledgeBaseSummary ragDocuments={ragDocuments} />
+      </Flex>
+      <Flex vertical justify="end" align="end">
+        <Typography.Text type="secondary">
+          Total Documents: {ragDocuments.length} (
+          {bytesConversion(totalSize.toString())})
+        </Typography.Text>
+        <Typography.Text type="secondary">
+          Documents indexed: {completedIndexing} / {ragDocuments.length}
+          {docsLoading || ragDocuments.length !== completedIndexing ? (
+            <LoadingOutlined style={{ marginLeft: 5 }} />
+          ) : (
+            <CheckCircleOutlined style={{ marginLeft: 5, color: "green" }} />
+          )}
+        </Typography.Text>
+      </Flex>
+    </Flex>
   );
-}
+};
 
-export default DataSourceLayout;
+export default UploadedFilesHeader;
