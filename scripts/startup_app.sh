@@ -61,7 +61,7 @@ scripts/startup_java.sh & 2>&1
 
 # start Python backend
 cd llm-service
-uv run fastapi run --host 127.0.0.1 --port 8081 & 2>&1
+uv run fastapi run --reload --host 127.0.0.1 --port 8081 & 2>&1
 
 # wait for the python backend to be ready
 while ! curl --output /dev/null --silent --fail http://localhost:8081/amp-update; do
