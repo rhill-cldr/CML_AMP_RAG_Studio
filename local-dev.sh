@@ -39,6 +39,8 @@
 set -exo pipefail
 set -a && source .env && set +a
 
+python3.10 scripts/validator/validate_env.py
+
 export RAG_DATABASES_DIR=$(pwd)/databases
 
 cleanup() {

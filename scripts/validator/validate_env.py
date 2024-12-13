@@ -67,8 +67,46 @@
 #
 
 import os
+import socket
 
 def validate():
     print("Validating environment variables...")
+    access_key_id = os.environ.get("AWS_ACCESS_KEY_ID", None)
+    secret_key_id = os.environ.get("AWS_SECRET_ACCESS_KEY", None)
+    default_region = os.environ.get("AWS_DEFAULT_REGION", None)
+    document_bucket = os.environ.get("S3_RAG_DOCUMENT_BUCKET", None)
+
+    caii_domain = os.environ.get("CAII_DOMAIN", None)
+
+    # 1. if you don't have a caii_domain, you _must_ have an access key, secret key, and default region
+    if caii_domain is None:
+        if access_key_id is None or secret_key_id is None or default_region is None:
+            print("ERROR: Using Bedrock for LLMs/embeddings; missing required environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION")
+            exit(1)
+    else:
+        try:
+            socket.gethostbyname(caii_domain)
+            print(f"CAII domain {caii_domain} can be resolved")
+        except socket.error:
+            print(f"ERROR: CAII domain {caii_domain} can not be resolved")
+            exit(1)
+
+    # 2. if you have a document_bucket, you _must_ have an access key, secret key, and default region
+    if document_bucket is not None:
+        if access_key_id is None or secret_key_id is None or default_region is None:
+            print("ERROR: Using S3 for document storage; missing required environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION")
+            exit(1)
+
+    if caii_domain is not None:
+        print("Using CAII for LLMs/embeddings; CAII_DOMAIN is set")
+
+    else:
+        print("Using Bedrock for LLMs/embeddings; AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_DEFAULT_REGION are set")
+
+    if document_bucket is not None:
+        print("Using S3 for document storage (S3_RAG_DOCUMENT_BUCKET is set)")
+    else:
+        print("Using the project filesystem for document storage (S3_RAG_DOCUMENT_BUCKET is not set)")
+    # TODO: verify that the bucket prefix is always optional
 
 validate()
