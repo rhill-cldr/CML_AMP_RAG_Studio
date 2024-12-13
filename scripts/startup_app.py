@@ -38,10 +38,8 @@
 
 import subprocess
 
-from validator.validate_env import validate
-
-validate()
-
 while True:
+    print(subprocess.run(["bash /home/cdsw/scripts/validator/validate_env.py"], shell=True, check=True))
+
     print(subprocess.run(["bash /home/cdsw/scripts/startup_app.sh"], shell=True))
     print("Application Restarting")

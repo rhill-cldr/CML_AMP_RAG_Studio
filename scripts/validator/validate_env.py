@@ -70,3 +70,5 @@ import os
 
 def validate():
     print("Validating environment variables...")
+
+validate()
