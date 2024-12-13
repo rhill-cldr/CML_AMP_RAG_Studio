@@ -123,6 +123,7 @@ class PDFReader(BaseReader):
                 [
                     "docling",
                     "-v",
+                    "--image-export-mode=placeholder",
                     "--abort-on-error",
                     f"--output={directory}",
                     str(file_path),
