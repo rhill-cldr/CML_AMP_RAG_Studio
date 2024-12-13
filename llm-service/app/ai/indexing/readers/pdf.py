@@ -130,7 +130,7 @@ class PDFReader(BaseReader):
                 stdout=f,
                 stderr=f,
             )
-        logger.debug(f"docling return code = {process.returncode}")
+        logger.info(f"docling return code = {process.returncode}")
         # todo: figure out page numbers & look into the docling llama-index integration
         markdown_file_path = file_path.with_suffix(".md")
         if process.returncode == 0 and markdown_file_path.exists():
